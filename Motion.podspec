@@ -2,7 +2,7 @@ Pod::Spec.new do |s|
   s.name = 'Motion'
   s.version = '1.0.0'
   s.license = 'BSD-3-Clause'
-  s.summary = 'A seamless animation and transition framework in Swift.'
+  s.summary = 'Seamless animation and transition in Swift.'
   s.homepage = 'http://cosmicmind.com/motion'
   s.social_media_url = 'https://www.facebook.com/cosmicmindcom'
   s.authors = { 'CosmicMind, Inc.' => 'support@cosmicmind.com' }

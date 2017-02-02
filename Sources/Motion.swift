@@ -98,7 +98,7 @@ public struct Motion {
     public static func delay(_ time: TimeInterval, execute block: @escaping () -> Void) -> MotionDelayCancelBlock? {
         
         func asyncAfter(completion: @escaping () -> Void) {
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + time, execute: completion)
+            DispatchQueue.main.asyncAfter(deadline: .now() + time, execute: completion)
         }
         
         var cancelable: MotionDelayCancelBlock?

@@ -135,8 +135,6 @@ extension UIView {
     open func motionTransitionSnapshot(afterUpdates: Bool) -> UIView {
         isHidden = false
         
-        (self as? Pulseable)?.pulse.pulseLayer?.isHidden = true
-        
         let oldCornerRadius = cornerRadius
         cornerRadius = 0
         
@@ -175,7 +173,6 @@ extension UIView {
         v.backgroundColor = backgroundColor
         
         isHidden = true
-        (self as? Pulseable)?.pulse.pulseLayer?.isHidden = false
         
         return v
     }

@@ -1,8 +1,16 @@
 ## Welcome to Motion
 
-Seamless animation and transition in Swift.
+Seamless animations and transitions in Swift.
 
-** Releasing Later Today **
+### Documentation
+
+Documentation for using Motion will be released February 3rd 2017.
+
+### Sample
+
+Take a look at a sample [Photo Collection](https://github.com/CosmicMind/Samples/tree/master/Motion/PhotoCollection) project.
+
+![Motion Photo Collection Sample](http://www.cosmicmind.com/motion/motion_sample.gif)
 
 ## License
 

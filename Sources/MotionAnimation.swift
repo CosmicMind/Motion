@@ -325,6 +325,21 @@ extension UIView {
         }
     }
     
+    /// The global position of a view.
+    open var motionPosition: CGPoint {
+        return superview?.convert(position, to: nil) ?? position
+    }
+    
+    /// The layer.transform of a view.
+    open var motionTransform: CATransform3D {
+        get {
+            return layer.transform
+        }
+        set(value) {
+            layer.transform = value
+        }
+    }
+    
     /// Computes the scale X axis value of the view.
     open var motionScaleX: CGFloat {
         return transform.a

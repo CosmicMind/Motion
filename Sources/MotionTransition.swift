@@ -45,7 +45,7 @@ fileprivate struct MotionInstanceController {
 
 extension UIViewController: UIViewControllerTransitioningDelegate {
     /// MotionInstanceController Reference.
-    fileprivate var motion: MotionInstanceController {
+    fileprivate var motionInstanceController: MotionInstanceController {
         get {
             return AssociatedObject(base: self, key: &MotionInstanceControllerKey) {
                 return MotionInstanceController(isEnabled: false, delegate: nil)
@@ -58,7 +58,7 @@ extension UIViewController: UIViewControllerTransitioningDelegate {
     
     open var isMotionEnabled: Bool {
         get {
-            return motion.isEnabled
+            return motionInstanceController.isEnabled
         }
         set(value) {
             if value {
@@ -66,16 +66,16 @@ extension UIViewController: UIViewControllerTransitioningDelegate {
                 transitioningDelegate = self
             }
             
-            motion.isEnabled = value
+            motionInstanceController.isEnabled = value
         }
     }
     
     open weak var motionDelegate: MotionDelegate? {
         get {
-            return motion.delegate
+            return motionInstanceController.delegate
         }
         set(value) {
-            motion.delegate = value
+            motionInstanceController.delegate = value
         }
     }
 }
@@ -131,15 +131,23 @@ extension UIView {
         let oldCornerRadius = cornerRadius
         cornerRadius = 0
         
-        let oldBackgroundColor = backgroundColor
-        backgroundColor = .clear
+        var oldBackgroundColor: UIColor?
+        
+        if shouldHide {
+            oldBackgroundColor = backgroundColor
+            backgroundColor = .clear
+        }
         
         let oldTransform = motionTransform
         motionTransform = CATransform3DIdentity
         
         let v = snapshotView(afterScreenUpdates: afterUpdates)!
         cornerRadius = oldCornerRadius
-        backgroundColor = oldBackgroundColor
+        
+        if shouldHide {
+            backgroundColor = oldBackgroundColor
+        }
+        
         motionTransform = oldTransform
         
         let contentView = v.subviews.first!
@@ -212,10 +220,13 @@ open class MotionTransitionPresentationController: UIPresentationController {
 @objc(MotionDelegate)
 public protocol MotionDelegate {
     @objc
-    optional func motion(transition: MotionTransition, willTransition toView: UIView, fromView: UIView)
+    optional func motion(transition: MotionTransition, willTransition fromView: UIView, toView: UIView)
     
     @objc
-    optional func motion(transition: MotionTransition, didTransition toView: UIView, fromView: UIView)
+    optional func motion(transition: MotionTransition, didTransition fromView: UIView, toView: UIView)
+    
+    @objc
+    optional func motionModifyDelay(transition: MotionTransition) -> TimeInterval
 }
 
 open class MotionTransition: NSObject {
@@ -238,6 +249,10 @@ open class MotionTransition: NSObject {
     
     open var containerView: UIView!
     open var transitionView = UIView()
+    
+    fileprivate var modifiedDelay: TimeInterval {
+        return fromViewController?.motionDelegate?.motionModifyDelay?(transition: self) ?? 0
+    }
     
     public override init() {
         isPresenting = false
@@ -281,20 +296,46 @@ open class MotionTransition: NSObject {
     }
 }
 
+extension UINavigationController: UINavigationControllerDelegate {
+    open override func viewDidLoad() {
+        super.viewDidLoad()
+        delegate = self
+    }
+
+    @objc(navigationController:animationControllerForOperation:fromViewController:toViewController:)
+    open func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationControllerOperation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+            return isMotionEnabled ? MotionTransition(isPresenting: operation == .push) : nil
+    }
+}
+
+extension UITabBarController: UITabBarControllerDelegate {
+    open func tabBarController(_ tabBarController: UITabBarController, animationControllerForTransitionFrom fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+            return isMotionEnabled ? MotionTransition() : nil
+    }
+}
+
 extension MotionTransition: UIViewControllerAnimatedTransitioning {
     @objc(animateTransition:)
     open func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         self.transitionContext = transitionContext
-        
         prepareToViewController()
         prepareFromViewController()
-        prepareContainerView()
-        prepareTransitionSnapshot()
-        prepareTransitionPairs()
-        prepareTransitionView()
-        prepareTransitionBackgroundView()
-        prepareTransitionToView()
-        prepareTransitionAnimation()
+        
+        fromViewController.motionDelegate?.motion?(transition: self, willTransition: fromView, toView: toView)
+        
+        Motion.delay(modifiedDelay) { [weak self] in
+            guard let s = self else {
+                return
+            }
+            
+            s.prepareContainerView()
+            s.prepareTransitionSnapshot()
+            s.prepareTransitionPairs()
+            s.prepareTransitionView()
+            s.prepareTransitionBackgroundView()
+            s.prepareTransitionToView()
+            s.prepareTransitionAnimation()
+        }
     }
     
     @objc(transitionDuration:)
@@ -390,8 +431,6 @@ extension MotionTransition {
             
             let d = motionDuration(animations: to.motionAnimations)
             
-            fromViewController.motionDelegate?.motion?(transition: self, willTransition: toView, fromView: fromView)
-            
             let snapshot = from.motionSnapshot(afterUpdates: true)
             transitionView.addSubview(snapshot)
             
@@ -473,7 +512,7 @@ extension MotionTransition {
 
 extension MotionTransition {
     fileprivate func cleanupAnimation() {
-        Motion.delay(transitionDuration(using: transitionContext)) { [weak self] in
+        Motion.delay(transitionDuration(using: transitionContext) + modifiedDelay) { [weak self] in
             guard let s = self else {
                 return
             }
@@ -510,7 +549,7 @@ extension MotionTransition {
     }
     
     fileprivate func completeTransition() {
-        fromViewController.motionDelegate?.motion?(transition: self, didTransition: toView, fromView: fromView)
+        toViewController.motionDelegate?.motion?(transition: self, didTransition: fromView, toView: toView)
         transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
     }
 }

@@ -64,7 +64,7 @@ view.motion(.backgroundColor(.blue), .rotationAngle(45))
 
 Motion allows for view controllers to animate between each other. By adding a value to a view's *motionIdentifier* property, a view will animate to the look of another view. For example, animating a floating button to a bar:
 
-![Motion Button To Bar](http://www.cosmicmind.com/motion/cosmicmind_button_to_bar.gif)
+![Motion Button To Bar](http://www.cosmicmind.com/motion/cosmicmind_motion_button_to_bar.gif)
 
 ## License
 

@@ -151,6 +151,24 @@ extension UIViewController {
     }
 }
 
+extension UINavigationController: UINavigationControllerDelegate {
+    open override func viewDidLoad() {
+        super.viewDidLoad()
+        delegate = self
+    }
+    
+    @objc(navigationController:animationControllerForOperation:fromViewController:toViewController:)
+    open func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationControllerOperation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return fromVC.isMotionEnabled ? Motion(isPresenting: operation == .push) : nil
+    }
+}
+
+extension UITabBarController: UITabBarControllerDelegate {
+    open func tabBarController(_ tabBarController: UITabBarController, animationControllerForTransitionFrom fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return fromVC.isMotionEnabled ? Motion() : nil
+    }
+}
+
 extension UIView {
     /// MaterialTransitionItem Reference.
     fileprivate var motionInstance: MotionInstance {
@@ -394,6 +412,31 @@ open class Motion: NSObject {
     open class func cancel(delayed completion: MotionDelayCancelBlock) {
         completion(true)
     }
+    
+    /**
+     Disables the default animations set on CALayers.
+     - Parameter animations: A callback that wraps the animations to disable.
+     */
+    open class func disable(_ animations: (() -> Void)) {
+        animate(duration: 0, animations: animations)
+    }
+    
+    /**
+     Runs an animation with a specified duration.
+     - Parameter duration: An animation duration time.
+     - Parameter animations: An animation block.
+     - Parameter timingFunction: An MotionAnimationTimingFunction value.
+     - Parameter completion: A completion block that is executed once
+     the animations have completed.
+     */
+    open class func animate(duration: CFTimeInterval, timingFunction: MotionAnimationTimingFunction = .easeInEaseOut, animations: (() -> Void), completion: (() -> Void)? = nil) {
+        CATransaction.begin()
+        CATransaction.setAnimationDuration(duration)
+        CATransaction.setCompletionBlock(completion)
+        CATransaction.setAnimationTimingFunction(MotionAnimationTimingFunctionToValue(timingFunction: timingFunction))
+        animations()
+        CATransaction.commit()
+    }
 }
 
 extension Motion: UIViewControllerAnimatedTransitioning {
@@ -560,7 +603,7 @@ extension Motion {
      - Parameter duration: An animation duration time for the group.
      - Returns: A CAAnimationGroup.
      */
-    internal class func animate(group animations: [CAAnimation], timingFunction: MotionAnimationTimingFunction = .easeInEaseOut, duration: CFTimeInterval = 0.5) -> CAAnimationGroup {
+    open class func animate(group animations: [CAAnimation], timingFunction: MotionAnimationTimingFunction = .easeInEaseOut, duration: CFTimeInterval = 0.5) -> CAAnimationGroup {
         let group = CAAnimationGroup()
         group.fillMode = MotionAnimationFillModeToValue(mode: .forwards)
         group.isRemovedOnCompletion = false
@@ -648,9 +691,6 @@ extension Motion {
     
     fileprivate func clearTransitionView() {
         transitionView.removeFromSuperview()
-        transitionView.subviews.forEach {
-            $0.removeFromSuperview()
-        }
     }
     
     fileprivate func completeTransition() {

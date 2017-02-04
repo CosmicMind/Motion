@@ -4,18 +4,18 @@ Seamless animations and transitions in Swift.
 
 Motion is a new tool used to create transition animations between view controllers. 
 
-### Features
+## Features
 
 - [x] Add animations to views and layers.
 - [x] Setup custom transition animations between view controllers.
 
-### Sample
+## Sample
 
 Take a look at a sample [Photo Collection](https://github.com/CosmicMind/Samples/tree/master/Motion/PhotoCollection) project.
 
-![Motion Photo Collection Sample](http://www.cosmicmind.com/motion/motion_sample.gif)
+![Motion Photo Collection Sample](http://www.cosmicmind.com/motion/cosmicmind_motion_sample.gif)
 
-### Motion Animations
+## Motion Animations
 
 You can add animations to any UIView or CALayer using the *motion* API. For example, to change the background color of a view with a 45 degree rotation:
 
@@ -23,7 +23,7 @@ You can add animations to any UIView or CALayer using the *motion* API. For exam
 view.motion(.backgroundColor(.blue), .rotationAngle(45))
 ``` 
 
-#### Available Motion Animation Values
+### Available Motion Animation Values
 
 - delay
 - timingFunction
@@ -60,11 +60,51 @@ view.motion(.backgroundColor(.blue), .rotationAngle(45))
 - height
 - size
 
-### Motion Transitions
+## Motion Transitions
 
 Motion allows for view controllers to animate between each other. By adding a value to a view's *motionIdentifier* property, a view will animate to the look of another view. For example, animating a floating button to a bar:
 
 ![Motion Button To Bar](http://www.cosmicmind.com/motion/cosmicmind_motion_button_to_bar.gif)
+
+### From View Controller
+
+```swift
+button.motionIdentifier = "options"
+```
+
+### To View Controller
+
+```swift
+bar.motionIdentifier = "options"
+```
+
+That's it. By setting the *motionIdentifier* property, Motion animates one view to another within different view controllers.
+
+## Motion Transition Animations
+
+View animations may be added to views that are transitioning using the *motionAnimations* property.
+
+```swift
+bar.motionAnimations = [.delay(0.35), .duration(3)]
+```
+
+To turn on Motion transitions, set the *isMotionEnabled* property to `true` within the view controllers that transition between each other.
+
+## Motion Delegate
+
+Use the *MotionDelegate* to tap into key parts of a transition between view controllers. The available delegation methods are: 
+
+```swift
+func motion(motion: Motion, willTransition fromView: UIView, toView: UIView)
+    
+func motion(motion: Motion, didTransition fromView: UIView, toView: UIView)
+    
+func motionModifyDelay(motion: Motion) -> TimeInterval
+```
+
+### More...
+
+More documentation and samples coming your way. 
 
 ## License
 

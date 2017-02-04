@@ -139,7 +139,7 @@ extension UIViewController: MotionDelegate, UIViewControllerTransitioningDelegat
 
 extension UIViewController {
     open func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return isMotionEnabled ? Motion(isPresenting: true) : nil
+        return isMotionEnabled ? Motion(isPresenting: true, isContainer: false) : nil
     }
     
     open func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
@@ -159,13 +159,13 @@ extension UINavigationController: UINavigationControllerDelegate {
     
     @objc(navigationController:animationControllerForOperation:fromViewController:toViewController:)
     open func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationControllerOperation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return fromVC.isMotionEnabled ? Motion(isPresenting: operation == .push) : nil
+        return fromVC.isMotionEnabled ? Motion(isPresenting: operation == .push, isContainer: true) : nil
     }
 }
 
 extension UITabBarController: UITabBarControllerDelegate {
     open func tabBarController(_ tabBarController: UITabBarController, animationControllerForTransitionFrom fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return fromVC.isMotionEnabled ? Motion() : nil
+        return fromVC.isMotionEnabled ? Motion(isPresenting: true, isContainer: true) : nil
     }
 }
 
@@ -308,7 +308,8 @@ public protocol MotionDelegate {
 }
 
 open class Motion: NSObject {
-    open var isPresenting: Bool
+    open fileprivate(set) var isPresenting: Bool
+    open fileprivate(set) var isContainer: Bool
     
     open fileprivate(set) var transitionPairs = [(UIView, UIView)]()
     
@@ -334,11 +335,13 @@ open class Motion: NSObject {
     
     public override init() {
         isPresenting = false
+        isContainer = false
         super.init()
     }
     
-    public init(isPresenting: Bool) {
+    public init(isPresenting: Bool, isContainer: Bool) {
         self.isPresenting = isPresenting
+        self.isContainer = isContainer
         super.init()
     }
     
@@ -560,7 +563,7 @@ extension Motion {
             let snapshot = from.transitionSnapshot(afterUpdates: true)
             transitionView.addSubview(snapshot)
             
-            Motion.delay(motionDelay(animations: to.motionAnimations)) { [weak self, weak to] in
+            Motion.delay(motionDelay(animations: to.motionAnimations) + (isContainer ? 0.2 : 0)) { [weak self, weak to] in
                 guard let s = self else {
                     return
                 }
@@ -660,7 +663,7 @@ extension Motion {
 
 extension Motion {
     fileprivate func cleanupAnimation() {
-        Motion.delay(transitionDuration(using: transitionContext) + modifiedDelay) { [weak self] in
+        Motion.delay(transitionDuration(using: transitionContext) + modifiedDelay + (isContainer ? 0.2 : 0)) { [weak self] in
             guard let s = self else {
                 return
             }

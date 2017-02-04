@@ -494,7 +494,6 @@ extension Motion {
     fileprivate func prepareTransitionSnapshot() {
         transitionSnapshot = fromView.transitionSnapshot(afterUpdates: true, shouldHide: false)
         transitionSnapshot.frame = fromView.bounds
-        print("FROM", fromView.bounds, toView.bounds, transitionSnapshot.frame)
         containerView.insertSubview(transitionSnapshot, aboveSubview: fromView)
     }
     
@@ -512,7 +511,6 @@ extension Motion {
     
     fileprivate func prepareTransitionView() {
         transitionView.frame = toView.bounds
-        print("TO", toView.bounds)
         transitionView.isUserInteractionEnabled = false
         containerView.insertSubview(transitionView, belowSubview: transitionSnapshot)
     }

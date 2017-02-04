@@ -2,15 +2,69 @@
 
 Seamless animations and transitions in Swift.
 
-### Documentation
+Motion is a new tool used to create transition animations between view controllers. 
 
-Documentation for using Motion will be released February 3rd 2017.
+### Features
+
+- [x] Add animations to views and layers.
+- [x] Setup custom transition animations between view controllers.
 
 ### Sample
 
 Take a look at a sample [Photo Collection](https://github.com/CosmicMind/Samples/tree/master/Motion/PhotoCollection) project.
 
 ![Motion Photo Collection Sample](http://www.cosmicmind.com/motion/motion_sample.gif)
+
+### Motion Animations
+
+You can add animations to any UIView or CALayer using the *motion* API. For example, to change the background color of a view with a 45 degree rotation:
+
+```swift
+view.motion(.backgroundColor(.blue), .rotationAngle(45))
+``` 
+
+#### Available Motion Animation Values
+
+- delay
+- timingFunction
+- duration
+- custom
+- backgroundColor
+- barTintColor
+- cornerRadius
+- transform
+- rotationAngle
+- rotationAngleX
+- rotationAngleY
+- rotationAngleZ
+- spin
+- spinX
+- spinY
+- spinZ
+- scale
+- scaleX
+- scaleY
+- scaleZ
+- translate
+- translateX
+- translateY
+- translateZ
+- x
+- y
+- point
+- position
+- shadow
+- fade
+- zPosition
+- width
+- height
+- size
+
+### Motion Transitions
+
+Motion allows for view controllers to animate between each other. By adding a value to a view's *motionIdentifier* property, a view will animate to the look of another view. For example, animating a floating button to a bar:
+
+![Motion Button To Bar](http://www.cosmicmind.com/motion/cosmicmind_button_to_bar.gif)
 
 ## License
 

@@ -563,7 +563,7 @@ extension Motion {
             let snapshot = from.transitionSnapshot(afterUpdates: true)
             transitionView.addSubview(snapshot)
             
-            Motion.delay(motionDelay(animations: to.motionAnimations) + (isContainer ? 0.2 : 0)) { [weak self, weak to] in
+            Motion.delay(motionDelay(animations: to.motionAnimations)) { [weak self, weak to] in
                 guard let s = self else {
                     return
                 }
@@ -663,7 +663,7 @@ extension Motion {
 
 extension Motion {
     fileprivate func cleanupAnimation() {
-        Motion.delay(transitionDuration(using: transitionContext) + modifiedDelay + (isContainer ? 0.2 : 0)) { [weak self] in
+        Motion.delay(transitionDuration(using: transitionContext) + modifiedDelay) { [weak self] in
             guard let s = self else {
                 return
             }

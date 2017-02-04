@@ -32,6 +32,7 @@ import UIKit
 
 public enum MotionAnimationKeyPath: String {
     case backgroundColor
+    case barTintColor
     case cornerRadius
     case transform
     case rotation  = "transform.rotation"
@@ -61,6 +62,7 @@ public enum MotionAnimation {
     case duration(TimeInterval)
     case custom(CABasicAnimation)
     case backgroundColor(UIColor)
+    case barTintColor(UIColor)
     case cornerRadius(CGFloat)
     case transform(CATransform3D)
     case rotationAngle(CGFloat)
@@ -243,6 +245,8 @@ extension CALayer {
                     a.append(animation)
                 case let .backgroundColor(color):
                     a.append(Motion.background(color: color))
+                case let .barTintColor(color):
+                    a.append(Motion.barTint(color: color))
                 case let .cornerRadius(radius):
                     a.append(Motion.corner(radius: radius))
                 case let .transform(transform):
@@ -405,6 +409,17 @@ extension Motion {
      */
     public static func background(color: UIColor) -> CABasicAnimation {
         let animation = CABasicAnimation(keyPath: .backgroundColor)
+        animation.toValue = color.cgColor
+        return animation
+    }
+    
+    /**
+     Creates a CABasicAnimation for the barTintColor key path.
+     - Parameter color: A UIColor.
+     - Returns: A CABasicAnimation.
+     */
+    public static func barTint(color: UIColor) -> CABasicAnimation {
+        let animation = CABasicAnimation(keyPath: .barTintColor)
         animation.toValue = color.cgColor
         return animation
     }

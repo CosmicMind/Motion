@@ -2,6 +2,12 @@
 
 Motion is a new tool used to create transition animations between view controllers. 
 
+## Sample
+
+Take a look at a sample [Photo Collection](https://github.com/CosmicMind/Samples/tree/master/Motion/PhotoCollection) project.
+
+![Motion Photo Collection Sample](http://www.cosmicmind.com/motion/cosmicmind_motion_sample.gif)
+
 ## Features
 
 - [x] Add animations to views and layers.
@@ -30,12 +36,6 @@ Visit the [Installation](https://github.com/CosmicMind/Motion/wiki/Installation)
 ## Changelog
 
 Motion is a growing project and will encounter changes throughout its development. It is recommended that the [Changelog](https://github.com/CosmicMind/Motion/wiki/Changelog) be reviewed prior to updating versions.
-
-## Sample
-
-Take a look at a sample [Photo Collection](https://github.com/CosmicMind/Samples/tree/master/Motion/PhotoCollection) project.
-
-![Motion Photo Collection Sample](http://www.cosmicmind.com/motion/cosmicmind_motion_sample.gif)
 
 ## Motion Animations
 

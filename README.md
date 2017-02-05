@@ -1,13 +1,35 @@
 ## Welcome to Motion
 
-Seamless animations and transitions in Swift.
-
 Motion is a new tool used to create transition animations between view controllers. 
 
 ## Features
 
 - [x] Add animations to views and layers.
 - [x] Setup custom transition animations between view controllers.
+
+## Requirements
+
+* iOS 8.0+
+* Xcode 8.0+
+
+## Communication
+
+- If you **need help**, use [Stack Overflow](http://stackoverflow.com/questions/tagged/cosmicmind). (Tag 'cosmicmind')
+- If you'd like to **ask a general question**, use [Stack Overflow](http://stackoverflow.com/questions/tagged/cosmicmind).
+- If you **found a bug**, _and can provide steps to reliably reproduce it_, open an issue.
+- If you **have a feature request**, open an issue.
+- If you **want to contribute**, submit a pull request.
+
+## Installation
+
+> **Embedded frameworks require a minimum deployment target of iOS 8.**
+> - [Download Motion](https://github.com/CosmicMind/Motion/archive/master.zip)
+
+Visit the [Installation](https://github.com/CosmicMind/Motion/wiki/Installation) page to learn how to install Motion using [CocoaPods](http://cocoapods.org) and [Carthage](https://github.com/Carthage/Carthage).
+
+## Changelog
+
+Motion is a growing project and will encounter changes throughout its development. It is recommended that the [Changelog](https://github.com/CosmicMind/Motion/wiki/Changelog) be reviewed prior to updating versions.
 
 ## Sample
 
@@ -88,7 +110,9 @@ View animations may be added to views that are transitioning using the *motionAn
 bar.motionAnimations = [.delay(0.35), .duration(3)]
 ```
 
-To turn on Motion transitions, set the *isMotionEnabled* property to `true` within the view controllers that transition between each other.
+## Enabling Motion Transitions
+
+To turn on Motion transitions between view controllers, set the *isMotionEnabled* property to `true` within the view controllers that transition between each other.
 
 ## Motion Delegate
 

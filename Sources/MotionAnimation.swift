@@ -331,7 +331,7 @@ extension UIView {
     
     /// The global position of a view.
     open var motionPosition: CGPoint {
-        return superview?.convert(position, to: nil) ?? position
+        return superview?.convert(layer.position, to: nil) ?? layer.position
     }
     
     /// The layer.transform of a view.

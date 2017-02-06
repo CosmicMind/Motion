@@ -203,8 +203,8 @@ extension UIView {
     open func transitionSnapshot(afterUpdates: Bool, shouldHide: Bool = true) -> UIView {
         isHidden = false
         
-        let oldCornerRadius = cornerRadius
-        cornerRadius = 0
+        let oldCornerRadius = layer.cornerRadius
+        layer.cornerRadius = 0
         
         var oldBackgroundColor: UIColor?
         
@@ -217,7 +217,7 @@ extension UIView {
         motionTransform = CATransform3DIdentity
         
         let v = snapshotView(afterScreenUpdates: afterUpdates)!
-        cornerRadius = oldCornerRadius
+        layer.cornerRadius = oldCornerRadius
         
         if shouldHide {
             backgroundColor = oldBackgroundColor
@@ -226,24 +226,24 @@ extension UIView {
         motionTransform = oldTransform
         
         let contentView = v.subviews.first!
-        contentView.cornerRadius = cornerRadius
-        contentView.masksToBounds = true
+        contentView.layer.cornerRadius = layer.cornerRadius
+        contentView.layer.masksToBounds = true
         
         v.motionIdentifier = motionIdentifier
-        v.position = motionPosition
+        v.layer.position = motionPosition
         v.bounds = bounds
-        v.cornerRadius = cornerRadius
-        v.zPosition = zPosition
-        v.opacity = opacity
+        v.layer.cornerRadius = layer.cornerRadius
+        v.layer.zPosition = layer.zPosition
+        v.layer.opacity = layer.opacity
         v.isOpaque = isOpaque
-        v.anchorPoint = anchorPoint
-        v.masksToBounds = masksToBounds
-        v.borderColor = borderColor
-        v.borderWidth = borderWidth
-        v.shadowRadius = shadowRadius
-        v.shadowOpacity = shadowOpacity
-        v.shadowColor = shadowColor
-        v.shadowOffset = shadowOffset
+        v.layer.anchorPoint = layer.anchorPoint
+        v.layer.masksToBounds = layer.masksToBounds
+        v.layer.borderColor = layer.borderColor
+        v.layer.borderWidth = layer.borderWidth
+        v.layer.shadowRadius = layer.shadowRadius
+        v.layer.shadowOpacity = layer.shadowOpacity
+        v.layer.shadowColor = layer.shadowColor
+        v.layer.shadowOffset = layer.shadowOffset
         v.contentMode = contentMode
         v.motionTransform = motionTransform
         v.backgroundColor = backgroundColor
@@ -546,7 +546,7 @@ extension Motion {
             var snapshotChildAnimations = [CABasicAnimation]()
             
             let sizeAnimation = Motion.size(to.bounds.size)
-            let cornerRadiusAnimation = Motion.corner(radius: to.cornerRadius)
+            let cornerRadiusAnimation = Motion.corner(radius: to.layer.cornerRadius)
             
             snapshotAnimations.append(sizeAnimation)
             snapshotAnimations.append(cornerRadiusAnimation)

@@ -99,7 +99,7 @@ fileprivate struct MotionInstanceController {
     fileprivate weak var delegate: MotionDelegate?
 }
 
-extension UIViewController: MotionDelegate, UIViewControllerTransitioningDelegate {
+extension UIViewController: MotionDelegate, UIViewControllerTransitioningDelegate, UINavigationControllerDelegate, UITabBarControllerDelegate {
     /// MotionInstanceController Reference.
     fileprivate var motionInstanceController: MotionInstanceController {
         get {
@@ -121,6 +121,8 @@ extension UIViewController: MotionDelegate, UIViewControllerTransitioningDelegat
                 modalPresentationStyle = .custom
                 transitioningDelegate = self
                 motionDelegate = self
+                (self as? UINavigationController)?.delegate = self
+                (self as? UITabBarController)?.delegate = self
             }
             
             motionInstanceController.isEnabled = value
@@ -135,6 +137,15 @@ extension UIViewController: MotionDelegate, UIViewControllerTransitioningDelegat
             motionInstanceController.delegate = value
         }
     }
+    
+    @objc(navigationController:animationControllerForOperation:fromViewController:toViewController:)
+    open func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationControllerOperation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return fromVC.isMotionEnabled ? Motion(isPresenting: operation == .push, isContainer: true) : nil
+    }
+    
+    open func tabBarController(_ tabBarController: UITabBarController, animationControllerForTransitionFrom fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return fromVC.isMotionEnabled ? Motion(isPresenting: true, isContainer: true) : nil
+    }
 }
 
 extension UIViewController {
@@ -148,24 +159,6 @@ extension UIViewController {
     
     open func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
         return isMotionEnabled ? MotionPresentationController(presentedViewController: presented, presenting: presenting) : nil
-    }
-}
-
-extension UINavigationController: UINavigationControllerDelegate {
-    open override func viewDidLoad() {
-        super.viewDidLoad()
-        delegate = self
-    }
-    
-    @objc(navigationController:animationControllerForOperation:fromViewController:toViewController:)
-    open func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationControllerOperation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return fromVC.isMotionEnabled ? Motion(isPresenting: operation == .push, isContainer: true) : nil
-    }
-}
-
-extension UITabBarController: UITabBarControllerDelegate {
-    open func tabBarController(_ tabBarController: UITabBarController, animationControllerForTransitionFrom fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return fromVC.isMotionEnabled ? Motion(isPresenting: true, isContainer: true) : nil
     }
 }
 

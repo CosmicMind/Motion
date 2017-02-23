@@ -100,7 +100,7 @@ fileprivate struct MotionInstanceController {
 }
 
 extension UIViewController: MotionDelegate, UIViewControllerTransitioningDelegate, UINavigationControllerDelegate, UITabBarControllerDelegate {
-    /// MotionInstanceController Reference.
+    /// MotionInstanceController reference.
     fileprivate var motionInstanceController: MotionInstanceController {
         get {
             return AssociatedObject(base: self, key: &MotionInstanceControllerKey) {
@@ -112,6 +112,7 @@ extension UIViewController: MotionDelegate, UIViewControllerTransitioningDelegat
         }
     }
     
+    /// A boolean that indicates whether motion is enabled.
     open var isMotionEnabled: Bool {
         get {
             return motionInstanceController.isEnabled
@@ -129,6 +130,7 @@ extension UIViewController: MotionDelegate, UIViewControllerTransitioningDelegat
         }
     }
     
+    /// A reference to the MotionDelegate.
     open weak var motionDelegate: MotionDelegate? {
         get {
             return motionInstanceController.delegate
@@ -138,32 +140,65 @@ extension UIViewController: MotionDelegate, UIViewControllerTransitioningDelegat
         }
     }
     
-    @objc(navigationController:animationControllerForOperation:fromViewController:toViewController:)
+    /**
+     Determines whether to use a Motion instance for transitions.
+     - Parameter _ navigationController: A UINavigationController.
+     - Parameter animationControllerFor operation: A UINavigationControllerOperation.
+     - Parameter from fromVC: A UIViewController that is being transitioned from.
+     - Parameter to toVC: A UIViewController that is being transitioned to.
+     - Returns: An optional UIViewControllerAnimatedTransitioning.
+     */
     open func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationControllerOperation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         return fromVC.isMotionEnabled ? Motion(isPresenting: operation == .push, isContainer: true) : nil
     }
     
+    /**
+     Determines whether to use a Motion instance for transitions.
+     - Parameter _ tabBarController: A UITabBarController.
+     - Parameter animationControllerForTransitionFrom fromVC: A UIViewController that is being transitioned from.
+     - Parameter to toVC: A UIViewController that is being transitioned to.
+     - Returns: An optional UIViewControllerAnimatedTransitioning.
+     */
     open func tabBarController(_ tabBarController: UITabBarController, animationControllerForTransitionFrom fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         return fromVC.isMotionEnabled ? Motion(isPresenting: true, isContainer: true) : nil
     }
 }
 
 extension UIViewController {
+    /**
+     Determines whether to use a Motion instance for transitions.
+     - Parameter forPresented presented: A UIViewController.
+     - Parameter presenting: A UIViewController.
+     - Parameter source: A UIViewController.
+     - Returns: An optional UIViewControllerAnimatedTransitioning.
+     */
     open func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         return isMotionEnabled ? Motion(isPresenting: true, isContainer: false) : nil
     }
     
+    /**
+     Determines whether to use a Motion instance for transitions.
+     - Parameter forDismissed dismissed: A UIViewController.
+     - Returns: An optional UIViewControllerAnimatedTransitioning.
+     */
     open func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         return isMotionEnabled ? Motion() : nil
     }
     
+    /**
+     Determines whether to use a MotionPresentationController for transitions.
+     - Parameter forPresented presented: A UIViewController.
+     - Parameter presenting: A UIViewController.
+     - Parameter source: A UIViewController.
+     - Returns: An optional UIPresentationController.
+     */
     open func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
         return isMotionEnabled ? MotionPresentationController(presentedViewController: presented, presenting: presenting) : nil
     }
 }
 
 extension UIView {
-    /// MaterialTransitionItem Reference.
+    /// MotionInstance reference.
     fileprivate var motionInstance: MotionInstance {
         get {
             return AssociatedObject(base: self, key: &MotionInstanceKey) {
@@ -175,6 +210,7 @@ extension UIView {
         }
     }
     
+    /// An identifier value used to connect views across UIViewControllers.
     open var motionIdentifier: String {
         get {
             return motionInstance.identifier
@@ -184,6 +220,7 @@ extension UIView {
         }
     }
     
+    /// The animations to run while in transition.
     open var motionAnimations: [MotionAnimation] {
         get {
             return motionInstance.animations
@@ -192,7 +229,17 @@ extension UIView {
             motionInstance.animations = value
         }
     }
-    
+}
+
+extension UIView {
+    /**
+     Snapshots the view instance for animations during transitions.
+     - Parameter afterUpdates: A boolean indicating whether to snapshot the view
+     after a render update, or as is. 
+     - Parameter shouldHide: A boolean indicating whether the view should be hidden
+     after the snapshot is taken.
+     - Returns: A UIView instance that is a snapshot of the given UIView.
+     */
     open func transitionSnapshot(afterUpdates: Bool, shouldHide: Bool = true) -> UIView {
         isHidden = false
         
@@ -322,7 +369,7 @@ open class Motion: NSObject {
     open var containerView: UIView!
     open var transitionView = UIView()
     
-    fileprivate var modifiedDelay: TimeInterval {
+    fileprivate var motionDelayTransitionByTimeInterval: TimeInterval {
         return fromViewController?.motionDelegate?.motionModifyDelay?(motion: self) ?? 0
     }
     
@@ -436,6 +483,10 @@ open class Motion: NSObject {
 }
 
 extension Motion: UIViewControllerAnimatedTransitioning {
+    /**
+     The animation method that is used to coordinate the transition.
+     - Parameter using transitionContext: A UIViewControllerContextTransitioning.
+     */
     @objc(animateTransition:)
     open func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         self.transitionContext = transitionContext
@@ -444,7 +495,7 @@ extension Motion: UIViewControllerAnimatedTransitioning {
         
         fromViewController.motionDelegate?.motion?(motion: self, willTransition: fromView, toView: toView)
         
-        Motion.delay(modifiedDelay) { [weak self] in
+        Motion.delay(motionDelayTransitionByTimeInterval) { [weak self] in
             guard let s = self else {
                 return
             }
@@ -454,11 +505,16 @@ extension Motion: UIViewControllerAnimatedTransitioning {
             s.prepareTransitionPairs()
             s.prepareTransitionView()
             s.prepareTransitionBackgroundView()
-            s.prepareTransitionToView()
+            s.prepareToView()
             s.prepareTransitionAnimation()
         }
     }
     
+    /**
+     Returns the transition duration time interval.
+     - Parameter using transitionContext: An optional UIViewControllerContextTransitioning.
+     - Returns: A TimeInterval that is the total animation time including delays.
+     */
     @objc(transitionDuration:)
     open func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
         return delay + duration
@@ -466,6 +522,7 @@ extension Motion: UIViewControllerAnimatedTransitioning {
 }
 
 extension Motion {
+    /// Prepares the toViewController.
     fileprivate func prepareToViewController() {
         guard let v = transitionContext.viewController(forKey: .to) else {
             return
@@ -473,6 +530,7 @@ extension Motion {
         toViewController = v
     }
     
+    /// Prepares the fromViewController.
     fileprivate func prepareFromViewController() {
         guard let v = transitionContext.viewController(forKey: .from) else {
             return
@@ -480,16 +538,19 @@ extension Motion {
         fromViewController = v
     }
     
+    /// Prepares the containerView.
     fileprivate func prepareContainerView() {
         containerView = transitionContext.containerView
     }
     
+    /// Prepares the transitionSnapshot.
     fileprivate func prepareTransitionSnapshot() {
         transitionSnapshot = fromView.transitionSnapshot(afterUpdates: true, shouldHide: false)
         transitionSnapshot.frame = fromView.bounds
         containerView.insertSubview(transitionSnapshot, aboveSubview: fromView)
     }
     
+    /// Prepares the transitionPairs.
     fileprivate func prepareTransitionPairs() {
         for from in fromSubviews {
             for to in toSubviews {
@@ -502,19 +563,22 @@ extension Motion {
         }
     }
     
+    /// Prepares the transitionView.
     fileprivate func prepareTransitionView() {
         transitionView.frame = toView.bounds
         transitionView.isUserInteractionEnabled = false
         containerView.insertSubview(transitionView, belowSubview: transitionSnapshot)
     }
     
+    /// Prepares the transitionBackgroundView.
     fileprivate func prepareTransitionBackgroundView() {
         transitionBackgroundView.backgroundColor = isPresenting ? .clear : fromView.backgroundColor ?? .clear
         transitionBackgroundView.frame = transitionView.bounds
         transitionView.addSubview(transitionBackgroundView)
     }
     
-    fileprivate func prepareTransitionToView() {
+    /// Prepares the toView.
+    fileprivate func prepareToView() {
         toView.isHidden = isPresenting
         containerView.insertSubview(toView, belowSubview: transitionView)
         
@@ -523,11 +587,11 @@ extension Motion {
         toView.layoutIfNeeded()
     }
     
+    /// Prepares the transition animation.
     fileprivate func prepareTransitionAnimation() {
         addTransitionAnimations()
         addBackgroundMotionAnimation()
-        
-        cleanupAnimation()
+        cleanUpAnimation()
         removeTransitionSnapshot()
     }
 }
@@ -551,12 +615,12 @@ extension Motion {
             snapshotChildAnimations.append(sizeAnimation)
             snapshotChildAnimations.append(Motion.position(x: to.bounds.width / 2, y: to.bounds.height / 2))
             
-            let d = transitionDuration(animations: to.motionAnimations)
+            let d = calculateAnimationTransitionDuration(animations: to.motionAnimations)
             
             let snapshot = from.transitionSnapshot(afterUpdates: true)
             transitionView.addSubview(snapshot)
             
-            Motion.delay(motionDelay(animations: to.motionAnimations)) { [weak self, weak to] in
+            Motion.delay(calculateAnimationDelayTimeInterval(animations: to.motionAnimations)) { [weak self, weak to] in
                 guard let s = self else {
                     return
                 }
@@ -565,7 +629,7 @@ extension Motion {
                     return
                 }
                 
-                let tf = s.motionTimingFunction(animations: v.motionAnimations)
+                let tf = s.calculateAnimationTimingFunction(animations: v.motionAnimations)
                 
                 let snapshotGroup = Motion.animate(group: snapshotAnimations, duration: d)
                 snapshotGroup.fillMode = MotionAnimationFillModeToValue(mode: .forwards)
@@ -611,7 +675,12 @@ extension Motion {
 }
 
 extension Motion {
-    fileprivate func motionDelay(animations: [MotionAnimation]) -> TimeInterval {
+    /**
+     Calculates the animation delay time based on the given Array of MotionAnimations.
+     - Parameter animations: An Array of MotionAnimations.
+     - Returns: A TimeInterval.
+     */
+    fileprivate func calculateAnimationDelayTimeInterval(animations: [MotionAnimation]) -> TimeInterval {
         var t: TimeInterval = 0
         for a in animations {
             switch a {
@@ -626,7 +695,12 @@ extension Motion {
         return t
     }
     
-    fileprivate func transitionDuration(animations: [MotionAnimation]) -> TimeInterval {
+    /**
+     Calculates the animation transition duration based on the given Array of MotionAnimations.
+     - Parameter animations: An Array of MotionAnimations.
+     - Returns: A TimeInterval.
+     */
+    fileprivate func calculateAnimationTransitionDuration(animations: [MotionAnimation]) -> TimeInterval {
         var t: TimeInterval = 0.35
         for a in animations {
             switch a {
@@ -641,7 +715,12 @@ extension Motion {
         return t
     }
     
-    fileprivate func motionTimingFunction(animations: [MotionAnimation]) -> MotionAnimationTimingFunction {
+    /**
+     Calculates the animation timing function based on the given Array of MotionAnimations.
+     - Parameter animations: An Array of MotionAnimations.
+     - Returns: A MotionAnimationTimingFunction.
+     */
+    fileprivate func calculateAnimationTimingFunction(animations: [MotionAnimation]) -> MotionAnimationTimingFunction {
         var t = MotionAnimationTimingFunction.easeInEaseOut
         for a in animations {
             switch a {
@@ -655,25 +734,28 @@ extension Motion {
 }
 
 extension Motion {
-    fileprivate func cleanupAnimation() {
-        Motion.delay(transitionDuration(using: transitionContext) + modifiedDelay) { [weak self] in
+    /// Cleans up the animation transition.
+    fileprivate func cleanUpAnimation() {
+        Motion.delay(transitionDuration(using: transitionContext) + motionDelayTransitionByTimeInterval) { [weak self] in
             guard let s = self else {
                 return
             }
             
             s.showToSubviews()
-            s.clearTransitionView()
+            s.removeTransitionView()
             s.clearTransitionPairs()
             s.completeTransition()
         }
     }
     
+    /// Removes the transitionSnapshot from its superview.
     fileprivate func removeTransitionSnapshot() {
         Motion.delay(delay) { [weak self] in
             self?.transitionSnapshot.removeFromSuperview()
         }
     }
     
+    /// Shows the toView and its subviews.
     fileprivate func showToSubviews() {
         toSubviews.forEach {
             $0.isHidden = false
@@ -681,14 +763,17 @@ extension Motion {
         toView.isHidden = false
     }
     
+    /// Clears the transitionPairs Array.
     fileprivate func clearTransitionPairs() {
         transitionPairs.removeAll()
     }
     
-    fileprivate func clearTransitionView() {
+    /// Removes the transitionView.
+    fileprivate func removeTransitionView() {
         transitionView.removeFromSuperview()
     }
     
+    /// Calls the completionTransition method.
     fileprivate func completeTransition() {
         toViewController.motionDelegate?.motion?(motion: self, didTransition: fromView, toView: toView)
         transitionContext.completeTransition(!transitionContext.transitionWasCancelled)

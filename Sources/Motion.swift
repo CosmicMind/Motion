@@ -364,10 +364,14 @@ open class Motion: NSObject {
     open let transitionBackgroundView = UIView()
     
     /// A reference to the view controller that is being transitioned to.
-    open var toViewController: UIViewController!
+    open var toViewController: UIViewController {
+        return transitionContext.viewController(forKey: .to)!
+    }
     
     /// A reference to the view controller that is being transitioned from.
-    open var fromViewController: UIViewController!
+    open var fromViewController: UIViewController {
+        return transitionContext.viewController(forKey: .from)!
+    }
     
     /// The transition context for the current transition.
     open var transitionContext: UIViewControllerContextTransitioning!
@@ -386,7 +390,7 @@ open class Motion: NSObject {
     
     /// The view that is being transitioned to.
     open var toView: UIView {
-        return toViewController.view
+        return transitionContext.view(forKey: .to)!
     }
     
     /// The subviews of the view being transitioned to.
@@ -396,7 +400,7 @@ open class Motion: NSObject {
     
     /// The view that is being transitioned from.
     open var fromView: UIView {
-        return fromViewController.view
+        return transitionContext.view(forKey: .from)!
     }
     
     /// The subviews of the view being transitioned from.
@@ -406,7 +410,7 @@ open class Motion: NSObject {
     
     /// A time value to delay the transition animation by.
     fileprivate var delayTransitionByTimeInterval: TimeInterval {
-        return fromViewController?.motionDelegate?.motionDelayTransitionByTimeInterval?(motion: self) ?? 0
+        return fromViewController.motionDelegate?.motionDelayTransitionByTimeInterval?(motion: self) ?? 0
     }
     
     /// The default initializer.
@@ -520,8 +524,6 @@ extension Motion: UIViewControllerAnimatedTransitioning {
     @objc(animateTransition:)
     open func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         self.transitionContext = transitionContext
-        prepareToViewController()
-        prepareFromViewController()
         
         fromViewController.motionDelegate?.motion?(motion: self, willTransition: fromView, toView: toView)
         
@@ -552,22 +554,6 @@ extension Motion: UIViewControllerAnimatedTransitioning {
 }
 
 extension Motion {
-    /// Prepares the toViewController.
-    fileprivate func prepareToViewController() {
-        guard let v = transitionContext.viewController(forKey: .to) else {
-            return
-        }
-        toViewController = v
-    }
-    
-    /// Prepares the fromViewController.
-    fileprivate func prepareFromViewController() {
-        guard let v = transitionContext.viewController(forKey: .from) else {
-            return
-        }
-        fromViewController = v
-    }
-    
     /// Prepares the containerView.
     fileprivate func prepareContainerView() {
         containerView = transitionContext.containerView
@@ -587,7 +573,6 @@ extension Motion {
                 guard to.motionIdentifier == from.motionIdentifier else {
                     continue
                 }
-                
                 transitionPairs.append((from, to))
             }
         }

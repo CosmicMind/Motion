@@ -173,7 +173,7 @@ extension CALayer {
      - Parameter animations: An Array of MotionAnimation values.
      */
     open func motion(_ animations: [MotionAnimation]) {
-        motion(delay: 0, duration: 0.25, timingFunction: .easeInEaseOut, animations: animations)
+        motion(delay: 0, duration: 0.35, timingFunction: .easeInEaseOut, animations: animations)
     }
     
     /**

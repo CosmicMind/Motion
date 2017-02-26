@@ -93,6 +93,9 @@ public enum MotionAnimation {
     case size(width: CGFloat, height: CGFloat)
 }
 
+@available(iOS 10, *)
+extension CALayer: CAAnimationDelegate {}
+
 extension CALayer {
     
     /**
@@ -111,7 +114,10 @@ extension CALayer {
      */
     open func animate(_ animations: [CAAnimation]) {
         for animation in animations {
-            animation.delegate = self
+            if nil == animation.delegate {
+                animation.delegate = self
+            }
+            
             if let a = animation as? CABasicAnimation {
                 a.fromValue = (presentation() ?? self).value(forKeyPath: a.keyPath!)
             }
@@ -126,6 +132,8 @@ extension CALayer {
         }
     }
     
+    open func animationDidStart(_ anim: CAAnimation) {}
+    
     /**
      A delegation function that is executed when the backing layer stops
      running an animation.
@@ -134,9 +142,9 @@ extension CALayer {
      because it was completed or interrupted. True if completed, false
      if interrupted.
      */
-    open func animationDidStop(_ animation: CAAnimation, finished flag: Bool) {
-        guard let a = animation as? CAPropertyAnimation else {
-            if let a = (animation as? CAAnimationGroup)?.animations {
+    open func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
+        guard let a = anim as? CAPropertyAnimation else {
+            if let a = (anim as? CAAnimationGroup)?.animations {
                 for x in a {
                     animationDidStop(x, finished: true)
                 }
@@ -171,9 +179,10 @@ extension CALayer {
     /**
      A function that accepts an Array of MotionAnimation values and executes them.
      - Parameter animations: An Array of MotionAnimation values.
+     - Parameter completion: An optional completion block.
      */
-    open func motion(_ animations: [MotionAnimation]) {
-        motion(delay: 0, duration: 0.35, timingFunction: .easeInEaseOut, animations: animations)
+    open func motion(_ animations: [MotionAnimation], completion: (() -> Void)? = nil) {
+        motion(delay: 0, duration: 0.35, timingFunction: .easeInEaseOut, animations: animations, completion: completion)
     }
     
     /**
@@ -182,8 +191,9 @@ extension CALayer {
      - Parameter duration: The animation duration TimeInterval.
      - Parameter timingFunction: The animation MotionAnimationTimingFunction.
      - Parameter animations: An Array of MotionAnimations.
+     - Parameter completion: An optional completion block.
      */
-    fileprivate func motion(delay: TimeInterval, duration: TimeInterval, timingFunction: MotionAnimationTimingFunction, animations: [MotionAnimation]) {
+    fileprivate func motion(delay: TimeInterval, duration: TimeInterval, timingFunction: MotionAnimationTimingFunction, animations: [MotionAnimation], completion: (() -> Void)? = nil) {
         var t = delay
         
         for v in animations {
@@ -311,12 +321,15 @@ extension CALayer {
             g.timingFunction = MotionAnimationTimingFunctionToValue(timingFunction: tf)
             
             s.animate(g)
+            
+            guard let execute = completion else {
+                return
+            }
+            
+            Motion.delay(d, execute: execute)
         }
     }
 }
-
-@available(iOS 10, *)
-extension CALayer: CAAnimationDelegate {}
 
 extension UIView {
     /// Computes the rotation of the view.
@@ -385,9 +398,10 @@ extension UIView {
      A function that accepts an Array of MotionAnimation values and executes
      them on the view's backing layer.
      - Parameter animations: An Array of MotionAnimation values.
+     - Parameter completion: An optional completion block.
      */
-    open func motion(_ animations: [MotionAnimation]) {
-        layer.motion(animations)
+    open func motion(_ animations: [MotionAnimation], completion: (() -> Void)? = nil) {
+        layer.motion(animations, completion: completion)
     }
 }
 

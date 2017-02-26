@@ -235,13 +235,16 @@ extension UIView {
     /**
      Snapshots the view instance for animations during transitions.
      - Parameter afterUpdates: A boolean indicating whether to snapshot the view
-     after a render update, or as is. 
+     after a render update, or as is.
      - Parameter shouldHide: A boolean indicating whether the view should be hidden
      after the snapshot is taken.
      - Returns: A UIView instance that is a snapshot of the given UIView.
      */
     open func transitionSnapshot(afterUpdates: Bool, shouldHide: Bool = true) -> UIView {
         isHidden = false
+        
+        // Material specific.
+        (self as? PulseableLayer)?.pulseLayer?.isHidden = true
         
         let oldCornerRadius = layer.cornerRadius
         layer.cornerRadius = 0
@@ -287,6 +290,9 @@ extension UIView {
         v.contentMode = contentMode
         v.motionTransform = motionTransform
         v.backgroundColor = backgroundColor
+        
+        // Material specific.
+        (self as? PulseableLayer)?.pulseLayer?.isHidden = false
         
         isHidden = shouldHide
         
@@ -422,9 +428,9 @@ open class Motion: NSObject {
     
     /**
      An initializer to modify the presenting and container state.
-     - Parameter isPresenting: A boolean value indicating if the 
+     - Parameter isPresenting: A boolean value indicating if the
      Motion instance is presenting the view controller.
-     - Parameter isContainer: A boolean value indicating if the 
+     - Parameter isContainer: A boolean value indicating if the
      Motion instance is a container view controller.
      */
     public init(isPresenting: Bool, isContainer: Bool) {
@@ -469,7 +475,6 @@ open class Motion: NSObject {
             if !$0 {
                 DispatchQueue.main.async(execute: block)
             }
-            
             cancelable = nil
         }
         
@@ -524,7 +529,6 @@ extension Motion: UIViewControllerAnimatedTransitioning {
     @objc(animateTransition:)
     open func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         self.transitionContext = transitionContext
-        
         fromViewController.motionDelegate?.motion?(motion: self, willTransition: fromView, toView: toView)
         
         Motion.delay(delayTransitionByTimeInterval) { [weak self] in
@@ -658,7 +662,7 @@ extension Motion {
                 snapshotChildGroup.timingFunction = MotionAnimationTimingFunctionToValue(timingFunction: tf)
                 
                 snapshot.animate(snapshotGroup)
-                snapshot.subviews.first!.animate(snapshotChildGroup)
+                snapshot.subviews.first?.animate(snapshotChildGroup)
             }
         }
     }

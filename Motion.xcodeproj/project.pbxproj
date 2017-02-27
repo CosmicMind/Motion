@@ -10,6 +10,7 @@
 		961409AA1E43CF1B00E7BA99 /* Motion+Obj-C.swift in Sources */ = {isa = PBXBuildFile; fileRef = 961409A91E43CF1B00E7BA99 /* Motion+Obj-C.swift */; };
 		961409B61E43D17200E7BA99 /* Motion+Obj-C.swift in Headers */ = {isa = PBXBuildFile; fileRef = 961409A91E43CF1B00E7BA99 /* Motion+Obj-C.swift */; settings = {ATTRIBUTES = (Public, ); }; };
 		961409B81E43D21300E7BA99 /* Motion.h in Headers */ = {isa = PBXBuildFile; fileRef = 96C98DED1E438A5700B22906 /* Motion.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		96BFC1701E63C3460075DE1F /* Motion.swift in Headers */ = {isa = PBXBuildFile; fileRef = 96C98DE31E4382B100B22906 /* Motion.swift */; settings = {ATTRIBUTES = (Public, ); }; };
 		96C98DE41E4382B100B22906 /* Motion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96C98DE31E4382B100B22906 /* Motion.swift */; };
 		96C98DE61E43848500B22906 /* MotionAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96C98DE51E43848500B22906 /* MotionAnimation.swift */; };
 		96C98DEB1E4389BE00B22906 /* MotionAnimation.swift in Headers */ = {isa = PBXBuildFile; fileRef = 96C98DE51E43848500B22906 /* MotionAnimation.swift */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -74,6 +75,7 @@
 			files = (
 				961409B81E43D21300E7BA99 /* Motion.h in Headers */,
 				961409B61E43D17200E7BA99 /* Motion+Obj-C.swift in Headers */,
+				96BFC1701E63C3460075DE1F /* Motion.swift in Headers */,
 				96C98DEB1E4389BE00B22906 /* MotionAnimation.swift in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -1,6 +1,6 @@
 ## Welcome to Motion
 
-Motion is a new tool used to create transition animations between view controllers. 
+Motion is a tool used to create transition animations between view controllers. 
 
 ## Sample
 
@@ -39,10 +39,12 @@ Motion is a growing project and will encounter changes throughout its developmen
 
 ## Motion Animations
 
-You can add animations to any UIView or CALayer using the *motion* API. For example, to change the background color of a view with a 45 degree rotation:
+You can add animations to any UIView or CALayer using the *motion* API with an optional completion block. For example, to change the background color of a view with a 45 degree rotation:
 
 ```swift
-view.motion(.backgroundColor(.blue), .rotationAngle(45))
+view.motion(.backgroundColor(.blue), .rotationAngle(45)) {
+    // Do something when complete.
+}
 ``` 
 
 ### Available Motion Animation Values
@@ -75,12 +77,16 @@ view.motion(.backgroundColor(.blue), .rotationAngle(45))
 - y
 - point
 - position
-- shadow
 - fade
 - zPosition
 - width
 - height
 - size
+- shadowPath
+- shadowOffset
+- shadowOpacity
+- shadowRadius
+- depth
 
 ## Motion Transitions
 
@@ -112,7 +118,7 @@ bar.motionAnimations = [.delay(0.35), .duration(3)]
 
 ## Enabling Motion Transitions
 
-To turn on Motion transitions between view controllers, set the *isMotionEnabled* property to `true` within the view controllers that transition between each other.
+To turn on Motion transitions between view controllers, set the *isMotionEnabled* property to `true` within the view controllers that transition between each other, and any container controllers, such as `UINavigationController`.
 
 ## Motion Delegate
 
@@ -123,7 +129,7 @@ func motion(motion: Motion, willTransition fromView: UIView, toView: UIView)
     
 func motion(motion: Motion, didTransition fromView: UIView, toView: UIView)
     
-func motionModifyDelay(motion: Motion) -> TimeInterval
+func motionDelayTransitionByTimeInterval(motion: Motion) -> TimeInterval
 ```
 
 ### More...

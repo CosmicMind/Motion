@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name = 'Motion'
-  s.version = '1.0.3'
+  s.version = '1.0.4'
   s.license = 'BSD-3-Clause'
   s.summary = 'Seamless animations and transitions in Swift.'
   s.homepage = 'http://cosmicmind.com'

@@ -42,7 +42,7 @@ Motion is a growing project and will encounter changes throughout its developmen
 You can add animations to any UIView or CALayer using the *motion* API with an optional completion block. For example, to change the background color of a view with a 45 degree rotation:
 
 ```swift
-view.motion(.backgroundColor(.blue), .rotationAngle(45)) {
+view.motion([.backgroundColor(.blue), .rotationAngle(45)]) {
     // Do something when complete.
 }
 ``` 

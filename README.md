@@ -4,7 +4,7 @@ Motion is a tool used to create transition animations between view controllers.
 
 ## Sample
 
-Take a look at a sample [Photo Collection](https://github.com/CosmicMind/Samples/tree/master/Motion/PhotoCollection) project.
+Take a look at a sample [Photo Collection](https://github.com/CosmicMind/Samples/tree/master/Projects/Programmatic/PhotoCollection) project.
 
 ![Motion Photo Collection Sample](http://www.cosmicmind.com/motion/cosmicmind_motion_sample.gif)
 

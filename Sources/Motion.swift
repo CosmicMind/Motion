@@ -243,9 +243,6 @@ extension UIView {
     open func transitionSnapshot(afterUpdates: Bool, shouldHide: Bool = true) -> UIView {
         isHidden = false
         
-        // Material specific.
-        (self as? PulseableLayer)?.pulseLayer?.isHidden = true
-        
         let oldCornerRadius = layer.cornerRadius
         layer.cornerRadius = 0
         
@@ -291,9 +288,6 @@ extension UIView {
         v.motionTransform = motionTransform
         v.backgroundColor = backgroundColor
         
-        // Material specific.
-        (self as? PulseableLayer)?.pulseLayer?.isHidden = false
-        
         isHidden = shouldHide
         
         return v
@@ -306,15 +300,10 @@ open class MotionPresentationController: UIPresentationController {
             return
         }
         
-        presentedViewController.transitionCoordinator?.animate(alongsideTransition: { (context) in
-            print("Animating")
-        })
-        
-        print("presentationTransitionWillBegin")
+        presentedViewController.transitionCoordinator?.animate(alongsideTransition: { (context) in })
     }
     
     open override func presentationTransitionDidEnd(_ completed: Bool) {
-        print("presentationTransitionDidEnd")
     }
     
     open override func dismissalTransitionWillBegin() {
@@ -322,15 +311,10 @@ open class MotionPresentationController: UIPresentationController {
             return
         }
         
-        presentedViewController.transitionCoordinator?.animate(alongsideTransition: { (context) in
-            print("Animating")
-        })
-        
-        print("dismissalTransitionWillBegin")
+        presentedViewController.transitionCoordinator?.animate(alongsideTransition: { (context) in })
     }
     
     open override func dismissalTransitionDidEnd(_ completed: Bool) {
-        print("dismissalTransitionDidEnd")
     }
     
     open override var frameOfPresentedViewInContainerView: CGRect {
@@ -630,6 +614,28 @@ extension Motion {
             snapshotAnimations.append(Motion.position(to: to.motionPosition))
             snapshotAnimations.append(Motion.transform(transform: to.motionTransform))
             snapshotAnimations.append(Motion.background(color: to.backgroundColor ?? .clear))
+            
+            if let v = to.shadowPath {
+                snapshotAnimations.append(Motion.shadow(path: v))
+            }
+            
+            if let path = to.shadowPath {
+                let shadowPath = Motion.shadow(path: path)
+                shadowPath.fromValue = fromView.shadowPath
+                snapshotAnimations.append(shadowPath)
+            }
+            
+            let shadowOffset = Motion.shadow(offset: to.shadowOffset)
+            shadowOffset.fromValue = fromView.shadowOffset
+            snapshotAnimations.append(shadowOffset)
+            
+            let shadowOpacity = Motion.shadow(opacity: to.shadowOpacity)
+            shadowOpacity.fromValue = fromView.shadowOpacity
+            snapshotAnimations.append(shadowOpacity)
+            
+            let shadowRadius = Motion.shadow(radius: to.shadowRadius)
+            shadowRadius.fromValue = fromView.shadowRadius
+            snapshotAnimations.append(shadowRadius)
             
             snapshotChildAnimations.append(cornerRadiusAnimation)
             snapshotChildAnimations.append(sizeAnimation)

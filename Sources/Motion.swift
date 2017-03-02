@@ -550,7 +550,7 @@ extension Motion {
     /// Prepares the transitionSnapshot.
     fileprivate func prepareTransitionSnapshot() {
         transitionSnapshot = fromView.transitionSnapshot(afterUpdates: true, shouldHide: false)
-        transitionSnapshot.frame = fromView.bounds
+        transitionSnapshot.frame = fromView.frame
         containerView.insertSubview(transitionSnapshot, aboveSubview: fromView)
     }
     
@@ -614,10 +614,6 @@ extension Motion {
             snapshotAnimations.append(Motion.position(to: to.motionPosition))
             snapshotAnimations.append(Motion.transform(transform: to.motionTransform))
             snapshotAnimations.append(Motion.background(color: to.backgroundColor ?? .clear))
-            
-            if let v = to.layer.shadowPath {
-                snapshotAnimations.append(Motion.shadow(path: v))
-            }
             
             if let path = to.layer.shadowPath {
                 let shadowPath = Motion.shadow(path: path)

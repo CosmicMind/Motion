@@ -182,7 +182,7 @@ extension UIViewController {
      - Returns: An optional UIViewControllerAnimatedTransitioning.
      */
     open func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return isMotionEnabled ? Motion() : nil
+        return isMotionEnabled ? Motion(isPresenting: false, isContainer: false) : nil
     }
     
     /**
@@ -303,8 +303,7 @@ open class MotionPresentationController: UIPresentationController {
         presentedViewController.transitionCoordinator?.animate(alongsideTransition: { (context) in })
     }
     
-    open override func presentationTransitionDidEnd(_ completed: Bool) {
-    }
+    open override func presentationTransitionDidEnd(_ completed: Bool) {}
     
     open override func dismissalTransitionWillBegin() {
         guard nil != containerView else {
@@ -314,8 +313,7 @@ open class MotionPresentationController: UIPresentationController {
         presentedViewController.transitionCoordinator?.animate(alongsideTransition: { (context) in })
     }
     
-    open override func dismissalTransitionDidEnd(_ completed: Bool) {
-    }
+    open override func dismissalTransitionDidEnd(_ completed: Bool) {}
     
     open override var frameOfPresentedViewInContainerView: CGRect {
         return containerView?.bounds ?? .zero
@@ -380,7 +378,7 @@ open class Motion: NSObject {
     
     /// The view that is being transitioned to.
     open var toView: UIView {
-        return transitionContext.view(forKey: .to)!
+        return toViewController.view
     }
     
     /// The subviews of the view being transitioned to.
@@ -390,7 +388,7 @@ open class Motion: NSObject {
     
     /// The view that is being transitioned from.
     open var fromView: UIView {
-        return transitionContext.view(forKey: .from)!
+        return fromViewController.view
     }
     
     /// The subviews of the view being transitioned from.
@@ -585,6 +583,7 @@ extension Motion {
         toView.isHidden = isPresenting
         containerView.insertSubview(toView, belowSubview: transitionView)
         
+        toView.frame = fromView.frame
         toView.updateConstraints()
         toView.setNeedsLayout()
         toView.layoutIfNeeded()

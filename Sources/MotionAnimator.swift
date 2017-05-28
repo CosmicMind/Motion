@@ -30,3 +30,30 @@
 
 import UIKit
 
+public protocol MotionAnimator: class {
+    /// A reference to a MotionContext.
+    weak var context: MotionContext! { get set }
+    
+    /**
+     
+     */
+    func canAnimate(view: UIView, isAppearing: Bool) -> Bool
+    
+    /**
+ 
+     */
+    func animate(fromViews: [UIView], toViews: [UIView]) -> TimeInterval
+    
+    /**
+ 
+     */
+    func seekTo(elapsedTime: TimeInterval)
+    
+    /**
+ 
+     */
+    func resume(elapsedTime: TimeInterval, isReversed: Bool) -> TimeInterval
+    
+    /// 
+    func clean()
+}

@@ -30,3 +30,16 @@
 
 import UIKit
 
+public protocol MotionObserver {
+    /**
+     An update method called when an animation elapsed time is updated
+     during a transition.
+     - Parameter elapsedTime: A TimeInterval.
+     */
+    func update(elapsedTime: TimeInterval)
+}
+
+public protocol MotionSubscriber {
+    /// A reference to an Array of MotionObservers.
+    var observers: [MotionObserver] { get }
+}

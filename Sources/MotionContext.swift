@@ -30,3 +30,6 @@
 
 import UIKit
 
+open class MotionContext {
+    
+}

@@ -31,5 +31,64 @@
 import UIKit
 
 open class MotionContext {
+    /// A reference to the transition container.
+    fileprivate var transitionContainer: UIView
     
+    /// An index source of identifiers to their corresponding view.
+    fileprivate var transitionSourceIdentifierToView = [String: UIView]()
+    
+    /// An index of destination identifiers to their corresponding view.
+    fileprivate var transitionDestinationIdentifierToView = [String: UIView]()
+    
+    /// An index of views to their corresponding snapshot view.
+    fileprivate var transitionSnapshotToView = [UIView: UIView]()
+    
+    /// A reference to the transition from views.
+    fileprivate var fromViews: [UIView]!
+    
+    /// A reference to the transition to views.
+    fileprivate var toViews: [UIView]!
+    
+    /**
+     An initializer that accepts a given transition container view.
+     - Parameter transitionContainer: A UIView.
+     */
+    init(transitionContainer: UIView) {
+        self.transitionContainer = transitionContainer
+    }
+}
+
+extension MotionContext {
+    /**
+     Prepares the source views to their identifiers.
+     - Parameter views: An Array of UIViews.
+     - Parameter identifierIndex: An Dictionary of identifiers to UIViews.
+     */
+    fileprivate func prepare(views: [UIView], identifierIndex: inout [String: UIView]) {
+        for v in views {
+            v.layer.removeAllAnimations()
+            
+            guard transitionContainer.convert(v.bounds, from: v).intersects(transitionContainer.bounds) else {
+                return
+            }
+            
+            if let i = v.motionIdentifier {
+                identifierIndex[i] = v
+            }
+        }
+    }
+}
+
+extension MotionContext {
+    /**
+     Sets the views that will transition from one state to another.
+     - Parameter fromViews: An Array of UIViews.
+     - Parameter toViews: An Array of UIViews.
+     */
+    fileprivate func set(fromViews: [UIView], toViews: [UIView]) {
+        self.fromViews = fromViews
+        self.toViews = toViews
+        prepare(views: fromViews, identifierIndex: &transitionSourceIdentifierToView)
+        prepare(views: toViews, identifierIndex: &transitionDestinationIdentifierToView)
+    }
 }

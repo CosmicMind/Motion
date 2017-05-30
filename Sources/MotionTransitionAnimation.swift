@@ -30,33 +30,44 @@
 
 import UIKit
 
-public protocol MotionAnimator: class {
-    /// A reference to a MotionContext.
-    weak var context: MotionContext! { get set }
-    
-    /**
-     
-     */
-    func canAnimate(view: UIView, isAppearing: Bool) -> Bool
-    
-    /**
- 
-     */
-    func animate(fromViews: [UIView], toViews: [UIView]) -> TimeInterval
-    
-    /**
- 
-     */
-    func seekTo(elapsedTime: TimeInterval)
-    
-    /**
- 
-     */
-    func resume(elapsedTime: TimeInterval, isReversed: Bool) -> TimeInterval
-    
-    /// 
-    func clean()
-    
-    
-    func apply(motionTransitions: [MotionTransitionAnimation], to view: UIView)
+public enum MotionTransitionAnimation {
+    case timingFunction(MotionAnimationTimingFunction)
+    case duration(TimeInterval)
+    case custom(CABasicAnimation)
+    case backgroundColor(UIColor)
+    case barTintColor(UIColor)
+    case borderColor(UIColor)
+    case borderWidth(CGFloat)
+    case cornerRadius(CGFloat)
+    case transform(CATransform3D)
+    case rotationAngle(CGFloat)
+    case rotationAngleX(CGFloat)
+    case rotationAngleY(CGFloat)
+    case rotationAngleZ(CGFloat)
+    case spin(CGFloat)
+    case spinX(CGFloat)
+    case spinY(CGFloat)
+    case spinZ(CGFloat)
+    case scale(CGFloat)
+    case scaleX(CGFloat)
+    case scaleY(CGFloat)
+    case scaleZ(CGFloat)
+    case translate(x: CGFloat, y: CGFloat)
+    case translateX(CGFloat)
+    case translateY(CGFloat)
+    case translateZ(CGFloat)
+    case x(CGFloat)
+    case y(CGFloat)
+    case point(x: CGFloat, y: CGFloat)
+    case position(x: CGFloat, y: CGFloat)
+    case fade(Double)
+    case zPosition(Int)
+    case width(CGFloat)
+    case height(CGFloat)
+    case size(width: CGFloat, height: CGFloat)
+    case shadowPath(CGPath)
+    case shadowOffset(CGSize)
+    case shadowOpacity(Float)
+    case shadowRadius(CGFloat)
+    case depth(shadowOffset: CGSize, shadowOpacity: Float, shadowRadius: CGFloat)
 }

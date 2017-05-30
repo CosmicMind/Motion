@@ -32,16 +32,16 @@ import UIKit
 
 open class MotionContext {
     /// A reference to the transition container.
-    fileprivate var transitionContainer: UIView
+    fileprivate var container: UIView
     
     /// An index source of identifiers to their corresponding view.
-    fileprivate var transitionSourceIdentifierToView = [String: UIView]()
+    fileprivate var sourceIdentifierToView = [String: UIView]()
     
     /// An index of destination identifiers to their corresponding view.
-    fileprivate var transitionDestinationIdentifierToView = [String: UIView]()
+    fileprivate var destinationIdentifierToView = [String: UIView]()
     
     /// An index of views to their corresponding snapshot view.
-    fileprivate var transitionSnapshotToView = [UIView: UIView]()
+    fileprivate var snapshotToView = [UIView: UIView]()
     
     /// A reference to the transition from views.
     fileprivate var fromViews: [UIView]!
@@ -51,10 +51,10 @@ open class MotionContext {
     
     /**
      An initializer that accepts a given transition container view.
-     - Parameter transitionContainer: A UIView.
+     - Parameter container: A UIView.
      */
-    init(transitionContainer: UIView) {
-        self.transitionContainer = transitionContainer
+    init(container: UIView) {
+        self.container = container
     }
 }
 
@@ -68,13 +68,15 @@ extension MotionContext {
         for v in views {
             v.layer.removeAllAnimations()
             
-            guard transitionContainer.convert(v.bounds, from: v).intersects(transitionContainer.bounds) else {
+            guard container.convert(v.bounds, from: v).intersects(container.bounds) else {
                 return
             }
             
-            if let i = v.motionIdentifier {
-                identifierIndex[i] = v
+            guard let i = v.motionIdentifier else {
+                return
             }
+            
+            identifierIndex[i] = v
         }
     }
 }
@@ -88,7 +90,7 @@ extension MotionContext {
     fileprivate func set(fromViews: [UIView], toViews: [UIView]) {
         self.fromViews = fromViews
         self.toViews = toViews
-        prepare(views: fromViews, identifierIndex: &transitionSourceIdentifierToView)
-        prepare(views: toViews, identifierIndex: &transitionDestinationIdentifierToView)
+        prepare(views: fromViews, identifierIndex: &sourceIdentifierToView)
+        prepare(views: toViews, identifierIndex: &destinationIdentifierToView)
     }
 }

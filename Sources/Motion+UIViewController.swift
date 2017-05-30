@@ -30,33 +30,33 @@
 
 import UIKit
 
-public protocol MotionAnimator: class {
-    /// A reference to a MotionContext.
-    weak var context: MotionContext! { get set }
+fileprivate var MotionInstanceControllerKey: UInt8 = 0
+
+fileprivate struct MotionInstanceController {
+    /// A boolean indicating whether Motion is enabled.
+    fileprivate var isMotionEnabled: Bool
+}
+
+extension UIViewController {
+    /// MotionInstanceController reference.
+    fileprivate var motionControllerInstance: MotionInstanceController {
+        get {
+            return AssociatedObject.get(base: self, key: &MotionInstanceControllerKey) {
+                return MotionInstanceController(isMotionEnabled: false)
+            }
+        }
+        set(value) {
+            AssociatedObject.set(base: self, key: &MotionInstanceControllerKey, value: value)
+        }
+    }
     
-    /**
-     
-     */
-    func canAnimate(view: UIView, isAppearing: Bool) -> Bool
-    
-    /**
- 
-     */
-    func animate(fromViews: [UIView], toViews: [UIView]) -> TimeInterval
-    
-    /**
- 
-     */
-    func seekTo(elapsedTime: TimeInterval)
-    
-    /**
- 
-     */
-    func resume(elapsedTime: TimeInterval, isReversed: Bool) -> TimeInterval
-    
-    /// 
-    func clean()
-    
-    
-    func apply(motionTransitions: [MotionTransitionAnimation], to view: UIView)
+    /// A boolean that indicates whether motion is enabled.
+    open var isMotionEnabled: Bool {
+        get {
+            return motionControllerInstance.isMotionEnabled
+        }
+        set(value) {
+            motionControllerInstance.isMotionEnabled = value
+        }
+    }
 }

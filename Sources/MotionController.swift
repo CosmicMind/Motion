@@ -52,18 +52,18 @@ open class MotionController: NSObject, MotionSubscriber {
     }
     
     /// A reference to the animation duration.
-    fileprivate var animationDuration: TimeInterval = 0
+    fileprivate var transitionDuration: TimeInterval = 0
     
     /**
      A reference to the animation total duration,
      which is the total running animation time.
      */
-    fileprivate var animationTotalDuration: TimeInterval = 0
+    fileprivate var transitionTotalDuration: TimeInterval = 0
     
     /// A reference to the animation start time.
-    fileprivate var animationStartTime: TimeInterval? {
+    fileprivate var transitionStartTime: TimeInterval? {
         didSet {
-            guard nil != animationStartTime else {
+            guard nil != transitionStartTime else {
                 displayLink = nil
                 return
             }
@@ -77,7 +77,7 @@ open class MotionController: NSObject, MotionSubscriber {
     }
     
     /// A reference to the animation elapsed time.
-    open fileprivate(set) var animationElapsedTime: TimeInterval = 0 {
+    open fileprivate(set) var transitionElapsedTime: TimeInterval = 0 {
         didSet {
             guard isTransitioning else {
                 return
@@ -107,8 +107,11 @@ open class MotionController: NSObject, MotionSubscriber {
         return nil == displayLink
     }
     
-    /// UIKit's supplied transition container.
+    /// Transition container.
     open fileprivate(set) var transitionContainer: UIView!
+    
+    /// An Array of from and to view paris to be animated.
+    open fileprivate(set) var transitionParis = [(fromViews: [UIView], toViews: [UIView])]()
 }
 
 extension MotionController {
@@ -122,28 +125,28 @@ extension MotionController {
             return
         }
         
-        guard 0 < animationDuration else {
+        guard 0 < transitionDuration else {
             return
         }
         
-        guard let v = animationStartTime else {
+        guard let v = transitionStartTime else {
             return
         }
         
         var elapsedTime = CACurrentMediaTime() - v
         
-        if elapsedTime > animationDuration {
-            animationElapsedTime = isFinished ? 1 : 0
+        if elapsedTime > transitionDuration {
+            transitionElapsedTime = isFinished ? 1 : 0
             completeTransition()
             
         } else {
-            elapsedTime = elapsedTime / animationDuration
+            elapsedTime = elapsedTime / transitionDuration
             
             if !isFinished {
                 elapsedTime = 1 - elapsedTime
             }
             
-            animationElapsedTime = max(0, min(1, elapsedTime))
+            transitionElapsedTime = max(0, min(1, elapsedTime))
         }
     }
 }
@@ -151,13 +154,13 @@ extension MotionController {
 extension MotionController {
     fileprivate func updateMotionObservers() {
         for v in observers {
-            v.update(elapsedTime: animationElapsedTime)
+            v.update(elapsedTime: transitionElapsedTime)
         }
     }
     
     /// Updates the motion animators.
     fileprivate func updateMotionAnimators() {
-        let elapsedTime = animationElapsedTime * animationTotalDuration
+        let elapsedTime = transitionElapsedTime * transitionTotalDuration
         
         for v in animators {
             v.seekTo(elapsedTime: elapsedTime)
@@ -181,6 +184,8 @@ extension MotionController {
     
     /// Cleans the transition values.
     fileprivate func cleanTransitionValues() {
-        animationStartTime = nil
+        transitionStartTime = nil
+        transitionElapsedTime = 0
+        transitionTotalDuration = 0
     }
 }

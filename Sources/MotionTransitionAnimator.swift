@@ -30,16 +30,33 @@
 
 import UIKit
 
-public class MotionCaptureSubviewPreprocessor: MotionTransitionPreprocessor {
+public protocol MotionTransitionAnimator {
     /// A reference to a MotionContext.
-    public weak var context: MotionContext!
+    weak var context: MotionContext! { get set }
     
     /**
-     Implementation for processors.
-     - Parameter fromViews: An Array of UIViews.
-     - Parameter toViews: An Array of UIViews.
+     
      */
-    public func process(fromViews: [UIView], toViews: [UIView]) {
-        
-    }
+    func canAnimate(view: UIView, isAppearing: Bool) -> Bool
+    
+    /**
+ 
+     */
+    func animate(fromViews: [UIView], toViews: [UIView]) -> TimeInterval
+    
+    /**
+ 
+     */
+    func seekTo(elapsedTime: TimeInterval)
+    
+    /**
+ 
+     */
+    func resume(elapsedTime: TimeInterval, isReversed: Bool) -> TimeInterval
+    
+    /// 
+    func clean()
+    
+    
+    func apply(motionTransitions: [MotionTransitionAnimation], to view: UIView)
 }

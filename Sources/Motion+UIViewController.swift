@@ -34,7 +34,10 @@ fileprivate var MotionInstanceControllerKey: UInt8 = 0
 
 fileprivate struct MotionInstanceController {
     /// A boolean indicating whether Motion is enabled.
-    fileprivate var isMotionEnabled: Bool
+    fileprivate var isEnabled: Bool
+    
+    /// An optional reference to the current snapshot.
+    fileprivate var snapshot: UIView?
 }
 
 extension UIViewController {
@@ -42,7 +45,7 @@ extension UIViewController {
     fileprivate var motionControllerInstance: MotionInstanceController {
         get {
             return AssociatedObject.get(base: self, key: &MotionInstanceControllerKey) {
-                return MotionInstanceController(isMotionEnabled: false)
+                return MotionInstanceController(isEnabled: false, snapshot: nil)
             }
         }
         set(value) {
@@ -50,13 +53,23 @@ extension UIViewController {
         }
     }
     
-    /// A boolean that indicates whether motion is enabled.
-    open var isMotionEnabled: Bool {
+    /// An optional reference to the current snapshot.
+    internal var motionSnapshot: UIView? {
         get {
-            return motionControllerInstance.isMotionEnabled
+            return motionControllerInstance.snapshot
         }
         set(value) {
-            motionControllerInstance.isMotionEnabled = value
+            motionControllerInstance.snapshot = value
+        }
+    }
+    
+    /// A boolean that indicates whether motion is enabled.
+    public var isMotionEnabled: Bool {
+        get {
+            return motionControllerInstance.isEnabled
+        }
+        set(value) {
+            motionControllerInstance.isEnabled = value
         }
     }
 }

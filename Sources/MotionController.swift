@@ -30,7 +30,7 @@
 
 import UIKit
 
-open class MotionController: NSObject, MotionSubscriber {
+public class MotionController: NSObject, MotionSubscriber {
     /// An optional reference to the animation display link.
     fileprivate var displayLink: CADisplayLink? {
         willSet {
@@ -52,18 +52,18 @@ open class MotionController: NSObject, MotionSubscriber {
     }
     
     /// A reference to the animation duration.
-    fileprivate var transitionDuration: TimeInterval = 0
+    fileprivate var duration: TimeInterval = 0
     
     /**
      A reference to the animation total duration,
      which is the total running animation time.
      */
-    fileprivate var transitionTotalDuration: TimeInterval = 0
+    fileprivate var totalDuration: TimeInterval = 0
     
     /// A reference to the animation start time.
-    fileprivate var transitionStartTime: TimeInterval? {
+    fileprivate var startTime: TimeInterval? {
         didSet {
-            guard nil != transitionStartTime else {
+            guard nil != startTime else {
                 displayLink = nil
                 return
             }
@@ -77,7 +77,7 @@ open class MotionController: NSObject, MotionSubscriber {
     }
     
     /// A reference to the animation elapsed time.
-    open fileprivate(set) var transitionElapsedTime: TimeInterval = 0 {
+    public internal(set) var elapsedTime: TimeInterval = 0 {
         didSet {
             guard isTransitioning else {
                 return
@@ -88,47 +88,45 @@ open class MotionController: NSObject, MotionSubscriber {
         }
     }
     
-    /// A reference to an Array of MotionObservers.
-    open fileprivate(set) var observers = [MotionObserver]()
+    /// A reference to a MotionContext.
+    public internal(set) var context: MotionContext!
     
-    /// A reference to an Array of MotionAnimators.
-    open fileprivate(set) var animators = [MotionAnimator]()
+    /// A reference to an Array of MotionObservers.
+    public internal(set) var observers = [MotionObserver]()
+    
+    /// A reference to an Array of MotionTransitionAnimator.
+    public internal(set) var animators = [MotionTransitionAnimator]()
     
     /// A reference to the preprocessors.
-    open fileprivate(set) var processors = [MotionTransitionPreprocessor]()
+    public internal(set) var preprocessors = [MotionTransitionPreprocessor]()
     
     /// A boolean indicating if a transition is in progress.
-    open var isTransitioning: Bool {
+    public var isTransitioning: Bool {
         return nil == transitionContainer
     }
     
     /// A boolean indicating if the animation is finished.
-    open fileprivate(set) var isFinished = false
+    public fileprivate(set) var isFinished = false
     
     /// A boolean indicating if the animation is interactive.
-    open var isInteractive: Bool {
+    public var isInteractive: Bool {
         return nil == displayLink
     }
     
+    /**
+     An animation container used within the transitionContainer
+     during a transition.
+     */
+    public internal(set) var container: UIView!
+    
     /// Transition container.
-    open fileprivate(set) var transitionContainer: UIView!
+    public fileprivate(set) var transitionContainer: UIView!
     
     /// An Array of from and to view paris to be animated.
-    open fileprivate(set) var transitionParis = [(fromViews: [UIView], toViews: [UIView])]()
+    public fileprivate(set) var transitionParis = [(fromViews: [UIView], toViews: [UIView])]()
 }
 
 extension MotionController {
-    /**
-     Retrieves all the subviews of a given view.
-     - Parameter of view: A UIView.
-     - Returns: An Array of UIViews.
-     */
-    fileprivate func subviews(of view: UIView) -> [UIView] {
-        var views: [UIView] = []
-        subviews(of: view, views: &views)
-        return views
-    }
-    
     /**
      Populates an Array of UIViews with the subviews of a given view.
      - Parameter of view: A UIView.
@@ -141,6 +139,17 @@ extension MotionController {
             }
             subviews(of: v, views: &views)
         }
+    }
+    
+    /**
+     Retrieves all the subviews of a given view.
+     - Parameter of view: A UIView.
+     - Returns: An Array of UIViews.
+     */
+    internal func subviews(of view: UIView) -> [UIView] {
+        var views: [UIView] = []
+        subviews(of: view, views: &views)
+        return views
     }
 }
 
@@ -162,28 +171,28 @@ extension MotionController {
             return
         }
         
-        guard 0 < transitionDuration else {
+        guard 0 < duration else {
             return
         }
         
-        guard let v = transitionStartTime else {
+        guard let v = startTime else {
             return
         }
         
-        var elapsedTime = CACurrentMediaTime() - v
+        var t = CACurrentMediaTime() - v
         
-        if elapsedTime > transitionDuration {
-            transitionElapsedTime = isFinished ? 1 : 0
+        if t > duration {
+            elapsedTime = isFinished ? 1 : 0
             completeTransition()
             
         } else {
-            elapsedTime = elapsedTime / transitionDuration
+            t = t / duration
             
             if !isFinished {
-                elapsedTime = 1 - elapsedTime
+                t = 1 - t
             }
             
-            transitionElapsedTime = max(0, min(1, elapsedTime))
+            elapsedTime = max(0, min(1, t))
         }
     }
 }
@@ -191,16 +200,16 @@ extension MotionController {
 extension MotionController {
     fileprivate func updateMotionObservers() {
         for v in observers {
-            v.update(elapsedTime: transitionElapsedTime)
+            v.update(elapsedTime: elapsedTime)
         }
     }
     
     /// Updates the motion animators.
     fileprivate func updateMotionAnimators() {
-        let elapsedTime = transitionElapsedTime * transitionTotalDuration
+        let t = elapsedTime * totalDuration
         
         for v in animators {
-            v.seekTo(elapsedTime: elapsedTime)
+            v.seekTo(elapsedTime: t)
         }
     }
 }
@@ -221,8 +230,8 @@ extension MotionController {
     
     /// Cleans the transition values.
     fileprivate func cleanTransitionValues() {
-        transitionStartTime = nil
-        transitionElapsedTime = 0
-        transitionTotalDuration = 0
+        startTime = nil
+        elapsedTime = 0
+        totalDuration = 0
     }
 }

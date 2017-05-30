@@ -87,7 +87,7 @@ extension MotionContext {
      - Parameter fromViews: An Array of UIViews.
      - Parameter toViews: An Array of UIViews.
      */
-    fileprivate func set(fromViews: [UIView], toViews: [UIView]) {
+    internal func set(fromViews: [UIView], toViews: [UIView]) {
         self.fromViews = fromViews
         self.toViews = toViews
         prepare(views: fromViews, identifierIndex: &sourceIdentifierToView)

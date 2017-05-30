@@ -30,33 +30,27 @@
 
 import UIKit
 
-public protocol MotionAnimator {
-    /// A reference to a MotionContext.
-    weak var context: MotionContext! { get set }
-    
-    /**
-     
-     */
-    func canAnimate(view: UIView, isAppearing: Bool) -> Bool
-    
-    /**
- 
-     */
-    func animate(fromViews: [UIView], toViews: [UIView]) -> TimeInterval
-    
-    /**
- 
-     */
-    func seekTo(elapsedTime: TimeInterval)
-    
-    /**
- 
-     */
-    func resume(elapsedTime: TimeInterval, isReversed: Bool) -> TimeInterval
-    
-    /// 
-    func clean()
-    
-    
-    func apply(motionTransitions: [MotionTransitionAnimation], to view: UIView)
+@objc(MotionAnimationFillMode)
+public enum MotionAnimationFillMode: Int {
+    case forwards
+    case backwards
+    case both
+    case removed
+}
+
+/**
+ Converts the MotionAnimationFillMode enum value to a corresponding String.
+ - Parameter mode: An MotionAnimationFillMode enum value.
+ */
+public func MotionAnimationFillModeToValue(mode: MotionAnimationFillMode) -> String {
+    switch mode {
+    case .forwards:
+        return kCAFillModeForwards
+    case .backwards:
+        return kCAFillModeBackwards
+    case .both:
+        return kCAFillModeBoth
+    case .removed:
+        return kCAFillModeRemoved
+    }
 }

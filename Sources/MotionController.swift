@@ -94,6 +94,9 @@ open class MotionController: NSObject, MotionSubscriber {
     /// A reference to an Array of MotionAnimators.
     open fileprivate(set) var animators = [MotionAnimator]()
     
+    /// A reference to the preprocessors.
+    open fileprivate(set) var processors = [MotionTransitionPreprocessor]()
+    
     /// A boolean indicating if a transition is in progress.
     open var isTransitioning: Bool {
         return nil == transitionContainer
@@ -138,6 +141,13 @@ extension MotionController {
             }
             subviews(of: v, views: &views)
         }
+    }
+}
+
+extension MotionController {
+    /// Prepares the transition.
+    fileprivate func prepareForTransition() {
+        
     }
 }
 

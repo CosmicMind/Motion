@@ -30,33 +30,14 @@
 
 import UIKit
 
-public protocol MotionAnimator {
+public protocol MotionTransitionPreprocessor {
     /// A reference to a MotionContext.
     weak var context: MotionContext! { get set }
     
     /**
-     
+     Implementation for processors.
+     - Parameter fromViews: An Array of UIViews.
+     - Parameter toViews: An Array of UIViews.
      */
-    func canAnimate(view: UIView, isAppearing: Bool) -> Bool
-    
-    /**
- 
-     */
-    func animate(fromViews: [UIView], toViews: [UIView]) -> TimeInterval
-    
-    /**
- 
-     */
-    func seekTo(elapsedTime: TimeInterval)
-    
-    /**
- 
-     */
-    func resume(elapsedTime: TimeInterval, isReversed: Bool) -> TimeInterval
-    
-    /// 
-    func clean()
-    
-    
-    func apply(motionTransitions: [MotionTransitionAnimation], to view: UIView)
+    func process(fromViews: [UIView], toViews: [UIView])
 }

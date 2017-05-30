@@ -30,33 +30,31 @@
 
 import UIKit
 
-public protocol MotionAnimator {
-    /// A reference to a MotionContext.
-    weak var context: MotionContext! { get set }
-    
-    /**
-     
-     */
-    func canAnimate(view: UIView, isAppearing: Bool) -> Bool
-    
-    /**
- 
-     */
-    func animate(fromViews: [UIView], toViews: [UIView]) -> TimeInterval
-    
-    /**
- 
-     */
-    func seekTo(elapsedTime: TimeInterval)
-    
-    /**
- 
-     */
-    func resume(elapsedTime: TimeInterval, isReversed: Bool) -> TimeInterval
-    
-    /// 
-    func clean()
-    
-    
-    func apply(motionTransitions: [MotionTransitionAnimation], to view: UIView)
+@objc(MotionAnimationTimingFunction)
+public enum MotionAnimationTimingFunction: Int {
+    case `default`
+    case linear
+    case easeIn
+    case easeOut
+    case easeInEaseOut
+}
+
+/**
+ Converts the MotionAnimationTimingFunction enum value to a corresponding CAMediaTimingFunction.
+ - Parameter function: An MotionAnimationTimingFunction enum value.
+ - Returns: A CAMediaTimingFunction.
+ */
+public func MotionAnimationTimingFunctionToValue(timingFunction: MotionAnimationTimingFunction) -> CAMediaTimingFunction {
+    switch timingFunction {
+    case .default:
+        return CAMediaTimingFunction(name: kCAMediaTimingFunctionDefault)
+    case .linear:
+        return CAMediaTimingFunction(name: kCAMediaTimingFunctionLinear)
+    case .easeIn:
+        return CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseIn)
+    case .easeOut:
+        return CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
+    case .easeInEaseOut:
+        return CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
+    }
 }

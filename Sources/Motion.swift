@@ -30,63 +30,14 @@
 
 import UIKit
 
-@objc(MotionAnimationFillMode)
-public enum MotionAnimationFillMode: Int {
-    case forwards
-    case backwards
-    case both
-    case removed
-}
-
-/**
- Converts the MotionAnimationFillMode enum value to a corresponding String.
- - Parameter mode: An MotionAnimationFillMode enum value.
- */
-public func MotionAnimationFillModeToValue(mode: MotionAnimationFillMode) -> String {
-    switch mode {
-    case .forwards:
-        return kCAFillModeForwards
-    case .backwards:
-        return kCAFillModeBackwards
-    case .both:
-        return kCAFillModeBoth
-    case .removed:
-        return kCAFillModeRemoved
-    }
-}
-
-@objc(MotionAnimationTimingFunction)
-public enum MotionAnimationTimingFunction: Int {
-    case `default`
-    case linear
-    case easeIn
-    case easeOut
-    case easeInEaseOut
-}
-
-/**
- Converts the MotionAnimationTimingFunction enum value to a corresponding CAMediaTimingFunction.
- - Parameter function: An MotionAnimationTimingFunction enum value.
- - Returns: A CAMediaTimingFunction.
- */
-public func MotionAnimationTimingFunctionToValue(timingFunction: MotionAnimationTimingFunction) -> CAMediaTimingFunction {
-    switch timingFunction {
-    case .default:
-        return CAMediaTimingFunction(name: kCAMediaTimingFunctionDefault)
-    case .linear:
-        return CAMediaTimingFunction(name: kCAMediaTimingFunctionLinear)
-    case .easeIn:
-        return CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseIn)
-    case .easeOut:
-        return CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
-    case .easeInEaseOut:
-        return CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
-    }
-}
-
 public typealias MotionDelayCancelBlock = (Bool) -> Void
 
 open class Motion {
+    
+    
+}
+
+extension Motion {
     /**
      Executes a block of code after a time delay.
      - Parameter duration: An animation duration time.
@@ -96,10 +47,6 @@ open class Motion {
      */
     @discardableResult
     open class func delay(_ time: TimeInterval, execute block: @escaping () -> Void) -> MotionDelayCancelBlock? {
-        func asyncAfter(completion: @escaping () -> Void) {
-            DispatchQueue.main.asyncAfter(deadline: .now() + time, execute: completion)
-        }
-        
         var cancelable: MotionDelayCancelBlock?
         
         let delayed: MotionDelayCancelBlock = {
@@ -111,7 +58,7 @@ open class Motion {
         
         cancelable = delayed
         
-        asyncAfter {
+        DispatchQueue.main.asyncAfter(deadline: .now() + time) {
             cancelable?(false)
         }
         
@@ -160,7 +107,7 @@ open class Motion {
      */
     open class func animate(group animations: [CAAnimation], timingFunction: MotionAnimationTimingFunction = .easeInEaseOut, duration: CFTimeInterval = 0.5) -> CAAnimationGroup {
         let group = CAAnimationGroup()
-        group.fillMode = MotionAnimationFillModeToValue(mode: .forwards)
+        group.fillMode = MotionAnimationFillModeToValue(mode: .both)
         group.isRemovedOnCompletion = false
         group.animations = animations
         group.duration = duration

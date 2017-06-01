@@ -185,6 +185,21 @@ extension Motion {
 }
 
 extension Motion {
+    /**
+     Removes a snapshot from a given view controller.
+     - Parameter for viewController: A UIViewController.
+     */
+    fileprivate func removeSnapshot(for viewController: UIViewController?) {
+        guard let v = viewController?.motionSnapshot else {
+            return
+        }
+        
+        v.removeFromSuperview()
+        viewController?.motionSnapshot = nil
+    }
+}
+
+extension Motion {
     /// Prepares the screen snapshot.
     fileprivate func prepareScreenSnapshot() {
         screenSnapshot?.removeFromSuperview()
@@ -194,7 +209,7 @@ extension Motion {
     
     /// Prepares the preprocessors.
     fileprivate func preparePreprocessors() {
-        preprocessors = [MotionSubviewPreprocessor()]
+        preprocessors = [DefaultMotionTransitionPreprocessor()]
     }
     
     /// Prepares the animators.
@@ -218,7 +233,15 @@ extension Motion {
         context = MotionContext(container: container)
         container.addSubview(toView)
         container.addSubview(fromView)
-        context.set(fromViews: subviews(of: fromView), toViews: subviews(of: toView))
+        context.set(fromViews: fromView.flattenedViewHierarchy, toViews: toView.flattenedViewHierarchy)
+        
+        for v in preprocessors {
+            v.context = context
+        }
+        
+        for v in animators {
+            v.context = context
+        }
     }
     
     /// Prepares the toView.
@@ -231,17 +254,11 @@ extension Motion {
 }
 
 extension Motion {
-    /**
-     Removes a snapshot from a given view controller.
-     - Parameter for viewController: A UIViewController.
-     */
-    fileprivate func removeSnapshot(for viewController: UIViewController?) {
-        guard let v = viewController?.motionSnapshot else {
-            return
+    /// Iterates through all the processors. 
+    fileprivate func processContext() {
+        for v in preprocessors {
+            v.process(fromViews: context.fromViews, toViews: context.toViews)
         }
-        
-        v.removeFromSuperview()
-        viewController?.motionSnapshot = nil
     }
 }
 
@@ -262,6 +279,8 @@ extension Motion {
         prepareContainer()
         prepareToView()
         prepareContext()
+        
+        processContext()
     }
     
     

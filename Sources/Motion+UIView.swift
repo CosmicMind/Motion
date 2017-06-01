@@ -33,6 +33,9 @@ import UIKit
 fileprivate var MotionInstanceKey: UInt8 = 0
 
 fileprivate struct MotionInstance {
+    /// A boolean indicating whether Motion is enabled.
+    fileprivate var isEnabled: Bool
+    
     /// An optional reference to the motion identifier.
     fileprivate var identifier: String?
     
@@ -45,7 +48,7 @@ extension UIView {
     fileprivate var motionInstance: MotionInstance {
         get {
             return AssociatedObject.get(base: self, key: &MotionInstanceKey) {
-                return MotionInstance(identifier: nil, animations: nil)
+                return MotionInstance(isEnabled: true, identifier: nil, animations: nil)
             }
         }
         set(value) {
@@ -53,7 +56,19 @@ extension UIView {
         }
     }
     
+    /// A boolean that indicates whether motion is enabled.
+    @IBInspectable
+    public var isMotionEnabled: Bool {
+        get {
+            return motionInstance.isEnabled
+        }
+        set(value) {
+            motionInstance.isEnabled = value
+        }
+    }
+    
     /// An identifier value used to connect views across UIViewControllers.
+    @IBInspectable
     open var motionIdentifier: String? {
         get {
             return motionInstance.identifier
@@ -75,6 +90,21 @@ extension UIView {
 }
 
 extension UIView {
+    /// Retrieves a single Array of UIViews that are in the view hierarchy.  
+    internal var flattenedViewHierarchy: [UIView] {
+        guard isMotionEnabled else {
+            return []
+        }
+        
+        if #available(iOS 9.0, *) {
+            return isHidden && (superview is UICollectionView || superview is UIStackView || self is UITableViewCell) ? [] : ([self] + subviews.flatMap { $0.flattenedViewHierarchy })
+        }
+        
+        return isHidden && (superview is UICollectionView || self is UITableViewCell) ? [] : ([self] + subviews.flatMap { $0.flattenedViewHierarchy })
+    }
+}
+
+extension UIView {
     /**
      Snapshots the view instance for animations during transitions.
      - Parameter afterUpdates: A boolean indicating whether to snapshot the view
@@ -83,7 +113,7 @@ extension UIView {
      after the snapshot is taken.
      - Returns: A UIView instance that is a snapshot of the given UIView.
      */
-    open func transitionSnapshot(afterUpdates: Bool, shouldHide: Bool = true) -> UIView {
+    public func transitionSnapshot(afterUpdates: Bool, shouldHide: Bool = true) -> UIView {
         isHidden = false
         
         let oldCornerRadius = layer.cornerRadius

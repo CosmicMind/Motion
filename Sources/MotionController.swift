@@ -128,40 +128,6 @@ public class MotionController: NSObject, MotionSubscriber {
 
 extension MotionController {
     /**
-     Populates an Array of UIViews with the subviews of a given view.
-     - Parameter of view: A UIView.
-     - Returns: An Array of UIViews.
-     */
-    fileprivate func subviews(of view: UIView, views: inout [UIView]) {
-        for v in view.subviews {
-            if nil != v.motionIdentifier {
-                views.append(v)
-            }
-            subviews(of: v, views: &views)
-        }
-    }
-    
-    /**
-     Retrieves all the subviews of a given view.
-     - Parameter of view: A UIView.
-     - Returns: An Array of UIViews.
-     */
-    internal func subviews(of view: UIView) -> [UIView] {
-        var views: [UIView] = []
-        subviews(of: view, views: &views)
-        return views
-    }
-}
-
-extension MotionController {
-    /// Prepares the transition.
-    fileprivate func prepareForTransition() {
-        
-    }
-}
-
-extension MotionController {
-    /**
      Handles the animation update for the display link.
      - Parameter displayLink: A CADisplayLink.animation
      */

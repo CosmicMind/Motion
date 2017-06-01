@@ -30,7 +30,7 @@
 
 import UIKit
 
-public protocol MotionTransitionPreprocessor {
+public protocol MotionTransitionPreprocessor: class {
     /// A reference to a MotionContext.
     weak var context: MotionContext! { get set }
     

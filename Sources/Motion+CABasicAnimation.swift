@@ -56,6 +56,7 @@ public enum MotionAnimationKeyPath: String {
     case height = "bounds.size.height"
     case size = "bounds.size"
     case shadowPath
+    case shadowColor
     case shadowOffset
     case shadowOpacity
     case shadowRadius
@@ -350,12 +351,12 @@ public struct MotionBasicAnimation {
     
     /**
      Creates a CABasicaAnimation for the zPosition key path.
-     - Parameter index: An Int.
+     - Parameter _ position: A CGFloat.
      - Returns: A CABasicAnimation.
      */
-    public static func zPosition(index: Int) -> CABasicAnimation {
+    public static func zPosition(_ position: CGFloat) -> CABasicAnimation {
         let animation = CABasicAnimation(keyPath: .zPosition)
-        animation.toValue = NSNumber(integerLiteral: index)
+        animation.toValue = NSNumber(value: Double(position))
         return animation
     }
     
@@ -400,6 +401,17 @@ public struct MotionBasicAnimation {
     public static func shadow(path: CGPath) -> CABasicAnimation {
         let animation = CABasicAnimation(keyPath: .shadowPath)
         animation.toValue = path
+        return animation
+    }
+    
+    /**
+     Creates a CABasicAnimation for the shadowColor key path.
+     - Parameter color: A UIColor.
+     - Returns: A CABasicAnimation.
+     */
+    public static func shadow(color: UIColor) -> CABasicAnimation {
+        let animation = CABasicAnimation(keyPath: .shadowColor)
+        animation.toValue = color.cgColor
         return animation
     }
     

@@ -278,9 +278,9 @@ extension CALayer {
                     fade.fromValue = s.value(forKey: MotionAnimationKeyPath.opacity.rawValue) ?? NSNumber(floatLiteral: 1)
                     a.append(fade)
                 
-                case let .zPosition(index):
-                    let zPosition = MotionBasicAnimation.zPosition(index: index)
-                    zPosition.fromValue = s.value(forKey: MotionAnimationKeyPath.zPosition.rawValue) ?? NSNumber(integerLiteral: 0)
+                case let .zPosition(position):
+                    let zPosition = MotionBasicAnimation.zPosition(position)
+                    zPosition.fromValue = s.value(forKey: MotionAnimationKeyPath.zPosition.rawValue) ?? NSNumber(value: 0)
                     a.append(zPosition)
                 
                 case .width(_), .height(_), .size(_, _):
@@ -291,6 +291,9 @@ extension CALayer {
                     shadowPath.fromValue = s.shadowPath
                     a.append(shadowPath)
                 
+                case let .shadowColor(color):
+                    a.append(MotionBasicAnimation.shadow(color: color))
+                    
                 case let .shadowOffset(offset):
                     let shadowOffset = MotionBasicAnimation.shadow(offset: offset)
                     shadowOffset.fromValue = s.shadowOffset

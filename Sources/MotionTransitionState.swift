@@ -30,16 +30,5 @@
 
 import UIKit
 
-public class MotionSubviewPreprocessor: MotionTransitionPreprocessor {
-    /// A reference to a MotionContext.
-    public weak var context: MotionContext!
-    
-    /**
-     Implementation for processors.
-     - Parameter fromViews: An Array of UIViews.
-     - Parameter toViews: An Array of UIViews.
-     */
-    public func process(fromViews: [UIView], toViews: [UIView]) {
-        
-    }
-}
+
+

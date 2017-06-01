@@ -53,6 +53,17 @@ extension UIViewController {
         }
     }
     
+    /// A boolean that indicates whether motion is enabled.
+    @IBInspectable
+    public var isMotionEnabled: Bool {
+        get {
+            return motionControllerInstance.isEnabled
+        }
+        set(value) {
+            motionControllerInstance.isEnabled = value
+        }
+    }
+    
     /// An optional reference to the current snapshot.
     internal var motionSnapshot: UIView? {
         get {
@@ -60,16 +71,6 @@ extension UIViewController {
         }
         set(value) {
             motionControllerInstance.snapshot = value
-        }
-    }
-    
-    /// A boolean that indicates whether motion is enabled.
-    public var isMotionEnabled: Bool {
-        get {
-            return motionControllerInstance.isEnabled
-        }
-        set(value) {
-            motionControllerInstance.isEnabled = value
         }
     }
 }

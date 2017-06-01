@@ -44,10 +44,10 @@ open class MotionContext {
     fileprivate var snapshotToView = [UIView: UIView]()
     
     /// A reference to the transition from views.
-    fileprivate var fromViews: [UIView]!
+    internal var fromViews: [UIView]!
     
     /// A reference to the transition to views.
-    fileprivate var toViews: [UIView]!
+    internal var toViews: [UIView]!
     
     /**
      An initializer that accepts a given transition container view.

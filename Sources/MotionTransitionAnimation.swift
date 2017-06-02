@@ -45,6 +45,17 @@ public final class MotionTransitionAnimation {
 
 extension MotionTransitionAnimation {
     /**
+     Animates the view with a matching motion identifier.
+     - Parameter _ identifier: A String.
+     - Returns: A MotionTransitionAnimation.
+     */
+    public static func motionIdentifier(_ identifier: String) -> MotionTransitionAnimation {
+        return MotionTransitionAnimation {
+            $0.motionIdentifier = identifier
+        }
+    }
+    
+    /**
      Animates the view's current background color to the
      given color.
      - Parameter color: A UIColor.
@@ -215,10 +226,10 @@ extension MotionTransitionAnimation {
     
     /**
      Animates the view's current opacity to the given one.
-     - Parameter _ opacity: A Float value.
+     - Parameter to opacity: A Float value.
      - Returns: A MotionTransitionAnimation.
      */
-    public static func opacity(_ opacity: Float) -> MotionTransitionAnimation {
+    public static func fade(to opacity: Float) -> MotionTransitionAnimation {
         return MotionTransitionAnimation {
             $0.opacity = opacity
         }
@@ -298,6 +309,106 @@ extension MotionTransitionAnimation {
     public static func shadow(radius: CGFloat) -> MotionTransitionAnimation {
         return MotionTransitionAnimation {
             $0.shadowRadius = radius
+        }
+    }
+
+    /**
+     Animates the view's contents rect to the given one.
+     - Parameter rect: A CGRect.
+     - Returns: A MotionTransitionAnimation.
+     */
+    public static func contents(rect: CGRect) -> MotionTransitionAnimation {
+        return MotionTransitionAnimation {
+            $0.contentsRect = rect
+        }
+    }
+    
+    /**
+     Animates the view's contents scale to the given one.
+     - Parameter scale: A CGFloat.
+     - Returns: A MotionTransitionAnimation.
+     */
+    public static func contents(scale: CGFloat) -> MotionTransitionAnimation {
+        return MotionTransitionAnimation {
+            $0.contentsScale = scale
+        }
+    }
+
+    /**
+     The duration of the view's animation.
+     - Parameter _ duration: A TimeInterval.
+     - Returns: A MotionTransitionAnimation.
+     */
+    public static func duration(_ duration: TimeInterval) -> MotionTransitionAnimation {
+        return MotionTransitionAnimation {
+            $0.duration = duration
+        }
+    }
+    
+    /**
+     Sets the view's animation duration to the longest
+     running animation within a transition.
+     */
+    public static var preferredDurationMatchesLongest = MotionTransitionAnimation.duration(.infinity)
+    
+    /**
+     Delays the animation of a given view.
+     - Parameter _ time: TimeInterval.
+     - Returns: A MotionTransitionAnimation.
+     */
+    public static func delay(_ time: TimeInterval) -> MotionTransitionAnimation {
+        return MotionTransitionAnimation {
+            $0.delay = time
+        }
+    }
+    
+    /**
+     Sets the view's timing function for the animation.
+     - Parameter _ timingFunction: A MotionAnimationTimingFunction.
+     - Returns: A MotionTransitionAnimation.
+     */
+    public static func timingFunction(_ timingFunction: MotionAnimationTimingFunction) -> MotionTransitionAnimation {
+        return MotionTransitionAnimation {
+            $0.timingFunction = timingFunction
+        }
+    }
+    
+    /**
+     Available in iOS 9+, animates a view using the spring API, 
+     given a stiffness and damping.
+     - Parameter stiffness: A CGFlloat.
+     - Parameter damping: A CGFloat.
+     - Returns: A MotionTransitionAnimation.
+     */
+    @available(iOS 9, *)
+    public static func spring(stiffness: CGFloat, damping: CGFloat) -> MotionTransitionAnimation {
+        return MotionTransitionAnimation {
+            $0.spring = (stiffness, damping)
+        }
+    }
+    
+    /**
+     Animates the natural curve of a view. A value of 1 represents
+     a curve in a downward direction, and a value of -1
+     represents a curve in an upward direction.
+     - Parameter intensity: A CGFloat.
+     */
+    public static func arc(intensity: CGFloat = 1) -> MotionTransitionAnimation {
+        return MotionTransitionAnimation {
+            $0.arc = intensity
+        }
+    }
+    
+    /**
+     Animates subviews with an increasing delay between each animation.
+     - Parameter delta: A TimeInterval.
+     - Parameter direction: A MotionCascadeDirection.
+     - Paramater animationDelayUntilMatchedViews: A boolean indicating whether
+     or not to delay the subview animation until all have started.
+     */
+    public static func cascade(delta: TimeInterval = 0.02, direction: MotionCascadeDirection = .topToBottom, animationDelayUntilMatchedViews: Bool = false) -> MotionTransitionAnimation {
+        return MotionTransitionAnimation {
+            $0.cascade = (delta, direction, animationDelayUntilMatchedViews)
         }
     }
 }

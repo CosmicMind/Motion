@@ -274,7 +274,7 @@ extension CALayer {
                     a.append(MotionBasicAnimation.position(to: CGPoint(x: x, y: y)))
                 
                 case let .fade(opacity):
-                    let fade = MotionBasicAnimation.fade(opacity: opacity)
+                    let fade = MotionBasicAnimation.fade(to: opacity)
                     fade.fromValue = s.value(forKey: MotionAnimationKeyPath.opacity.rawValue) ?? NSNumber(floatLiteral: 1)
                     a.append(fade)
                 

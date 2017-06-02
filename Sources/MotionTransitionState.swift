@@ -30,5 +30,87 @@
 
 import UIKit
 
+internal class MotionTransitionStateWrapper {
+    /// A reference to a MotionTransitionAnimationState.
+    internal var state: MotionTransitionState
 
+    /**
+     An initializer that accepts a given MotionTransitionAnimationState.
+     - Parameter state: A MotionTransitionAnimationState.
+     */
+    internal init(state: MotionTransitionState) {
+        self.state = state
+    }
+}
+
+public struct MotionTransitionState {
+    /// An optional reference to the start state of the view.
+    internal var startState: MotionTransitionStateWrapper?
+
+    /// A reference to the motion identifier.
+    public var motionIdentifier: String?
+
+    public var startStateIfMatched: [MotionTransitionAnimation]?
+
+    public var position: CGPoint?
+    public var size: CGSize?
+    public var transform: CATransform3D?
+    public var opacity: Float?
+    public var cornerRadius: CGFloat?
+    public var backgroundColor: CGColor?
+    public var zPosition: CGFloat?
+
+    public var contentsRect: CGRect?
+    public var contentsScale: CGFloat?
+
+    public var borderWidth: CGFloat?
+    public var borderColor: CGColor?
+
+    public var shadowColor: CGColor?
+    public var shadowOpacity: Float?
+    public var shadowOffset: CGSize?
+    public var shadowRadius: CGFloat?
+    public var shadowPath: CGPath?
+    public var masksToBounds: Bool?
+    public var displayShadow: Bool = true
+
+    public var overlay: (color: CGColor, opacity: CGFloat)?
+
+    public var spring: (CGFloat, CGFloat)?
+    public var delay: TimeInterval = 0
+    public var duration: TimeInterval?
+
+    public var timingFunction: MotionAnimationTimingFunction?
+
+    public var arc: CGFloat?
+    public var cascade: (TimeInterval, MotionCascadeDirection, Bool)?
+
+    public var ignoreSubviewTransitionAnimations: Bool?
+    public var coordinateSpace: MotionCoordinateSpace?
+    public var useScaleBasedSizeChange: Bool?
+    public var snapshotType: MotionSnapshot?
+
+    public var forceAnimate: Bool = false
+    public var custom: [String:Any]?
+
+    init(transitionAnimations: [MotionTransitionAnimation]) {
+        append(contentsOf: transitionAnimations)
+    }
+
+    public mutating func append(_ transitionAnimations: MotionTransitionAnimation) {
+        transitionAnimations.apply(&self)
+    }
+
+    public mutating func append(contentsOf transitionAnimations: [MotionTransitionAnimation]) {
+        for v in transitionAnimations {
+            v.apply(&self)
+        }
+    }
+}
+
+extension MotionTransitionState: ExpressibleByArrayLiteral {
+    public init(arrayLiteral elements: MotionTransitionAnimation...) {
+        append(contentsOf: elements)
+    }
+}
 

@@ -340,10 +340,10 @@ public struct MotionBasicAnimation {
     
     /**
      Creates a CABasicAnimation for the opacity key path.
-     - Parameter opacity: A Double.
+     - Parameter to opacity: A Double.
      - Returns: A CABasicAnimation.
      */
-    public static func fade(opacity: Double) -> CABasicAnimation {
+    public static func fade(to opacity: Double) -> CABasicAnimation {
         let animation = CABasicAnimation(keyPath: .opacity)
         animation.toValue = NSNumber(floatLiteral: opacity)
         return animation

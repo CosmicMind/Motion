@@ -38,6 +38,12 @@ fileprivate struct MotionInstanceController {
     
     /// An optional reference to the current snapshot.
     fileprivate var snapshot: UIView?
+    
+    /// An optional reference to the previous UINavigationControllerDelegate.
+    fileprivate var previousNavigationDelegate: UINavigationControllerDelegate?
+    
+    /// An optional reference to the previous UITabBarControllerDelegate.
+    fileprivate var previousTabBarDelegate: UITabBarControllerDelegate?
 }
 
 extension UIViewController {
@@ -45,7 +51,7 @@ extension UIViewController {
     fileprivate var motionControllerInstance: MotionInstanceController {
         get {
             return AssociatedObject.get(base: self, key: &MotionInstanceControllerKey) {
-                return MotionInstanceController(isEnabled: false, snapshot: nil)
+                return MotionInstanceController(isEnabled: false, snapshot: nil, previousNavigationDelegate: nil, previousTabBarDelegate: nil)
             }
         }
         set(value) {
@@ -57,10 +63,35 @@ extension UIViewController {
     @IBInspectable
     public var isMotionEnabled: Bool {
         get {
-            return motionControllerInstance.isEnabled
+            return transitioningDelegate is Motion
         }
-        set(value) {
-            motionControllerInstance.isEnabled = value
+        set {
+            guard newValue != isMotionEnabled else {
+                return
+            }
+            
+            if newValue {
+                transitioningDelegate = Motion.shared
+                if let v = self as? UINavigationController {
+                    motionPreviousNavigationDelegate = v.delegate
+                    v.delegate = Motion.shared
+                }
+                
+                if let v = self as? UITabBarController {
+                    motionPreviousTabBarDelegate = v.delegate
+                    v.delegate = Motion.shared
+                }
+            } else {
+                transitioningDelegate = nil
+                
+                if let v = self as? UINavigationController, v.delegate is Motion {
+                    v.delegate = motionPreviousNavigationDelegate
+                }
+                
+                if let v = self as? UITabBarController, v.delegate is Motion {
+                    v.delegate = motionPreviousTabBarDelegate
+                }
+            }
         }
     }
     
@@ -71,6 +102,26 @@ extension UIViewController {
         }
         set(value) {
             motionControllerInstance.snapshot = value
+        }
+    }
+    
+    /// An optional reference to the previous UINavigationControllerDelegate.
+    internal var motionPreviousNavigationDelegate: UINavigationControllerDelegate? {
+        get {
+            return motionControllerInstance.previousNavigationDelegate
+        }
+        set(value) {
+            motionControllerInstance.previousNavigationDelegate = value
+        }
+    }
+    
+    /// An optional reference to the previous UITabBarControllerDelegate.
+    internal var motionPreviousTabBarDelegate: UITabBarControllerDelegate? {
+        get {
+            return motionControllerInstance.previousTabBarDelegate
+        }
+        set(value) {
+            motionControllerInstance.previousTabBarDelegate = value
         }
     }
 }

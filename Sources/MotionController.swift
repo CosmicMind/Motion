@@ -113,17 +113,22 @@ public class MotionController: NSObject, MotionSubscriber {
         return nil == displayLink
     }
     
+    /// An Array of from and to view paris to be animated.
+    public fileprivate(set) var transitionParis = [(fromViews: [UIView], toViews: [UIView])]()
+    
     /**
      An animation container used within the transitionContainer
      during a transition.
      */
-    public internal(set) var container: UIView!
+    public fileprivate(set) var container: UIView!
     
     /// Transition container.
-    public fileprivate(set) var transitionContainer: UIView!
-    
-    /// An Array of from and to view paris to be animated.
-    public fileprivate(set) var transitionParis = [(fromViews: [UIView], toViews: [UIView])]()
+    public internal(set) var transitionContainer: UIView! {
+        didSet {
+            container = UIView(frame: transitionContainer.bounds)
+            transitionContainer.addSubview(container)
+        }
+    }
 }
 
 extension MotionController {

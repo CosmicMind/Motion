@@ -36,6 +36,9 @@ public class Motion: MotionController {
     /// A reference to an optional transitioning context provided by UIKit.
     fileprivate weak var transitionContext: UIViewControllerContextTransitioning?
     
+    /// A boolean inficating whether or not the transition is animating.
+    fileprivate var isAnimating = false
+    
     /**
      A boolean indicating if the transition view controller is a
      UINavigationController.
@@ -222,12 +225,6 @@ extension Motion {
         transitionContainer.isUserInteractionEnabled = false
     }
     
-    /// Prepares the container.
-    fileprivate func prepareContainer() {
-        container = UIView(frame: transitionContainer.bounds)
-        transitionContainer.addSubview(container)
-    }
-    
     /// Prepares the context.
     fileprivate func prepareContext() {
         context = MotionContext(container: container)
@@ -276,12 +273,142 @@ extension Motion {
         preparePreprocessors()
         prepareAnimators()
         prepareTransitionContainer()
-        prepareContainer()
         prepareToView()
         prepareContext()
         
         processContext()
     }
     
+    fileprivate func completed(isFinished: Bool) {
+        transitionContext?.completeTransition(!isFinished)
+    }
+}
+
+extension Motion {
+    /**
+     Helper transition function.
+     - Parameter from: A UIViewController.
+     - Parameter to: A UIViewController.
+     - Parameter in container: A UIView.
+     - Parameter completion: A completion block.
+     */
+    fileprivate func transition(from: UIViewController, to: UIViewController, in container: UIView, completion: ((Bool) -> Void)? = nil) {
+        guard !isTransitioning else {
+            return
+        }
+        
+        isPresenting = true
+        transitionContainer = container
+        fromViewController = from
+        toViewController = to
+        
+        start()
+    }
+}
+
+extension Motion: UIViewControllerAnimatedTransitioning {
+    /**
+     The animation method that is used to coordinate the transition.
+     - Parameter using transitionContext: A UIViewControllerContextTransitioning.
+     */
+    public func animateTransition(using context: UIViewControllerContextTransitioning) {
+        guard !isTransitioning else {
+            return
+        }
+        
+        transitionContext = context
+        fromViewController = fromViewController ?? context.viewController(forKey: .from)
+        toViewController = toViewController ?? context.viewController(forKey: .to)
+        transitionContainer = context.containerView
+        
+        start()
+    }
     
+    /**
+     Returns the transition duration time interval.
+     - Parameter using transitionContext: An optional UIViewControllerContextTransitioning.
+     - Returns: A TimeInterval that is the total animation time including delays.
+     */
+    public func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
+        return 0 // Will be updated dynamically.
+    }
+    
+    public func animationEnded(_ transitionCompleted: Bool) {
+        isAnimating = !transitionCompleted
+    }
+}
+
+extension Motion: UIViewControllerTransitioningDelegate {
+    var interactiveTransitioning: UIViewControllerInteractiveTransitioning? {
+        return self
+    }
+    
+    public func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        self.isPresenting = true
+        self.fromViewController = fromViewController ?? presenting
+        self.toViewController = toViewController ?? presented
+        return self
+    }
+    
+    public func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        self.isPresenting = false
+        self.fromViewController = fromViewController ?? dismissed
+        return self
+    }
+    
+    public func interactionControllerForDismissal(using animator: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
+        return interactiveTransitioning
+    }
+    
+    public func interactionControllerForPresentation(using animator: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
+        return interactiveTransitioning
+    }
+}
+
+extension Motion: UIViewControllerInteractiveTransitioning {
+    public var wantsInteractiveStart: Bool {
+        return true
+    }
+    public func startInteractiveTransition(_ transitionContext: UIViewControllerContextTransitioning) {
+        animateTransition(using: transitionContext)
+    }
+}
+
+extension Motion: UINavigationControllerDelegate {
+    public func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationControllerOperation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        self.isPresenting = .push == operation
+        self.fromViewController = fromViewController ?? fromVC
+        self.toViewController = toViewController ?? toVC
+        self.isNavigationController = true
+        
+        return self
+    }
+    
+    public func navigationController(_ navigationController: UINavigationController, interactionControllerFor animationController: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
+        return interactiveTransitioning
+    }
+}
+
+extension Motion: UITabBarControllerDelegate {
+    public func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
+        return !isAnimating
+    }
+    
+    public func tabBarController(_ tabBarController: UITabBarController, interactionControllerFor animationController: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
+        return interactiveTransitioning
+    }
+    
+    public func tabBarController(_ tabBarController: UITabBarController, animationControllerForTransitionFrom fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        isAnimating = true
+        
+        let fromVCIndex = tabBarController.childViewControllers.index(of: fromVC)!
+        let toVCIndex = tabBarController.childViewControllers.index(of: toVC)!
+        
+        self.isPresenting = toVCIndex > fromVCIndex
+        self.fromViewController = fromViewController ?? fromVC
+        self.toViewController = toViewController ?? toVC
+        self.isTabBarController = true
+        
+        return self
+    }
 }

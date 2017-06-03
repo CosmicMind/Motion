@@ -30,7 +30,7 @@
 
 import UIKit
 
-public final class MotionTransitionAnimation {
+public final class MotionTransition {
     /// A reference to the callback that applies the MotionTransitionState.
     internal let apply: (inout MotionTransitionState) -> Void
     
@@ -43,14 +43,14 @@ public final class MotionTransitionAnimation {
     }
 }
 
-extension MotionTransitionAnimation {
+extension MotionTransition {
     /**
      Animates the view with a matching motion identifier.
      - Parameter _ identifier: A String.
-     - Returns: A MotionTransitionAnimation.
+     - Returns: A MotionTransition.
      */
-    public static func motionIdentifier(_ identifier: String) -> MotionTransitionAnimation {
-        return MotionTransitionAnimation {
+    public static func motionIdentifier(_ identifier: String) -> MotionTransition {
+        return MotionTransition {
             $0.motionIdentifier = identifier
         }
     }
@@ -59,10 +59,10 @@ extension MotionTransitionAnimation {
      Animates the view's current background color to the
      given color.
      - Parameter color: A UIColor.
-     - Returns: A MotionTransitionAnimation.
+     - Returns: A MotionTransition.
      */
-    public static func background(color: UIColor) -> MotionTransitionAnimation {
-        return MotionTransitionAnimation {
+    public static func background(color: UIColor) -> MotionTransition {
+        return MotionTransition {
             $0.backgroundColor = color.cgColor
         }
     }
@@ -71,10 +71,10 @@ extension MotionTransitionAnimation {
      Animates the view's current border color to the
      given color.
      - Parameter color: A UIColor.
-     - Returns: A MotionTransitionAnimation.
+     - Returns: A MotionTransition.
      */
-    public static func border(color: UIColor) -> MotionTransitionAnimation {
-        return MotionTransitionAnimation {
+    public static func border(color: UIColor) -> MotionTransition {
+        return MotionTransition {
             $0.borderColor = color.cgColor
         }
     }
@@ -83,10 +83,10 @@ extension MotionTransitionAnimation {
      Animates the view's current border width to the
      given width.
      - Parameter width: A CGFloat.
-     - Returns: A MotionTransitionAnimation.
+     - Returns: A MotionTransition.
      */
-    public static func border(width: CGFloat) -> MotionTransitionAnimation {
-        return MotionTransitionAnimation {
+    public static func border(width: CGFloat) -> MotionTransition {
+        return MotionTransition {
             $0.borderWidth = width
         }
     }
@@ -95,10 +95,10 @@ extension MotionTransitionAnimation {
      Animates the view's current corner radius to the
      given radius.
      - Parameter radius: A CGFloat.
-     - Returns: A MotionTransitionAnimation.
+     - Returns: A MotionTransition.
      */
-    public static func corner(radius: CGFloat) -> MotionTransitionAnimation {
-        return MotionTransitionAnimation {
+    public static func corner(radius: CGFloat) -> MotionTransition {
+        return MotionTransition {
             $0.cornerRadius = radius
         }
     }
@@ -107,10 +107,10 @@ extension MotionTransitionAnimation {
      Animates the view's current transform (perspective, scale, rotation)
      to the given one.
      - Parameter _ transform: A CATransform3D.
-     - Returns: A MotionTransitionAnimation.
+     - Returns: A MotionTransition.
      */
-    public static func transform(_ transform: CATransform3D) -> MotionTransitionAnimation {
-        return MotionTransitionAnimation {
+    public static func transform(_ transform: CATransform3D) -> MotionTransition {
+        return MotionTransition {
             $0.transform = transform
         }
     }
@@ -119,10 +119,10 @@ extension MotionTransitionAnimation {
      Animates the view's current perspective to the gievn one through
      a CATransform3D object.
      - Parameter _ perspective: A CGFloat.
-     - Returns: A MotionTransitionAnimation.
+     - Returns: A MotionTransition.
      */
-    public static func perspective(_ perspective: CGFloat) -> MotionTransitionAnimation {
-        return MotionTransitionAnimation {
+    public static func perspective(_ perspective: CGFloat) -> MotionTransition {
+        return MotionTransition {
             var t = $0.transform ?? CATransform3DIdentity
             t.m34 = 1 / -perspective
             $0.transform = t
@@ -135,10 +135,10 @@ extension MotionTransitionAnimation {
      - Parameter x: A CGFloat.
      - Parameter y: A CGFloat.
      - Parameter z: A CGFloat.
-     - Returns: A MotionTransitionAnimation.
+     - Returns: A MotionTransition.
      */
-    public static func rotation(x: CGFloat = 0, y: CGFloat = 0, z: CGFloat = 0) -> MotionTransitionAnimation {
-        return MotionTransitionAnimation {
+    public static func rotation(x: CGFloat = 0, y: CGFloat = 0, z: CGFloat = 0) -> MotionTransition {
+        return MotionTransition {
             var t = $0.transform ?? CATransform3DIdentity
             t = CATransform3DRotate(t, x, 1, 0, 0)
             t = CATransform3DRotate(t, y, 0, 1, 0)
@@ -150,9 +150,9 @@ extension MotionTransitionAnimation {
      Animates the view's current rotation to the given point.
      - Parameter _ point: A CGPoint.
      - Parameter z: A CGFloat, default is 0.
-     - Returns: A MotionTransitionAnimation.
+     - Returns: A MotionTransition.
      */
-    public static func rotation(_ point: CGPoint, z: CGFloat = 0) -> MotionTransitionAnimation {
+    public static func rotation(_ point: CGPoint, z: CGFloat = 0) -> MotionTransition {
         return .rotation(x: point.x, y: point.y, z: z)
     }
     
@@ -161,10 +161,10 @@ extension MotionTransitionAnimation {
      - Parameter x: A CGFloat.
      - Parameter y: A CGFloat.
      - Parameter z: A CGFloat.
-     - Returns: A MotionTransitionAnimation.
+     - Returns: A MotionTransition.
      */
-    public static func scale(x: CGFloat = 1, y: CGFloat = 1, z: CGFloat = 1) -> MotionTransitionAnimation {
-        return MotionTransitionAnimation {
+    public static func scale(x: CGFloat = 1, y: CGFloat = 1, z: CGFloat = 1) -> MotionTransition {
+        return MotionTransition {
             $0.transform = CATransform3DScale($0.transform ?? CATransform3DIdentity, x, y, z)
         }
     }
@@ -172,9 +172,9 @@ extension MotionTransitionAnimation {
     /**
      Animates the view's current x & y scale to the given scale value.
      - Parameter to scale: A CGFloat.
-     - Returns: A MotionTransitionAnimation.
+     - Returns: A MotionTransition.
      */
-    public static func scale(to scale: CGFloat) -> MotionTransitionAnimation {
+    public static func scale(to scale: CGFloat) -> MotionTransition {
         return .scale(x: scale, y: scale)
     }
     
@@ -184,10 +184,10 @@ extension MotionTransitionAnimation {
      - Parameter x: A CGFloat.
      - Parameter y: A CGFloat.
      - Parameter z: A CGFloat.
-     - Returns: A MotionTransitionAnimation.
+     - Returns: A MotionTransition.
      */
-    public static func translate(x: CGFloat = 0, y: CGFloat = 0, z: CGFloat = 0) -> MotionTransitionAnimation {
-        return MotionTransitionAnimation {
+    public static func translate(x: CGFloat = 0, y: CGFloat = 0, z: CGFloat = 0) -> MotionTransition {
+        return MotionTransition {
             $0.transform = CATransform3DTranslate($0.transform ?? CATransform3DIdentity, x, y, z)
         }
     }
@@ -197,40 +197,40 @@ extension MotionTransitionAnimation {
      point value (x & y), and a z value.
      - Parameter to point: A CGPoint.
      - Parameter z: A CGFloat, default is 0.
-     - Returns: A MotionTransitionAnimation.
+     - Returns: A MotionTransition.
      */
-    public static func translate(to point: CGPoint, z: CGFloat = 0) -> MotionTransitionAnimation {
+    public static func translate(to point: CGPoint, z: CGFloat = 0) -> MotionTransition {
         return .translate(x: point.x, y: point.y, z: z)
     }
     
     /**
      Animates the view's current position to the given point.
      - Parameter to point: A CGPoint.
-     - Returns: A MotionTransitionAnimation.
+     - Returns: A MotionTransition.
      */
-    public static func position(to point: CGPoint) -> MotionTransitionAnimation {
-        return MotionTransitionAnimation {
+    public static func position(to point: CGPoint) -> MotionTransition {
+        return MotionTransition {
             $0.position = point
         }
     }
 
     /// Fades the view out during a transition.
-    public static var fadeOut = MotionTransitionAnimation {
+    public static var fadeOut = MotionTransition {
         $0.opacity = 0
     }
     
     /// Fades the view in during a transition.
-    public static var fadeIn = MotionTransitionAnimation {
+    public static var fadeIn = MotionTransition {
         $0.opacity = 1
     }
     
     /**
      Animates the view's current opacity to the given one.
      - Parameter to opacity: A Float value.
-     - Returns: A MotionTransitionAnimation.
+     - Returns: A MotionTransition.
      */
-    public static func fade(to opacity: Float) -> MotionTransitionAnimation {
-        return MotionTransitionAnimation {
+    public static func fade(to opacity: Float) -> MotionTransition {
+        return MotionTransition {
             $0.opacity = opacity
         }
     }
@@ -238,10 +238,10 @@ extension MotionTransitionAnimation {
     /**
      Animates the view's current zPosition to the given position.
      - Parameter _ position: An Int.
-     - Returns: A MotionTransitionAnimation.
+     - Returns: A MotionTransition.
      */
-    public static func zPosition(_ position: CGFloat) -> MotionTransitionAnimation {
-        return MotionTransitionAnimation {
+    public static func zPosition(_ position: CGFloat) -> MotionTransition {
+        return MotionTransition {
             $0.zPosition = position
         }
     }
@@ -249,10 +249,10 @@ extension MotionTransitionAnimation {
     /**
      Animates the view's current size to the given one.
      - Parameter _ size: A CGSize.
-     - Returns: A MotionTransitionAnimation.
+     - Returns: A MotionTransition.
      */
-    public static func size(_ size: CGSize) -> MotionTransitionAnimation {
-        return MotionTransitionAnimation {
+    public static func size(_ size: CGSize) -> MotionTransition {
+        return MotionTransition {
             $0.size = size
         }
     }
@@ -260,10 +260,10 @@ extension MotionTransitionAnimation {
     /**
      Animates the view's current shadow path to the given one.
      - Parameter path: A CGPath.
-     - Returns: A MotionTransitionAnimation.
+     - Returns: A MotionTransition.
      */
-    public static func shadow(path: CGPath) -> MotionTransitionAnimation {
-        return MotionTransitionAnimation {
+    public static func shadow(path: CGPath) -> MotionTransition {
+        return MotionTransition {
             $0.shadowPath = path
         }
     }
@@ -271,10 +271,10 @@ extension MotionTransitionAnimation {
     /**
      Animates the view's current shadow color to the given one.
      - Parameter color: A UIColor.
-     - Returns: A MotionTransitionAnimation.
+     - Returns: A MotionTransition.
      */
-    public static func shadow(color: UIColor) -> MotionTransitionAnimation {
-        return MotionTransitionAnimation {
+    public static func shadow(color: UIColor) -> MotionTransition {
+        return MotionTransition {
             $0.shadowColor = color.cgColor
         }
     }
@@ -282,10 +282,10 @@ extension MotionTransitionAnimation {
     /**
      Animates the view's current shadow offset to the given one.
      - Parameter offset: A CGSize.
-     - Returns: A MotionTransitionAnimation.
+     - Returns: A MotionTransition.
      */
-    public static func shadow(offset: CGSize) -> MotionTransitionAnimation {
-        return MotionTransitionAnimation {
+    public static func shadow(offset: CGSize) -> MotionTransition {
+        return MotionTransition {
             $0.shadowOffset = offset
         }
     }
@@ -293,10 +293,10 @@ extension MotionTransitionAnimation {
     /**
      Animates the view's current shadow opacity to the given one.
      - Parameter opacity: A CGFloat.
-     - Returns: A MotionTransitionAnimation.
+     - Returns: A MotionTransition.
      */
-    public static func shadow(opacity: CGFloat) -> MotionTransitionAnimation {
-        return MotionTransitionAnimation {
+    public static func shadow(opacity: CGFloat) -> MotionTransition {
+        return MotionTransition {
             $0.shadowOpacity = Float(opacity)
         }
     }
@@ -304,10 +304,10 @@ extension MotionTransitionAnimation {
     /**
      Animates the view's current shadow radius to the given one.
      - Parameter radius: A CGFloat.
-     - Returns: A MotionTransitionAnimation.
+     - Returns: A MotionTransition.
      */
-    public static func shadow(radius: CGFloat) -> MotionTransitionAnimation {
-        return MotionTransitionAnimation {
+    public static func shadow(radius: CGFloat) -> MotionTransition {
+        return MotionTransition {
             $0.shadowRadius = radius
         }
     }
@@ -315,10 +315,10 @@ extension MotionTransitionAnimation {
     /**
      Animates the view's contents rect to the given one.
      - Parameter rect: A CGRect.
-     - Returns: A MotionTransitionAnimation.
+     - Returns: A MotionTransition.
      */
-    public static func contents(rect: CGRect) -> MotionTransitionAnimation {
-        return MotionTransitionAnimation {
+    public static func contents(rect: CGRect) -> MotionTransition {
+        return MotionTransition {
             $0.contentsRect = rect
         }
     }
@@ -326,10 +326,10 @@ extension MotionTransitionAnimation {
     /**
      Animates the view's contents scale to the given one.
      - Parameter scale: A CGFloat.
-     - Returns: A MotionTransitionAnimation.
+     - Returns: A MotionTransition.
      */
-    public static func contents(scale: CGFloat) -> MotionTransitionAnimation {
-        return MotionTransitionAnimation {
+    public static func contents(scale: CGFloat) -> MotionTransition {
+        return MotionTransition {
             $0.contentsScale = scale
         }
     }
@@ -337,10 +337,10 @@ extension MotionTransitionAnimation {
     /**
      The duration of the view's animation.
      - Parameter _ duration: A TimeInterval.
-     - Returns: A MotionTransitionAnimation.
+     - Returns: A MotionTransition.
      */
-    public static func duration(_ duration: TimeInterval) -> MotionTransitionAnimation {
-        return MotionTransitionAnimation {
+    public static func duration(_ duration: TimeInterval) -> MotionTransition {
+        return MotionTransition {
             $0.duration = duration
         }
     }
@@ -349,15 +349,15 @@ extension MotionTransitionAnimation {
      Sets the view's animation duration to the longest
      running animation within a transition.
      */
-    public static var preferredDurationMatchesLongest = MotionTransitionAnimation.duration(.infinity)
+    public static var preferredDurationMatchesLongest = MotionTransition.duration(.infinity)
     
     /**
      Delays the animation of a given view.
      - Parameter _ time: TimeInterval.
-     - Returns: A MotionTransitionAnimation.
+     - Returns: A MotionTransition.
      */
-    public static func delay(_ time: TimeInterval) -> MotionTransitionAnimation {
-        return MotionTransitionAnimation {
+    public static func delay(_ time: TimeInterval) -> MotionTransition {
+        return MotionTransition {
             $0.delay = time
         }
     }
@@ -365,10 +365,10 @@ extension MotionTransitionAnimation {
     /**
      Sets the view's timing function for the animation.
      - Parameter _ timingFunction: A MotionAnimationTimingFunction.
-     - Returns: A MotionTransitionAnimation.
+     - Returns: A MotionTransition.
      */
-    public static func timingFunction(_ timingFunction: MotionAnimationTimingFunction) -> MotionTransitionAnimation {
-        return MotionTransitionAnimation {
+    public static func timingFunction(_ timingFunction: MotionAnimationTimingFunction) -> MotionTransition {
+        return MotionTransition {
             $0.timingFunction = timingFunction
         }
     }
@@ -378,11 +378,11 @@ extension MotionTransitionAnimation {
      given a stiffness and damping.
      - Parameter stiffness: A CGFlloat.
      - Parameter damping: A CGFloat.
-     - Returns: A MotionTransitionAnimation.
+     - Returns: A MotionTransition.
      */
     @available(iOS 9, *)
-    public static func spring(stiffness: CGFloat, damping: CGFloat) -> MotionTransitionAnimation {
-        return MotionTransitionAnimation {
+    public static func spring(stiffness: CGFloat, damping: CGFloat) -> MotionTransition {
+        return MotionTransition {
             $0.spring = (stiffness, damping)
         }
     }
@@ -393,8 +393,8 @@ extension MotionTransitionAnimation {
      represents a curve in an upward direction.
      - Parameter intensity: A CGFloat.
      */
-    public static func arc(intensity: CGFloat = 1) -> MotionTransitionAnimation {
-        return MotionTransitionAnimation {
+    public static func arc(intensity: CGFloat = 1) -> MotionTransition {
+        return MotionTransition {
             $0.arc = intensity
         }
     }
@@ -406,9 +406,44 @@ extension MotionTransitionAnimation {
      - Paramater animationDelayUntilMatchedViews: A boolean indicating whether
      or not to delay the subview animation until all have started.
      */
-    public static func cascade(delta: TimeInterval = 0.02, direction: MotionCascadeDirection = .topToBottom, animationDelayUntilMatchedViews: Bool = false) -> MotionTransitionAnimation {
-        return MotionTransitionAnimation {
+    public static func cascade(delta: TimeInterval = 0.02, direction: MotionCascadeDirection = .topToBottom, animationDelayUntilMatchedViews: Bool = false) -> MotionTransition {
+        return MotionTransition {
             $0.cascade = (delta, direction, animationDelayUntilMatchedViews)
         }
     }
+}
+
+extension MotionTransition {
+    /**
+     Applies the transition state directly to the view before the animation
+     begins. For source views, the state is applied immediately. For destination
+     views, the state is applied at the end of the transition.
+     */
+    public static func startWith(animations: [MotionTransition]) -> MotionTransition {
+        return MotionTransition {
+            if nil == $0.startState {
+                $0.startState = MotionTransitionStateWrapper(state: [])
+            }
+            
+            $0.startState!.state.append(contentsOf: animations)
+        }
+    }
+    
+    /**
+     Applies the transition state directly to the view before the animation
+     begins. For source views, the state is applied immediately. For destination
+     views, the state is applied at the end of the transition. This only takes 
+     affect if the view is matched.
+     */
+    public static func startWithIfMatched(animations: [MotionTransition]) -> MotionTransition {
+        return MotionTransition {
+            if nil == $0.startStateIfMatched {
+                $0.startStateIfMatched = []
+            }
+            
+            $0.startStateIfMatched!.append(contentsOf: animations)
+        }
+    }
+    
+    
 }

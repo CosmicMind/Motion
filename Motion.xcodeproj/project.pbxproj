@@ -11,7 +11,7 @@
 		961409B61E43D17200E7BA99 /* Motion+Obj-C.swift in Headers */ = {isa = PBXBuildFile; fileRef = 961409A91E43CF1B00E7BA99 /* Motion+Obj-C.swift */; settings = {ATTRIBUTES = (Public, ); }; };
 		961409B81E43D21300E7BA99 /* Motion.h in Headers */ = {isa = PBXBuildFile; fileRef = 96C98DED1E438A5700B22906 /* Motion.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		964C153D1EDCF6EA00F0869D /* Motion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964C153C1EDCF6EA00F0869D /* Motion.swift */; };
-		964C15471EDD001A00F0869D /* MotionTransitionAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964C15461EDD001A00F0869D /* MotionTransitionAnimation.swift */; };
+		964C15471EDD001A00F0869D /* MotionTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964C15461EDD001A00F0869D /* MotionTransition.swift */; };
 		9657A6AC1EDA1601004461DE /* MotionObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9657A6AB1EDA1601004461DE /* MotionObserver.swift */; };
 		9657A6AE1EDA19D8004461DE /* MotionTransitionAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9657A6AD1EDA19D8004461DE /* MotionTransitionAnimator.swift */; };
 		9657A6B31EDA63FC004461DE /* MotionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9657A6B21EDA63FC004461DE /* MotionContext.swift */; };
@@ -22,21 +22,25 @@
 		966C53B31EDD325B00A82A57 /* MotionSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966C53B21EDD325B00A82A57 /* MotionSnapshot.swift */; };
 		966C53B51EDD327D00A82A57 /* MotionCascadeDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966C53B41EDD327D00A82A57 /* MotionCascadeDirection.swift */; };
 		966C53B71EDD328F00A82A57 /* MotionCoordinateSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966C53B61EDD328F00A82A57 /* MotionCoordinateSpace.swift */; };
-		966C53B91EDD366800A82A57 /* MotionTransitionPreprocessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966C53B81EDD366800A82A57 /* MotionTransitionPreprocessor.swift */; };
+		966C53B91EDD366800A82A57 /* TransitionPreprocessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966C53B81EDD366800A82A57 /* TransitionPreprocessor.swift */; };
 		966C53BD1EDD396800A82A57 /* MotionAnimationFillMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966C53BC1EDD396800A82A57 /* MotionAnimationFillMode.swift */; };
 		966C53BF1EDD399400A82A57 /* MotionAnimationTimingFunction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966C53BE1EDD399400A82A57 /* MotionAnimationTimingFunction.swift */; };
+		96AEB5F11EE1FA3C009A3BE0 /* MatchPreprocessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96AEB5F01EE1FA3C009A3BE0 /* MatchPreprocessor.swift */; };
+		96AEB6081EE32A38009A3BE0 /* SourcePreprocessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96AEB6071EE32A38009A3BE0 /* SourcePreprocessor.swift */; };
+		96AEB60A1EE339F6009A3BE0 /* DurationPreprocessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96AEB6091EE339F6009A3BE0 /* DurationPreprocessor.swift */; };
+		96AEB60C1EE34012009A3BE0 /* Motion+CG.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96AEB60B1EE34012009A3BE0 /* Motion+CG.swift */; };
 		96BFC1701E63C3460075DE1F /* MotionController.swift in Headers */ = {isa = PBXBuildFile; fileRef = 96C98DE31E4382B100B22906 /* MotionController.swift */; settings = {ATTRIBUTES = (Public, ); }; };
 		96C98DE41E4382B100B22906 /* MotionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96C98DE31E4382B100B22906 /* MotionController.swift */; };
 		96C98DE61E43848500B22906 /* MotionAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96C98DE51E43848500B22906 /* MotionAnimation.swift */; };
 		96C98DEB1E4389BE00B22906 /* MotionAnimation.swift in Headers */ = {isa = PBXBuildFile; fileRef = 96C98DE51E43848500B22906 /* MotionAnimation.swift */; settings = {ATTRIBUTES = (Public, ); }; };
-		96E846F41EDDA62F0005F32F /* DefaultMotionTransitionPreprocessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E846F31EDDA62F0005F32F /* DefaultMotionTransitionPreprocessor.swift */; };
+		96E846F41EDDA62F0005F32F /* AnimationPreprocessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E846F31EDDA62F0005F32F /* AnimationPreprocessor.swift */; };
 		96E846F61EDDA7F20005F32F /* MotionTransitionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E846F51EDDA7F20005F32F /* MotionTransitionState.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		961409A91E43CF1B00E7BA99 /* Motion+Obj-C.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Motion+Obj-C.swift"; sourceTree = "<group>"; };
 		964C153C1EDCF6EA00F0869D /* Motion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Motion.swift; sourceTree = "<group>"; };
-		964C15461EDD001A00F0869D /* MotionTransitionAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionTransitionAnimation.swift; sourceTree = "<group>"; };
+		964C15461EDD001A00F0869D /* MotionTransition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionTransition.swift; sourceTree = "<group>"; };
 		9657A6AB1EDA1601004461DE /* MotionObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionObserver.swift; sourceTree = "<group>"; };
 		9657A6AD1EDA19D8004461DE /* MotionTransitionAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionTransitionAnimator.swift; sourceTree = "<group>"; };
 		9657A6B21EDA63FC004461DE /* MotionContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionContext.swift; sourceTree = "<group>"; };
@@ -47,16 +51,20 @@
 		966C53B21EDD325B00A82A57 /* MotionSnapshot.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionSnapshot.swift; sourceTree = "<group>"; };
 		966C53B41EDD327D00A82A57 /* MotionCascadeDirection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionCascadeDirection.swift; sourceTree = "<group>"; };
 		966C53B61EDD328F00A82A57 /* MotionCoordinateSpace.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionCoordinateSpace.swift; sourceTree = "<group>"; };
-		966C53B81EDD366800A82A57 /* MotionTransitionPreprocessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionTransitionPreprocessor.swift; sourceTree = "<group>"; };
+		966C53B81EDD366800A82A57 /* TransitionPreprocessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransitionPreprocessor.swift; sourceTree = "<group>"; };
 		966C53BC1EDD396800A82A57 /* MotionAnimationFillMode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionAnimationFillMode.swift; sourceTree = "<group>"; };
 		966C53BE1EDD399400A82A57 /* MotionAnimationTimingFunction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionAnimationTimingFunction.swift; sourceTree = "<group>"; };
+		96AEB5F01EE1FA3C009A3BE0 /* MatchPreprocessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MatchPreprocessor.swift; sourceTree = "<group>"; };
+		96AEB6071EE32A38009A3BE0 /* SourcePreprocessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SourcePreprocessor.swift; sourceTree = "<group>"; };
+		96AEB6091EE339F6009A3BE0 /* DurationPreprocessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DurationPreprocessor.swift; sourceTree = "<group>"; };
+		96AEB60B1EE34012009A3BE0 /* Motion+CG.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Motion+CG.swift"; sourceTree = "<group>"; };
 		96C98DD11E424AB000B22906 /* Motion.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Motion.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		96C98DDD1E424B9000B22906 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		96C98DE21E43809D00B22906 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		96C98DE31E4382B100B22906 /* MotionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionController.swift; sourceTree = "<group>"; };
 		96C98DE51E43848500B22906 /* MotionAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionAnimation.swift; sourceTree = "<group>"; };
 		96C98DED1E438A5700B22906 /* Motion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Motion.h; sourceTree = "<group>"; };
-		96E846F31EDDA62F0005F32F /* DefaultMotionTransitionPreprocessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultMotionTransitionPreprocessor.swift; sourceTree = "<group>"; };
+		96E846F31EDDA62F0005F32F /* AnimationPreprocessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimationPreprocessor.swift; sourceTree = "<group>"; };
 		96E846F51EDDA7F20005F32F /* MotionTransitionState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionTransitionState.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -99,7 +107,7 @@
 				9657A6B21EDA63FC004461DE /* MotionContext.swift */,
 				96C98DE51E43848500B22906 /* MotionAnimation.swift */,
 				96E846F51EDDA7F20005F32F /* MotionTransitionState.swift */,
-				964C15461EDD001A00F0869D /* MotionTransitionAnimation.swift */,
+				964C15461EDD001A00F0869D /* MotionTransition.swift */,
 				966C53B21EDD325B00A82A57 /* MotionSnapshot.swift */,
 				966C53B41EDD327D00A82A57 /* MotionCascadeDirection.swift */,
 				966C53B61EDD328F00A82A57 /* MotionCoordinateSpace.swift */,
@@ -115,8 +123,11 @@
 		96E846EA1EDD4FB30005F32F /* Preprocessor */ = {
 			isa = PBXGroup;
 			children = (
-				966C53B81EDD366800A82A57 /* MotionTransitionPreprocessor.swift */,
-				96E846F31EDDA62F0005F32F /* DefaultMotionTransitionPreprocessor.swift */,
+				966C53B81EDD366800A82A57 /* TransitionPreprocessor.swift */,
+				96E846F31EDDA62F0005F32F /* AnimationPreprocessor.swift */,
+				96AEB5F01EE1FA3C009A3BE0 /* MatchPreprocessor.swift */,
+				96AEB6071EE32A38009A3BE0 /* SourcePreprocessor.swift */,
+				96AEB6091EE339F6009A3BE0 /* DurationPreprocessor.swift */,
 			);
 			name = Preprocessor;
 			sourceTree = "<group>";
@@ -137,6 +148,7 @@
 				966C539F1EDD20DA00A82A57 /* Motion+UIViewController.swift */,
 				966C53AE1EDD2F8B00A82A57 /* Motion+CALayer.swift */,
 				966C53B01EDD2FE600A82A57 /* Motion+CABasicAnimation.swift */,
+				96AEB60B1EE34012009A3BE0 /* Motion+CG.swift */,
 			);
 			name = Extension;
 			sourceTree = "<group>";
@@ -225,23 +237,27 @@
 			buildActionMask = 2147483647;
 			files = (
 				966C53BD1EDD396800A82A57 /* MotionAnimationFillMode.swift in Sources */,
-				966C53B91EDD366800A82A57 /* MotionTransitionPreprocessor.swift in Sources */,
-				96E846F41EDDA62F0005F32F /* DefaultMotionTransitionPreprocessor.swift in Sources */,
+				966C53B91EDD366800A82A57 /* TransitionPreprocessor.swift in Sources */,
+				96E846F41EDDA62F0005F32F /* AnimationPreprocessor.swift in Sources */,
 				966C53B71EDD328F00A82A57 /* MotionCoordinateSpace.swift in Sources */,
 				966C539E1EDD207800A82A57 /* Motion+UIView.swift in Sources */,
+				96AEB5F11EE1FA3C009A3BE0 /* MatchPreprocessor.swift in Sources */,
 				966C53B31EDD325B00A82A57 /* MotionSnapshot.swift in Sources */,
 				96C98DE61E43848500B22906 /* MotionAnimation.swift in Sources */,
+				96AEB60A1EE339F6009A3BE0 /* DurationPreprocessor.swift in Sources */,
 				9657A6AE1EDA19D8004461DE /* MotionTransitionAnimator.swift in Sources */,
 				9657A6AC1EDA1601004461DE /* MotionObserver.swift in Sources */,
 				9657A6B31EDA63FC004461DE /* MotionContext.swift in Sources */,
 				966C53B51EDD327D00A82A57 /* MotionCascadeDirection.swift in Sources */,
-				964C15471EDD001A00F0869D /* MotionTransitionAnimation.swift in Sources */,
+				964C15471EDD001A00F0869D /* MotionTransition.swift in Sources */,
 				96E846F61EDDA7F20005F32F /* MotionTransitionState.swift in Sources */,
 				966C53B11EDD2FE600A82A57 /* Motion+CABasicAnimation.swift in Sources */,
 				961409AA1E43CF1B00E7BA99 /* Motion+Obj-C.swift in Sources */,
 				964C153D1EDCF6EA00F0869D /* Motion.swift in Sources */,
 				966C53AF1EDD2F8B00A82A57 /* Motion+CALayer.swift in Sources */,
 				966C53A01EDD20DA00A82A57 /* Motion+UIViewController.swift in Sources */,
+				96AEB6081EE32A38009A3BE0 /* SourcePreprocessor.swift in Sources */,
+				96AEB60C1EE34012009A3BE0 /* Motion+CG.swift in Sources */,
 				96C98DE41E4382B100B22906 /* MotionController.swift in Sources */,
 				966C53BF1EDD399400A82A57 /* MotionAnimationTimingFunction.swift in Sources */,
 			);

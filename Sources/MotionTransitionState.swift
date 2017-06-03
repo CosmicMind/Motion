@@ -31,12 +31,12 @@
 import UIKit
 
 internal class MotionTransitionStateWrapper {
-    /// A reference to a MotionTransitionAnimationState.
+    /// A reference to a MotionTransitionState.
     internal var state: MotionTransitionState
 
     /**
-     An initializer that accepts a given MotionTransitionAnimationState.
-     - Parameter state: A MotionTransitionAnimationState.
+     An initializer that accepts a given MotionTransitionState.
+     - Parameter state: A MotionTransitionState.
      */
     internal init(state: MotionTransitionState) {
         self.state = state
@@ -50,7 +50,7 @@ public struct MotionTransitionState {
     /// A reference to the motion identifier.
     public var motionIdentifier: String?
 
-    public var startStateIfMatched: [MotionTransitionAnimation]?
+    public var startStateIfMatched: [MotionTransition]?
 
     public var position: CGPoint?
     public var size: CGSize?
@@ -88,20 +88,20 @@ public struct MotionTransitionState {
     public var ignoreSubviewTransitionAnimations: Bool?
     public var coordinateSpace: MotionCoordinateSpace?
     public var useScaleBasedSizeChange: Bool?
-    public var snapshotType: MotionSnapshot?
+    public var motionSnapshot: MotionSnapshot?
 
     public var forceAnimate: Bool = false
     public var custom: [String:Any]?
 
-    init(transitionAnimations: [MotionTransitionAnimation]) {
+    init(transitionAnimations: [MotionTransition]) {
         append(contentsOf: transitionAnimations)
     }
 
-    public mutating func append(_ transitionAnimations: MotionTransitionAnimation) {
+    public mutating func append(_ transitionAnimations: MotionTransition) {
         transitionAnimations.apply(&self)
     }
 
-    public mutating func append(contentsOf transitionAnimations: [MotionTransitionAnimation]) {
+    public mutating func append(contentsOf transitionAnimations: [MotionTransition]) {
         for v in transitionAnimations {
             v.apply(&self)
         }
@@ -109,7 +109,7 @@ public struct MotionTransitionState {
 }
 
 extension MotionTransitionState: ExpressibleByArrayLiteral {
-    public init(arrayLiteral elements: MotionTransitionAnimation...) {
+    public init(arrayLiteral elements: MotionTransition...) {
         append(contentsOf: elements)
     }
 }

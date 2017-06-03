@@ -32,16 +32,22 @@ import UIKit
 
 open class MotionContext {
     /// A reference to the transition container.
-    fileprivate var container: UIView
+    internal fileprivate(set) var container: UIView
     
     /// An index source of identifiers to their corresponding view.
-    fileprivate var sourceIdentifierToView = [String: UIView]()
+    internal fileprivate(set) var sourceIdentifierToView = [String: UIView]()
     
     /// An index of destination identifiers to their corresponding view.
-    fileprivate var destinationIdentifierToView = [String: UIView]()
+    internal fileprivate(set) var destinationIdentifierToView = [String: UIView]()
     
     /// An index of views to their corresponding snapshot view.
-    fileprivate var snapshotToView = [UIView: UIView]()
+    internal fileprivate(set) var snapshotToView = [UIView: UIView]()
+    
+    /// An index of views to their MotionTransitionState.
+    internal var viewToMotionTransitionState = [UIView: MotionTransitionState]()
+    
+    /// An index of views to their alpha value.
+    internal var viewToAlpha = [UIView: CGFloat]()
     
     /// A reference to the transition from views.
     internal var fromViews: [UIView]!
@@ -83,6 +89,27 @@ extension MotionContext {
 
 extension MotionContext {
     /**
+     Retrieves the transition pair for a given view, if one exists.
+     - Parameter for view: A UIView.
+     - Returns: An optional UIView.
+     */
+    internal func transitionPair(for view: UIView) -> UIView? {
+        guard let identifier = view.motionIdentifier else {
+            return nil
+        }
+        
+        guard let source = sourceIdentifierToView[identifier] else {
+            return nil
+        }
+        
+        guard let destination = destinationIdentifierToView[identifier] else {
+            return nil
+        }
+        
+        return view == source ? destination : view == destination ? source : nil
+    }
+    
+    /**
      Sets the views that will transition from one state to another.
      - Parameter fromViews: An Array of UIViews.
      - Parameter toViews: An Array of UIViews.
@@ -90,7 +117,114 @@ extension MotionContext {
     internal func set(fromViews: [UIView], toViews: [UIView]) {
         self.fromViews = fromViews
         self.toViews = toViews
+        
         prepare(views: fromViews, identifierIndex: &sourceIdentifierToView)
         prepare(views: toViews, identifierIndex: &destinationIdentifierToView)
+    }
+    
+    internal func hide(view: UIView) {
+        guard nil == viewToAlpha[view] else {
+            return
+        }
+        
+        guard .none != viewToMotionTransitionState[view]?.motionSnapshot else {
+            return
+        }
+        
+        guard view is UIVisualEffectView else {
+            view.isHidden = true
+            viewToAlpha[view] = 1
+            return
+        }
+        
+        viewToAlpha[view] = view.isOpaque ? .infinity : view.alpha
+        view.alpha = 0
+    }
+    
+    internal func show(view: UIView) {
+        guard let v = viewToAlpha[view] else {
+            return
+        }
+        
+        if view is UIVisualEffectView {
+            view.isHidden = false
+        } else if v == .infinity {
+            view.alpha = 1
+            view.isOpaque = true
+        } else {
+            view.alpha = v
+        }
+        
+        viewToAlpha[view] = nil
+    }
+    
+    internal func showAll() {
+        for v in viewToAlpha.keys {
+            show(view: v)
+        }
+        
+        viewToAlpha.removeAll()
+    }
+    
+    internal func showSubviews(for view: UIView) {
+        show(view: view)
+        
+        for subview in view.subviews {
+            showSubviews(for: subview)
+        }
+    }
+    
+    internal func removeAllSnapshots() {
+        for (view, snapshot) in snapshotToView {
+            guard view != snapshot else {
+                continue
+            }
+            
+            // Do not remove when using .useNoSnapshot.
+            snapshot.removeFromSuperview()
+        }
+    }
+    
+    internal func removeSnapshots(rootView: UIView) {
+        if let snapshot = snapshotToView[rootView], snapshot != rootView {
+            snapshot.removeFromSuperview()
+        }
+        
+        for subview in rootView.subviews {
+            removeSnapshots(rootView: subview)
+        }
+    }
+    
+    internal func snapshots(for view: UIView) -> [UIView] {
+        var snapshots = [UIView]()
+        
+        for v in view.flattenedViewHierarchy {
+            guard let snapshot = snapshotToView[v] else {
+                continue
+            }
+            
+            snapshots.append(snapshot)
+        }
+        
+        return snapshots
+    }
+    
+    internal func loadViewToAlpha(for view: UIView) {
+        if let v = view.motionAlpha {
+            view.alpha = v
+            view.motionAlpha = nil
+        }
+        
+        for subview in view.subviews {
+            loadViewToAlpha(for: subview)
+        }
+    }
+    
+    internal func storeViewToAlpha(for view: UIView) {
+        view.motionAlpha = viewToAlpha[view]
+        
+        for subview in view.subviews {
+            storeViewToAlpha(for: subview)
+        }
     }
 }

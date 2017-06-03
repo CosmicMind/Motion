@@ -43,42 +43,44 @@ public class Motion: MotionController {
      A boolean indicating if the transition view controller is a
      UINavigationController.
      */
-    fileprivate var isNavigationController = false
+    internal fileprivate(set) var isNavigationController = false
     
     /**
      A boolean indicating if the transition view controller is a
      UITabBarController.
      */
-    fileprivate var isTabBarController = false
+    internal fileprivate(set) var isTabBarController = false
     
     /**
      A boolean indicating if the transition view controller is a
      UINavigationController or UITabBarController.
      */
-    fileprivate var isContainerController: Bool {
+    internal var isContainerController: Bool {
         return isNavigationController || isTabBarController
     }
     
-    /// A boolean indicating if the toView is at full screen.
-    fileprivate var isToViewFullScreen: Bool {
-        return !isContainerController && (.overFullScreen == toViewController!.modalPresentationStyle || .overCurrentContext == toViewController!.modalPresentationStyle)
-    }
-    fileprivate var isFromViewFullScreen: Bool {
-        return !isContainerController && (.overFullScreen == fromViewController!.modalPresentationStyle || .overCurrentContext == fromViewController!.modalPresentationStyle)
-    }
-    
     /// A reference to the fromViewController.view.
-    fileprivate var fromView: UIView {
+    internal var fromView: UIView {
         return fromViewController!.view
     }
     
     /// A reference to the toViewController.view.
-    fileprivate var toView: UIView {
+    internal var toView: UIView {
         return toViewController!.view
     }
     
     /// A reference to the screen snapshot.
     fileprivate var screenSnapshot: UIView!
+    
+    /// A boolean indicating if the fromView is at full screen.
+    internal var isFromViewFullScreen: Bool {
+        return !isContainerController && (.overFullScreen == fromViewController!.modalPresentationStyle || .overCurrentContext == fromViewController!.modalPresentationStyle)
+    }
+    
+    /// A boolean indicating if the toView is at full screen.
+    internal var isToViewFullScreen: Bool {
+        return !isContainerController && (.overFullScreen == toViewController!.modalPresentationStyle || .overCurrentContext == toViewController!.modalPresentationStyle)
+    }
     
     /**
      A reference to a shared Motion instance to control interactive
@@ -212,7 +214,12 @@ extension Motion {
     
     /// Prepares the preprocessors.
     fileprivate func preparePreprocessors() {
-        preprocessors = [DefaultMotionTransitionPreprocessor()]
+        preprocessors = [
+            MatchPreprocessor(),
+            SourcePreprocessor(),
+            AnimationPreprocessor(motion: self),
+            DurationPreprocessor(),
+        ]
     }
     
     /// Prepares the animators.
@@ -279,6 +286,11 @@ extension Motion {
         processContext()
     }
     
+    /**
+     Called when the animation is thought to be completed.
+     - Parameter isFinished: A boolean value indicatin if the
+     transition has completed.
+     */
     fileprivate func completed(isFinished: Bool) {
         transitionContext?.completeTransition(!isFinished)
     }

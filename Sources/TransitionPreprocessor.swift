@@ -30,12 +30,12 @@
 
 import UIKit
 
-public protocol MotionTransitionPreprocessor: class {
+public protocol TransitionPreprocessor: class {
     /// A reference to a MotionContext.
     weak var context: MotionContext! { get set }
     
     /**
-     Implementation for processors.
+     Implementation for processor.
      - Parameter fromViews: An Array of UIViews.
      - Parameter toViews: An Array of UIViews.
      */

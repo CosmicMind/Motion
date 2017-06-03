@@ -41,6 +41,12 @@ fileprivate struct MotionInstance {
     
     /// An optional reference to the motion animations.
     fileprivate var animations: [MotionAnimation]?
+    
+    /// An optional reference to the motion transition animations.
+    fileprivate var transitions: [MotionTransition]?
+    
+    /// An alpha value.
+    fileprivate var alpha: CGFloat?
 }
 
 extension UIView {
@@ -48,7 +54,7 @@ extension UIView {
     fileprivate var motionInstance: MotionInstance {
         get {
             return AssociatedObject.get(base: self, key: &MotionInstanceKey) {
-                return MotionInstance(isEnabled: true, identifier: nil, animations: nil)
+                return MotionInstance(isEnabled: true, identifier: nil, animations: nil, transitions: nil, alpha: 1)
             }
         }
         set(value) {
@@ -78,13 +84,34 @@ extension UIView {
         }
     }
     
-    /// The animations to run while in transition.
+    /// The animations to run.
     open var motionAnimations: [MotionAnimation]? {
         get {
             return motionInstance.animations
         }
         set(value) {
             motionInstance.animations = value
+        }
+    }
+    
+    /// The animations to run while in transition.
+    open var motionTransitions: [MotionTransition]? {
+        get {
+            return motionInstance.transitions
+        }
+        set(value) {
+            motionInstance.transitions = value
+        }
+    }
+    
+    /// The animations to run while in transition.
+    @IBInspectable
+    open var motionAlpha: CGFloat? {
+        get {
+            return motionInstance.alpha
+        }
+        set(value) {
+            motionInstance.alpha = value
         }
     }
 }
@@ -164,6 +191,27 @@ extension UIView {
         isHidden = shouldHide
         
         return v
+    }
+}
+
+extension UIView {
+    internal func optimizedDuration(fromPosition: CGPoint, toPosition: CGPoint?, size: CGSize?, transform: CATransform3D?) -> TimeInterval {
+        let toPos = toPosition ?? fromPosition
+        let fromSize = (layer.presentation() ?? layer).bounds.size
+        let toSize = size ?? fromSize
+        let fromTransform = (layer.presentation() ?? layer).transform
+        let toTransform = transform ?? fromTransform
+        
+        let realFromPos = CGPoint.zero.transform(fromTransform) + fromPosition
+        let realToPos = CGPoint.zero.transform(toTransform) + toPos
+        
+        let realFromSize = fromSize.transform(fromTransform)
+        let realToSize = toSize.transform(toTransform)
+        
+        let movePoints = realFromPos.distance(realToPos) + realFromSize.point.distance(realToSize.point)
+        
+        // duration is 0.2 @ 0 to 0.375 @ 500
+        return 0.208 + Double(movePoints.clamp(0, 500)) / 3000
     }
 }
 

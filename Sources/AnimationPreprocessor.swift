@@ -30,16 +30,38 @@
 
 import UIKit
 
-public class DefaultMotionTransitionPreprocessor: MotionTransitionPreprocessor {
+public class AnimationPreprocessor: TransitionPreprocessor {
+    /// A reference to the Motion instance.
+    fileprivate var motion: Motion
+    
     /// A reference to a MotionContext.
     public weak var context: MotionContext!
     
     /**
-     Implementation for processors.
+     Initializer that accepts a Motion instance.
+     - Parameter motion: A Motion instance.
+     */
+    init(motion: Motion) {
+        self.motion = motion
+    }
+
+    /**
+     Implementation for processor.
      - Parameter fromViews: An Array of UIViews.
      - Parameter toViews: An Array of UIViews.
      */
     public func process(fromViews: [UIView], toViews: [UIView]) {
-        
+        /*
+        let inNavigationController = motion.isNavigationController
+        let inTabBarController = motion.isTabBarController
+        let toViewController = motion.toViewController
+        let fromViewController = motion.fromViewController
+        let presenting = motion.isPresenting
+        let fromOverFullScreen = motion.isFromViewFullScreen
+        let toOverFullScreen = motion.isToViewFullScreen
+        let fromView = motion.fromView
+        let toView = motion.toView
+        let animators = motion.animators
+         */
     }
 }

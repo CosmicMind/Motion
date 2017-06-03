@@ -98,7 +98,7 @@ public class MotionController: NSObject, MotionSubscriber {
     public internal(set) var animators = [MotionTransitionAnimator]()
     
     /// A reference to the preprocessors.
-    public internal(set) var preprocessors = [MotionTransitionPreprocessor]()
+    public internal(set) var preprocessors = [TransitionPreprocessor]()
     
     /// A boolean indicating if a transition is in progress.
     public var isTransitioning: Bool {

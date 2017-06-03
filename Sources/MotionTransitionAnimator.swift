@@ -58,5 +58,5 @@ public protocol MotionTransitionAnimator: class {
     func clean()
     
     
-    func apply(motionTransitions: [MotionTransitionAnimation], to view: UIView)
+    func apply(motionTransitions: [MotionTransition], to view: UIView)
 }

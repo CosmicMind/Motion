@@ -28,7 +28,7 @@
  
 import UIKit
  
-internal enum CAMediaTimingFunctionType {
+public enum CAMediaTimingFunctionType {
     case linear
     case easeIn
     case easeOut
@@ -40,7 +40,7 @@ internal enum CAMediaTimingFunctionType {
     case easeOutBack
 }
  
-internal extension CAMediaTimingFunction {
+public extension CAMediaTimingFunction {
     //  default
     static let linear = CAMediaTimingFunction(name: kCAMediaTimingFunctionLinear)
     static let easeIn = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseIn)

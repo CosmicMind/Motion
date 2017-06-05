@@ -466,4 +466,46 @@ extension Motion {
     public class func cancel(delayed completion: MotionDelayCancelBlock) {
         completion(true)
     }
+    
+    /**
+     Disables the default animations set on CALayers.
+     - Parameter animations: A callback that wraps the animations to disable.
+     */
+    public class func disable(_ animations: (() -> Void)) {
+        animate(duration: 0, animations: animations)
+    }
+    
+    /**
+     Runs an animation with a specified duration.
+     - Parameter duration: An animation duration time.
+     - Parameter animations: An animation block.
+     - Parameter mediaTimingFunctionType: An CAMediaTimingFunctionType value.
+     - Parameter completion: A completion block that is executed once
+     the animations have completed.
+     */
+    public class func animate(duration: CFTimeInterval, mediaTimingFunctionType: CAMediaTimingFunctionType = .easeInOut, animations: (() -> Void), completion: (() -> Void)? = nil) {
+        CATransaction.begin()
+        CATransaction.setAnimationDuration(duration)
+        CATransaction.setCompletionBlock(completion)
+        CATransaction.setAnimationTimingFunction(CAMediaTimingFunction.from(mediaTimingFunctionType: mediaTimingFunctionType))
+        animations()
+        CATransaction.commit()
+    }
+    
+    /**
+     Creates a CAAnimationGroup.
+     - Parameter animations: An Array of CAAnimation objects.
+     - Parameter mediaTimingFunctionType: An CAMediaTimingFunctionType value.
+     - Parameter duration: An animation duration time for the group.
+     - Returns: A CAAnimationGroup.
+     */
+    public class func animate(group animations: [CAAnimation], mediaTimingFunctionType: CAMediaTimingFunctionType = .easeInOut, duration: CFTimeInterval = 0.5) -> CAAnimationGroup {
+        let group = CAAnimationGroup()
+        group.fillMode = MotionAnimationFillModeToValue(mode: .both)
+        group.isRemovedOnCompletion = false
+        group.animations = animations
+        group.duration = duration
+        group.timingFunction = CAMediaTimingFunction.from(mediaTimingFunctionType: mediaTimingFunctionType)
+        return group
+    }
 }

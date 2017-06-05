@@ -112,3 +112,108 @@ public extension UIView {
     }
   }
 }
+
+fileprivate var MotionInstanceKey: UInt8 = 0
+
+fileprivate struct MotionInstance {
+    /// An optional reference to the motion animations.
+    fileprivate var animations: [MotionAnimation]?
+}
+
+extension UIView {
+    /// MotionInstance reference.
+    fileprivate var motionInstance: MotionInstance {
+        get {
+            return AssociatedObject.get(base: self, key: &MotionInstanceKey) {
+                return MotionInstance(animations: nil)
+            }
+        }
+        set(value) {
+            AssociatedObject.set(base: self, key: &MotionInstanceKey, value: value)
+        }
+    }
+    
+    /// The animations to run.
+    open var motionAnimations: [MotionAnimation]? {
+        get {
+            return motionInstance.animations
+        }
+        set(value) {
+            motionInstance.animations = value
+        }
+    }
+}
+
+extension UIView {
+    /// Computes the rotation of the view.
+    open var motionRotationAngle: CGFloat {
+        get {
+            return CGFloat(atan2f(Float(transform.b), Float(transform.a))) * 180 / CGFloat(Double.pi)
+        }
+        set(value) {
+            transform = CGAffineTransform(rotationAngle: CGFloat(Double.pi) * value / 180)
+        }
+    }
+    
+    /// The global position of a view.
+    open var motionPosition: CGPoint {
+        return superview?.convert(layer.position, to: nil) ?? layer.position
+    }
+    
+    /// The layer.transform of a view.
+    open var motionTransform: CATransform3D {
+        get {
+            return layer.transform
+        }
+        set(value) {
+            layer.transform = value
+        }
+    }
+    
+    /// Computes the scale X axis value of the view.
+    open var motionScaleX: CGFloat {
+        return transform.a
+    }
+    
+    /// Computes the scale Y axis value of the view.
+    open var motionScaleY: CGFloat {
+        return transform.b
+    }
+    
+    /**
+     A function that accepts CAAnimation objects and executes them on the
+     view's backing layer.
+     - Parameter animations: A list of CAAnimations.
+     */
+    open func animate(_ animations: CAAnimation...) {
+        layer.animate(animations)
+    }
+    
+    /**
+     A function that accepts an Array of CAAnimation objects and executes
+     them on the view's backing layer.
+     - Parameter animations: An Array of CAAnimations.
+     */
+    open func animate(_ animations: [CAAnimation]) {
+        layer.animate(animations)
+    }
+    
+    /**
+     A function that accepts a list of MotionAnimation values and executes
+     them on the view's backing layer.
+     - Parameter animations: A list of MotionAnimation values.
+     */
+    open func motion(_ animations: MotionAnimation...) {
+        layer.motion(animations)
+    }
+    
+    /**
+     A function that accepts an Array of MotionAnimation values and executes
+     them on the view's backing layer.
+     - Parameter animations: An Array of MotionAnimation values.
+     - Parameter completion: An optional completion block.
+     */
+    open func motion(_ animations: [MotionAnimation], completion: (() -> Void)? = nil) {
+        layer.motion(animations, completion: completion)
+    }
+}

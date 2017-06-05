@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		961409B81E43D21300E7BA99 /* Motion.h in Headers */ = {isa = PBXBuildFile; fileRef = 96C98DED1E438A5700B22906 /* Motion.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		963150D21EE50DA6002B0D42 /* Motion+Obj-C.swift in Sources */ = {isa = PBXBuildFile; fileRef = 963150D11EE50DA6002B0D42 /* Motion+Obj-C.swift */; };
+		963150D61EE51C7A002B0D42 /* MotionAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 963150D41EE51C7A002B0D42 /* MotionAnimation.swift */; };
+		963150DA1EE51EB4002B0D42 /* MotionAnimationFillMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 963150D91EE51EB4002B0D42 /* MotionAnimationFillMode.swift */; };
 		96AEB68D1EE4610F009A3BE0 /* MotionAnimatorViewContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96AEB6651EE4610F009A3BE0 /* MotionAnimatorViewContext.swift */; };
 		96AEB68E1EE4610F009A3BE0 /* MotionCoreAnimationViewContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96AEB6661EE4610F009A3BE0 /* MotionCoreAnimationViewContext.swift */; };
 		96AEB68F1EE4610F009A3BE0 /* MotionDefaultAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96AEB6671EE4610F009A3BE0 /* MotionDefaultAnimator.swift */; };
@@ -48,6 +50,8 @@
 
 /* Begin PBXFileReference section */
 		963150D11EE50DA6002B0D42 /* Motion+Obj-C.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Motion+Obj-C.swift"; sourceTree = "<group>"; };
+		963150D41EE51C7A002B0D42 /* MotionAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionAnimation.swift; sourceTree = "<group>"; };
+		963150D91EE51EB4002B0D42 /* MotionAnimationFillMode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionAnimationFillMode.swift; sourceTree = "<group>"; };
 		96AEB6651EE4610F009A3BE0 /* MotionAnimatorViewContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionAnimatorViewContext.swift; sourceTree = "<group>"; };
 		96AEB6661EE4610F009A3BE0 /* MotionCoreAnimationViewContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionCoreAnimationViewContext.swift; sourceTree = "<group>"; };
 		96AEB6671EE4610F009A3BE0 /* MotionDefaultAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionDefaultAnimator.swift; sourceTree = "<group>"; };
@@ -132,6 +136,7 @@
 				96AEB6741EE4610F009A3BE0 /* Motion+UIView.swift */,
 				96AEB6751EE4610F009A3BE0 /* Motion+UIViewController.swift */,
 				963150D11EE50DA6002B0D42 /* Motion+Obj-C.swift */,
+				963150D91EE51EB4002B0D42 /* MotionAnimationFillMode.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -187,6 +192,7 @@
 				96AEB66C1EE4610F009A3BE0 /* DefaultAnimationPreprocessor.swift */,
 				96AEB66D1EE4610F009A3BE0 /* Extensions */,
 				96AEB6771EE4610F009A3BE0 /* Motion.swift */,
+				963150D41EE51C7A002B0D42 /* MotionAnimation.swift */,
 				96AEB6781EE4610F009A3BE0 /* MotionController.swift */,
 				96AEB6791EE4610F009A3BE0 /* MotionContext.swift */,
 				96AEB67A1EE4610F009A3BE0 /* MotionIndependentController.swift */,
@@ -288,6 +294,7 @@
 				96AEB6931EE4610F009A3BE0 /* DefaultAnimationPreprocessor.swift in Sources */,
 				96AEB68F1EE4610F009A3BE0 /* MotionDefaultAnimator.swift in Sources */,
 				96AEB69D1EE4610F009A3BE0 /* Motion.swift in Sources */,
+				963150D61EE51C7A002B0D42 /* MotionAnimation.swift in Sources */,
 				96AEB6A21EE4610F009A3BE0 /* MotionTransition+MotionStringConvertible.swift in Sources */,
 				96AEB6A51EE4610F009A3BE0 /* MotionTargetState.swift in Sources */,
 				96AEB6961EE4610F009A3BE0 /* Motion+CAMediaTimingFunction.swift in Sources */,
@@ -317,6 +324,7 @@
 				96AEB6A11EE4610F009A3BE0 /* MotionTransition.swift in Sources */,
 				96AEB6971EE4610F009A3BE0 /* Motion+CG.swift in Sources */,
 				96AEB6AB1EE4610F009A3BE0 /* BasePreprocessor.swift in Sources */,
+				963150DA1EE51EB4002B0D42 /* MotionAnimationFillMode.swift in Sources */,
 				96AEB6AC1EE4610F009A3BE0 /* CascadePreprocessor.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

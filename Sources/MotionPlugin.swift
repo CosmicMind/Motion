@@ -105,7 +105,7 @@ open class MotionPlugin: NSObject, MotionPreprocessor, MotionAnimator {
    - Parameters:
      - elapsedTime: time of the animation to seek to.
    */
-  open func seekTo(elapsedTime: TimeInterval) {}
+  open func seek(to elapsedTime: TimeInterval) {}
 
   /**
    For supporting interactive animation only.
@@ -116,7 +116,7 @@ open class MotionPlugin: NSObject, MotionPreprocessor, MotionAnimator {
    - elapsedTime: will be the same value since last `seekTo`
    - reverse: a boolean value indicating whether or not the animation should reverse
    */
-  open func resume(elapsedTime: TimeInterval, isReversed: Bool) -> TimeInterval { return 0 }
+  open func resume(at elapsedTime: TimeInterval, isReversed: Bool) -> TimeInterval { return 0 }
 
   /**
    For supporting interactive animation only.

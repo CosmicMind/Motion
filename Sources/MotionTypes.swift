@@ -29,35 +29,86 @@
 import UIKit
 
 public protocol MotionPreprocessor: class {
-  weak var context: MotionContext! { get set }
-  func process(fromViews: [UIView], toViews: [UIView])
+    weak var context: MotionContext! { get set }
+    func process(fromViews: [UIView], toViews: [UIView])
 }
 
 public protocol MotionAnimator: class {
-  weak var context: MotionContext! { get set }
-  func canAnimate(view: UIView, isAppearing: Bool) -> Bool
-  func animate(fromViews: [UIView], toViews: [UIView]) -> TimeInterval
-  func clean()
+    /// A reference to a MotionContext.
+    weak var context: MotionContext! { get set }
 
-  func seekTo(elapsedTime: TimeInterval)
-  func resume(elapsedTime: TimeInterval, isReversed: Bool) -> TimeInterval
-  func apply(state: MotionTargetState, to view: UIView)
+    /// Cleans the contexts.
+    func clean()
+    
+    /**
+     A function that determines if a view can be animated.
+     - Parameter view: A UIView.
+     - Parameter isAppearing: A boolean that determines whether the
+     view is appearing.
+     */
+    func canAnimate(view: UIView, isAppearing: Bool) -> Bool
+    
+    /**
+     Animates the from-views to the to-views.
+     - Parameter fromViews: An Array of UIViews.
+     - Parameter toViews: An Array of UIViews.
+     - Returns: A TimeInterval.
+     */
+    func animate(fromViews: [UIView], toViews: [UIView]) -> TimeInterval
+  
+    /**
+     Moves the view's animation to the given elapsed time.
+     - Parameter to elapsedTime: A TimeInterval.
+     */
+    func seek(to elapsedTime: TimeInterval)
+    
+    /**
+     Resumes the animation with a given elapsed time and
+     optional reversed boolean.
+     - Parameter at elapsedTime: A TimeInterval.
+     - Parameter isReversed: A boolean to reverse the animation
+     or not.
+     */
+    func resume(at elapsedTime: TimeInterval, isReversed: Bool) -> TimeInterval
+    
+    /**
+     Applies the given state to the given view.
+     - Parameter state: A MotionTargetState.
+     - Parameter to view: A UIView.
+     */
+    func apply(state: MotionTargetState, to view: UIView)
 }
 
 public protocol MotionProgressUpdateObserver {
-  func motionDidUpdateProgress(progress: Double)
+    func motionDidUpdateProgress(progress: Double)
 }
 
-@objc public protocol MotionViewControllerDelegate {
-  @objc optional func motionWillStartAnimatingFrom(viewController: UIViewController)
-  @objc optional func motionDidEndAnimatingFrom(viewController: UIViewController)
-  @objc optional func motionDidCancelAnimatingFrom(viewController: UIViewController)
+@objc(MotionViewControllerDelegate)
+public protocol MotionViewControllerDelegate {
+    @objc
+    optional func motionWillStartAnimatingFrom(viewController: UIViewController)
+    
+    @objc
+    optional func motionDidEndAnimatingFrom(viewController: UIViewController)
+    
+    @objc
+    optional func motionDidCancelAnimatingFrom(viewController: UIViewController)
 
-  @objc optional func motionWillStartTransition()
-  @objc optional func motionDidEndTransition()
-  @objc optional func motionDidCancelTransition()
+    @objc
+    optional func motionWillStartTransition()
+    
+    @objc
+    optional func motionDidEndTransition()
+    
+    @objc
+    optional func motionDidCancelTransition()
 
-  @objc optional func motionWillStartAnimatingTo(viewController: UIViewController)
-  @objc optional func motionDidEndAnimatingTo(viewController: UIViewController)
-  @objc optional func motionDidCancelAnimatingTo(viewController: UIViewController)
+    @objc
+    optional func motionWillStartAnimatingTo(viewController: UIViewController)
+    
+    @objc
+    optional func motionDidEndAnimatingTo(viewController: UIViewController)
+    
+    @objc
+    optional func motionDidCancelAnimatingTo(viewController: UIViewController)
 }

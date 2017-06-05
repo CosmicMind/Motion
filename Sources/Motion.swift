@@ -203,7 +203,7 @@ internal extension Motion {
       insertToViewFirst = true
     }
     for animator in animators {
-      if let animator = animator as? HasInsertOrder {
+      if let animator = animator as? MotionHasInsertOrder {
         animator.insertToViewFirst = insertToViewFirst
       }
     }

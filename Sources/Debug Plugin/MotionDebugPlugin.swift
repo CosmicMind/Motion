@@ -59,7 +59,7 @@ public class MotionDebugPlugin: MotionPlugin {
     return .infinity
   }
 
-  public override func resume(elapsedTime: TimeInterval, isReversed: Bool) -> TimeInterval {
+  public override func resume(at: TimeInterval, isReversed: Bool) -> TimeInterval {
     guard let debugView = debugView else { return 0.4 }
     debugView.delegate = nil
 

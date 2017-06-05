@@ -80,7 +80,7 @@ internal class MotionCoreAnimationViewContext: MotionAnimatorViewContext {
         }
     }
 
-    override func resume(elapsedTime: TimeInterval, isReversed: Bool) {
+    override func resume(at elapsedTime: TimeInterval, isReversed: Bool) {
         for (key, (fromValue, toValue)) in transitionStates {
             transitionStates[key] = (currentValue(for: key), !isReversed ? toValue : fromValue)
         }
@@ -318,7 +318,7 @@ extension MotionCoreAnimationViewContext {
     }
     
     /**
-     Constructs a map of key paths to animation values.
+     Constructs a map of key paths to animation state values.
      - Parameter targetState state: A MotionTargetState.
      - Returns: A map of key paths to animation values.
      */

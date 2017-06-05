@@ -50,11 +50,11 @@ public class MotionController: NSObject {
         let elapsedTime = progress * totalDuration
         if interactive {
           for animator in animators {
-            animator.seekTo(elapsedTime: elapsedTime)
+            animator.seek(to: elapsedTime)
           }
         } else {
           for plugin in plugins where plugin.requirePerFrameCallback {
-            plugin.seekTo(elapsedTime: elapsedTime)
+            plugin.seek(to: elapsedTime)
           }
         }
       }
@@ -156,8 +156,7 @@ public extension MotionController {
     }
     var maxTime: TimeInterval = 0
     for animator in self.animators {
-      maxTime = max(maxTime, animator.resume(elapsedTime:self.progress * self.totalDuration,
-                                             isReversed: false))
+      maxTime = max(maxTime, animator.resume(at: self.progress * self.totalDuration, isReversed: false))
     }
     self.complete(after: maxTime, finishing: true)
   }
@@ -179,8 +178,7 @@ public extension MotionController {
       if adjustedProgress < 0 {
         adjustedProgress = -adjustedProgress
       }
-      maxTime = max(maxTime, animator.resume(elapsedTime:adjustedProgress * self.totalDuration,
-                                             isReversed: true))
+      maxTime = max(maxTime, animator.resume(at: adjustedProgress * self.totalDuration, isReversed: true))
     }
     self.complete(after: maxTime, finishing: false)
   }

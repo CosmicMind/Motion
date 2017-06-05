@@ -28,93 +28,102 @@
 
 import UIKit
 
-internal extension UIView {
-  func optimizedDuration(fromPosition: CGPoint, toPosition: CGPoint?, size: CGSize?, transform: CATransform3D?) -> TimeInterval {
-    let fromPos = fromPosition
-    let toPos = toPosition ?? fromPos
-    let fromSize = (layer.presentation() ?? layer).bounds.size
-    let toSize = size ?? fromSize
-    let fromTransform = (layer.presentation() ?? layer).transform
-    let toTransform = transform ?? fromTransform
+internal class MotionDefaultAnimator<T: MotionAnimatorViewContext>: MotionAnimator, MotionHasInsertOrder {
+    /// A reference to a MotionContext.
+    weak public var context: MotionContext!
+  
+    /// An index of views to their corresponding animator context.
+    var viewToContexts = [UIView: T]()
 
-    let realFromPos = CGPoint.zero.transform(fromTransform) + fromPos
-    let realToPos = CGPoint.zero.transform(toTransform) + toPos
-
-    let realFromSize = fromSize.transform(fromTransform)
-    let realToSize = toSize.transform(toTransform)
-
-    let movePoints = (realFromPos.distance(realToPos) + realFromSize.point.distance(realToSize.point))
-
-    // duration is 0.2 @ 0 to 0.375 @ 500
-    let duration = 0.208 + Double(movePoints.clamp(0, 500)) / 3000
-    return duration
-  }
+    var insertToViewFirst = false
 }
 
-protocol HasInsertOrder: class {
-  var insertToViewFirst: Bool { get set }
+extension MotionDefaultAnimator {
+    /**
+     Animates a given view.
+     - Parameter view: A UIView.
+     - Parameter isAppearing: A boolean that determines whether the
+     view is appearing.
+     */
+    fileprivate func animate(view: UIView, isAppearing: Bool) {
+        let s = context.snapshotView(for: view)
+        let v = T(animator: self, snapshot: s, targetState: context[view]!)
+        
+        viewToContexts[view] = v
+        
+        v.startAnimations(isAppearing: isAppearing)
+    }
 }
-internal class MotionDefaultAnimator<ViewContext: MotionAnimatorViewContext>: MotionAnimator, HasInsertOrder {
-  weak public var context: MotionContext!
-  var viewContexts: [UIView: ViewContext] = [:]
-  internal var insertToViewFirst = false
 
-  public func seekTo(elapsedTime: TimeInterval) {
-    for viewContext in viewContexts.values {
-      viewContext.seek(to: elapsedTime)
+extension MotionDefaultAnimator {
+    func clean() {
+        for v in viewToContexts.values {
+            v.clean()
+        }
+        
+        viewToContexts.removeAll()
+        insertToViewFirst = false
     }
-  }
-
-  public func resume(elapsedTime: TimeInterval, isReversed: Bool) -> TimeInterval {
-    var duration: TimeInterval = 0
-    for (_, context) in viewContexts {
-      context.resume(elapsedTime: elapsedTime, isReversed: isReversed)
-      duration = max(duration, context.duration)
+    
+    func canAnimate(view: UIView, isAppearing: Bool) -> Bool {
+        guard let state = context[view] else {
+            return false
+        }
+        
+        return T.canAnimate(view: view, state: state, isAppearing: isAppearing)
     }
-    return duration
-  }
-
-  public func apply(state: MotionTargetState, to view: UIView) {
-    if let context = viewContexts[view] {
-      context.apply(state:state)
+    
+    func animate(fromViews: [UIView], toViews: [UIView]) -> TimeInterval {
+        var duration: TimeInterval = 0
+        
+        if insertToViewFirst {
+            for v in toViews {
+                animate(view: v, isAppearing: true)
+            }
+            
+            for v in fromViews {
+                animate(view: v, isAppearing: false)
+            }
+            
+        } else {
+            for v in fromViews {
+                animate(view: v, isAppearing: false)
+            }
+            
+            for v in toViews {
+                animate(view: v, isAppearing: true)
+            }
+        }
+        
+        for v in viewToContexts.values {
+            duration = max(duration, v.duration)
+        }
+        
+        return duration
     }
-  }
-
-  public func canAnimate(view: UIView, isAppearing: Bool) -> Bool {
-    guard let state = context[view] else { return false }
-    return ViewContext.canAnimate(view: view, state: state, isAppearing: isAppearing)
-  }
-
-  public func animate(fromViews: [UIView], toViews: [UIView]) -> TimeInterval {
-    var duration: TimeInterval = 0
-
-    if insertToViewFirst {
-      for v in toViews { animate(view: v, isAppearing: true) }
-      for v in fromViews { animate(view: v, isAppearing: false) }
-    } else {
-      for v in fromViews { animate(view: v, isAppearing: false) }
-      for v in toViews { animate(view: v, isAppearing: true) }
+    
+    func seek(to elapsedTime: TimeInterval) {
+        for v in viewToContexts.values {
+            v.seek(to: elapsedTime)
+        }
     }
-
-    for viewContext in viewContexts.values {
-      duration = max(duration, viewContext.duration)
+    
+    func resume(at elapsedTime: TimeInterval, isReversed: Bool) -> TimeInterval {
+        var duration: TimeInterval = 0
+        
+        for (_, v) in viewToContexts {
+            v.resume(at: elapsedTime, isReversed: isReversed)
+            duration = max(duration, v.duration)
+        }
+        
+        return duration
     }
-
-    return duration
-  }
-
-  func animate(view: UIView, isAppearing: Bool) {
-    let snapshot = context.snapshotView(for: view)
-    let viewContext = ViewContext(animator:self, snapshot: snapshot, targetState: context[view]!)
-    viewContexts[view] = viewContext
-    viewContext.startAnimations(isAppearing: isAppearing)
-  }
-
-  public func clean() {
-    for vc in viewContexts.values {
-      vc.clean()
+    
+    func apply(state: MotionTargetState, to view: UIView) {
+        guard let v = viewToContexts[view] else {
+            return
+        }
+        
+        v.apply(state: state)
     }
-    viewContexts.removeAll()
-    insertToViewFirst = false
-  }
 }

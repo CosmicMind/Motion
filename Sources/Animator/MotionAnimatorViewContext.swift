@@ -81,19 +81,13 @@ internal class MotionAnimatorViewContext {
     }
 
     /**
-     Applies the given state to the target state.
-     - Parameter state: A MotionTargetState.
-     */
-    func apply(state: MotionTargetState) {}
-    
-    /**
      Resumes the animation with a given elapsed time and
      optional reversed boolean.
-     - Parameter elapsedTime: A TimeInterval.
+     - Parameter at elapsedTime: A TimeInterval.
      - Parameter isReversed: A boolean to reverse the animation 
      or not.
      */
-    func resume(elapsedTime: TimeInterval, isReversed: Bool) {}
+    func resume(at elapsedTime: TimeInterval, isReversed: Bool) {}
     
     /**
      Moves the animation to the given elapsed time.
@@ -101,6 +95,12 @@ internal class MotionAnimatorViewContext {
      */
     func seek(to elapsedTime: TimeInterval) {}
 
+    /**
+     Applies the given state to the target state.
+     - Parameter state: A MotionTargetState.
+     */
+    func apply(state: MotionTargetState) {}
+    
     /**
      Starts the animations with an appearing boolean flag.
      - Parameter isAppearing: A boolean value whether the view

@@ -89,7 +89,7 @@ extension MotionTransition: MotionStringConvertible {
         let c3 = parameters.getFloat(2),
         let c4 = parameters.getFloat(3) {
         return .timingFunction(CAMediaTimingFunction(controlPoints: c1, c2, c3, c4))
-      } else if let name = parameters.get(0)?.name, let timingFunction = CAMediaTimingFunction.from(name:name) {
+      } else if let name = parameters.get(0)?.name, let timingFunction = CAMediaTimingFunction.from(mediaTimingFunctionType: name) {
         return .timingFunction(timingFunction)
       }
     case "arc":

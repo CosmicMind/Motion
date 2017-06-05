@@ -33,17 +33,17 @@ internal class MotionViewPropertyViewContext: MotionAnimatorViewContext {
 
   var viewPropertyAnimator: UIViewPropertyAnimator?
 
-  override class func canAnimate(view: UIView, state: MotionTargetState, appearing: Bool) -> Bool {
+  override class func canAnimate(view: UIView, state: MotionTargetState, isAppearing: Bool) -> Bool {
     return view is UIVisualEffectView && state.opacity != nil
   }
 
-  override func resume(timePassed: TimeInterval, reverse: Bool) {
-    viewPropertyAnimator?.finishAnimation(at: reverse ? .start : .end)
+  override func resume(elapsedTime: TimeInterval, isReversed: Bool) {
+    viewPropertyAnimator?.finishAnimation(at: isReversed ? .start : .end)
   }
 
-  override func seek(timePassed: TimeInterval) {
+  override func seek(to elapsedTime: TimeInterval) {
     viewPropertyAnimator?.pauseAnimation()
-    viewPropertyAnimator?.fractionComplete = CGFloat(timePassed / duration)
+    viewPropertyAnimator?.fractionComplete = CGFloat(elapsedTime / duration)
   }
 
   override func clean() {
@@ -52,15 +52,15 @@ internal class MotionViewPropertyViewContext: MotionAnimatorViewContext {
     viewPropertyAnimator = nil
   }
 
-  override func startAnimations(appearing: Bool) {
+  override func startAnimations(isAppearing: Bool) {
     guard let visualEffectView = snapshot as? UIVisualEffectView else { return }
     let appearedEffect = visualEffectView.effect
     let disappearedEffect = targetState.opacity == 0 ? nil : visualEffectView.effect
-    visualEffectView.effect = appearing ? disappearedEffect : appearedEffect
+    visualEffectView.effect = isAppearing ? disappearedEffect : appearedEffect
 
     duration = targetState.duration!
     viewPropertyAnimator = UIViewPropertyAnimator(duration: duration, curve: .easeInOut) {
-      visualEffectView.effect = appearing ? appearedEffect : disappearedEffect
+      visualEffectView.effect = isAppearing ? appearedEffect : disappearedEffect
     }
     viewPropertyAnimator!.startAnimation()
   }

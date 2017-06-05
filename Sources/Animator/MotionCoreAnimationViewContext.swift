@@ -29,107 +29,116 @@
 import UIKit
 
 internal class MotionCoreAnimationViewContext: MotionAnimatorViewContext {
+    /// The transition states.
+    fileprivate var transitionStates = [String: (Any?, Any?)]()
+    
+    /// A reference to the animation timing function.
+    fileprivate var timingFunction = CAMediaTimingFunction.from(mediaTimingFunctionType: .standard)
 
-  var state = [String: (Any?, Any?)]()
-  var timingFunction: CAMediaTimingFunction = .standard
-
-  // computed
-  var contentLayer: CALayer? {
-    return snapshot.layer.sublayers?.get(0)
-  }
-  var overlayLayer: CALayer?
-
-  override class func canAnimate(view: UIView, state: MotionTargetState, appearing: Bool) -> Bool {
-    return  state.position != nil ||
-      state.size != nil ||
-      state.transform != nil ||
-      state.cornerRadius != nil ||
-      state.opacity != nil ||
-      state.overlay != nil ||
-      state.backgroundColor != nil ||
-      state.borderColor != nil ||
-      state.borderWidth != nil ||
-      state.shadowOpacity != nil ||
-      state.shadowRadius != nil ||
-      state.shadowOffset != nil ||
-      state.shadowColor != nil ||
-      state.shadowPath != nil ||
-      state.contentsRect != nil ||
-      state.forceAnimate
-  }
-
-  func getOverlayLayer() -> CALayer {
-    if overlayLayer == nil {
-      overlayLayer = CALayer()
-      overlayLayer!.frame = snapshot.bounds
-      overlayLayer!.opacity = 0
-      snapshot.layer.addSublayer(overlayLayer!)
+    /// Layer which holds the content.
+    fileprivate var contentLayer: CALayer? {
+        return snapshot.layer.sublayers?.get(0)
     }
-    return overlayLayer!
-  }
+    
+    /// Layer which holds the overlay.
+    fileprivate var overlayLayer: CALayer?
 
-  func overlayKeyFor(key: String) -> String? {
-    if key.hasPrefix("overlay.") {
-      var key = key
-      key.removeSubrange(key.startIndex..<key.index(key.startIndex, offsetBy: 8))
-      return key
+    override class func canAnimate(view: UIView, state: MotionTargetState, isAppearing: Bool) -> Bool {
+        return  nil != state.position           ||
+                nil != state.size               ||
+                nil != state.transform          ||
+                nil != state.cornerRadius       ||
+                nil != state.opacity            ||
+                nil != state.overlay            ||
+                nil != state.backgroundColor    ||
+                nil != state.borderColor        ||
+                nil != state.borderWidth        ||
+                nil != state.shadowOpacity      ||
+                nil != state.shadowRadius       ||
+                nil != state.shadowOffset       ||
+                nil != state.shadowColor        ||
+                nil != state.shadowPath         ||
+                nil != state.contentsRect       ||
+                       state.forceAnimate
     }
-    return nil
-  }
-
-  func currentValue(key: String) -> Any? {
-    if let key = overlayKeyFor(key: key) {
-      return overlayLayer?.value(forKeyPath: key)
+    
+    func getOverlayLayer() -> CALayer {
+        if nil == overlayLayer {
+            overlayLayer = CALayer()
+            overlayLayer!.frame = snapshot.bounds
+            overlayLayer!.opacity = 0
+            snapshot.layer.addSublayer(overlayLayer!)
+        }
+        
+        return overlayLayer!
     }
-    if snapshot.layer.animationKeys()?.isEmpty != false {
-      return snapshot.layer.value(forKeyPath:key)
+    
+    func overlayKeyFor(key: String) -> String? {
+        guard key.hasPrefix("overlay.") else {
+            return nil
+        }
+        
+        var k = key
+        k.removeSubrange(k.startIndex..<k.index(key.startIndex, offsetBy: 8))
+        return k
     }
-    return (snapshot.layer.presentation() ?? snapshot.layer).value(forKeyPath: key)
-  }
-
-  func getAnimation(key: String, beginTime: TimeInterval, fromValue: Any?, toValue: Any?, ignoreArc: Bool = false) -> CAPropertyAnimation {
-    let key = overlayKeyFor(key: key) ?? key
-    let anim: CAPropertyAnimation
-
-    if !ignoreArc, key == "position", let arcIntensity = targetState.arc,
-      let fromPos = (fromValue as? NSValue)?.cgPointValue,
-      let toPos = (toValue as? NSValue)?.cgPointValue,
-      abs(fromPos.x - toPos.x) >= 1, abs(fromPos.y - toPos.y) >= 1 {
-      let kanim = CAKeyframeAnimation(keyPath: key)
-
-      let path = CGMutablePath()
-      let maxControl = fromPos.y > toPos.y ? CGPoint(x: toPos.x, y: fromPos.y) : CGPoint(x: fromPos.x, y: toPos.y)
-      let minControl = (toPos - fromPos) / 2 + fromPos
-
-      path.move(to: fromPos)
-      path.addQuadCurve(to: toPos, control: minControl + (maxControl - minControl) * arcIntensity)
-
-      kanim.values = [fromValue!, toValue!]
-      kanim.path = path
-      kanim.duration = duration
-      kanim.timingFunctions = [timingFunction]
-      anim = kanim
-    } else if #available(iOS 9.0, *), key != "cornerRadius", let (stiffness, damping) = targetState.spring {
-      let sanim = CASpringAnimation(keyPath: key)
-      sanim.stiffness = stiffness
-      sanim.damping = damping
-      sanim.duration = sanim.settlingDuration * 0.9
-      sanim.fromValue = fromValue
-      sanim.toValue = toValue
-      anim = sanim
-    } else {
-      let banim = CABasicAnimation(keyPath: key)
-      banim.duration = duration
-      banim.fromValue = fromValue
-      banim.toValue = toValue
-      banim.timingFunction = timingFunction
-      anim = banim
+    
+    func currentValue(key: String) -> Any? {
+        if let key = overlayKeyFor(key: key) {
+            return overlayLayer?.value(forKeyPath: key)
+        }
+        
+        if snapshot.layer.animationKeys()?.isEmpty != false {
+            return snapshot.layer.value(forKeyPath:key)
+        }
+        
+        return (snapshot.layer.presentation() ?? snapshot.layer).value(forKeyPath: key)
     }
+    
+    func getAnimation(key: String, beginTime: TimeInterval, fromValue: Any?, toValue: Any?, ignoreArc: Bool = false) -> CAPropertyAnimation {
+        let key = overlayKeyFor(key: key) ?? key
+        let anim: CAPropertyAnimation
+        
+        if !ignoreArc, key == "position", let arcIntensity = targetState.arc,
+            let fromPos = (fromValue as? NSValue)?.cgPointValue,
+            let toPos = (toValue as? NSValue)?.cgPointValue,
+            abs(fromPos.x - toPos.x) >= 1, abs(fromPos.y - toPos.y) >= 1 {
+            
+            let kanim = CAKeyframeAnimation(keyPath: key)
+            let path = CGMutablePath()
+            let maxControl = fromPos.y > toPos.y ? CGPoint(x: toPos.x, y: fromPos.y) : CGPoint(x: fromPos.x, y: toPos.y)
+            let minControl = (toPos - fromPos) / 2 + fromPos
 
-    anim.fillMode = kCAFillModeBoth
-    anim.isRemovedOnCompletion = false
-    anim.beginTime = beginTime
-    return anim
+            path.move(to: fromPos)
+            path.addQuadCurve(to: toPos, control: minControl + (maxControl - minControl) * arcIntensity)
+
+            kanim.values = [fromValue!, toValue!]
+            kanim.path = path
+            kanim.duration = duration
+            kanim.timingFunctions = [timingFunction]
+            anim = kanim
+        } else if #available(iOS 9.0, *), key != "cornerRadius", let (stiffness, damping) = targetState.spring {
+            let sanim = CASpringAnimation(keyPath: key)
+            sanim.stiffness = stiffness
+            sanim.damping = damping
+            sanim.duration = sanim.settlingDuration * 0.9
+            sanim.fromValue = fromValue
+            sanim.toValue = toValue
+            anim = sanim
+        } else {
+            let banim = CABasicAnimation(keyPath: key)
+            banim.duration = duration
+            banim.fromValue = fromValue
+            banim.toValue = toValue
+            banim.timingFunction = timingFunction
+            anim = banim
+        }
+
+        anim.fillMode = kCAFillModeBoth
+        anim.isRemovedOnCompletion = false
+        anim.beginTime = beginTime
+        
+        return anim
   }
 
   // return the completion duration of the animation (duration + initial delay, not counting the beginTime)
@@ -182,7 +191,7 @@ internal class MotionCoreAnimationViewContext: MotionAnimatorViewContext {
 
     let beginTime = currentTime + delay
     var finalDuration: TimeInterval = duration
-    for (key, (fromValue, toValue)) in state {
+    for (key, (fromValue, toValue)) in transitionStates {
       let neededTime = animate(key: key, beginTime: beginTime, fromValue: fromValue, toValue: toValue)
       finalDuration = max(finalDuration, neededTime + delay)
     }
@@ -272,30 +281,30 @@ internal class MotionCoreAnimationViewContext: MotionAnimatorViewContext {
   override func apply(state: MotionTargetState) {
     let targetState = viewState(targetState: state)
     for (key, targetValue) in targetState {
-      if self.state[key] == nil {
+      if self.transitionStates[key] == nil {
         let current = currentValue(key: key)
-        self.state[key] = (current, current)
+        self.transitionStates[key] = (current, current)
       }
       _ = animate(key: key, beginTime: 0, fromValue: targetValue, toValue: targetValue)
     }
   }
 
-  override func resume(timePassed: TimeInterval, reverse: Bool) {
-    for (key, (fromValue, toValue)) in state {
-      let realToValue = !reverse ? toValue : fromValue
+  override func resume(elapsedTime: TimeInterval, isReversed: Bool) {
+    for (key, (fromValue, toValue)) in transitionStates {
+      let realToValue = !isReversed ? toValue : fromValue
       let realFromValue = currentValue(key: key)
-      state[key] = (realFromValue, realToValue)
+      transitionStates[key] = (realFromValue, realToValue)
     }
 
     // we need to update the duration to reflect current state
-    targetState.duration = reverse ? timePassed - targetState.delay : duration - timePassed
+    targetState.duration = isReversed ? elapsedTime - targetState.delay : duration - elapsedTime
 
-    let realDelay = max(0, targetState.delay - timePassed)
+    let realDelay = max(0, targetState.delay - elapsedTime)
     animate(delay: realDelay)
   }
 
-  func seek(layer: CALayer, timePassed: TimeInterval) {
-    let timeOffset = timePassed - targetState.delay
+  func seek(layer: CALayer, elapsedTime: TimeInterval) {
+    let timeOffset = elapsedTime - targetState.delay
     for (key, anim) in layer.animations {
       anim.speed = 0
       anim.timeOffset = max(0, min(anim.duration - 0.01, timeOffset))
@@ -304,13 +313,13 @@ internal class MotionCoreAnimationViewContext: MotionAnimatorViewContext {
     }
   }
 
-  override func seek(timePassed: TimeInterval) {
-    seek(layer:snapshot.layer, timePassed:timePassed)
+  override func seek(to elapsedTime: TimeInterval) {
+    seek(layer:snapshot.layer, elapsedTime:elapsedTime)
     if let contentLayer = contentLayer {
-      seek(layer:contentLayer, timePassed:timePassed)
+      seek(layer:contentLayer, elapsedTime:elapsedTime)
     }
     if let overlayLayer = overlayLayer {
-      seek(layer: overlayLayer, timePassed: timePassed)
+      seek(layer: overlayLayer, elapsedTime: elapsedTime)
     }
   }
 
@@ -319,7 +328,7 @@ internal class MotionCoreAnimationViewContext: MotionAnimatorViewContext {
     overlayLayer = nil
   }
 
-  override func startAnimations(appearing: Bool) {
+  override func startAnimations(isAppearing: Bool) {
     if let beginState = targetState.beginState?.state {
       let appeared = viewState(targetState: beginState)
       for (key, value) in appeared {
@@ -335,10 +344,10 @@ internal class MotionCoreAnimationViewContext: MotionAnimatorViewContext {
     let disappeared = viewState(targetState: targetState)
 
     for (key, disappearedState) in disappeared {
-      let appearingState = currentValue(key: key)
-      let toValue = appearing ? appearingState : disappearedState
-      let fromValue = !appearing ? appearingState : disappearedState
-      state[key] = (fromValue, toValue)
+      let isAppearingState = currentValue(key: key)
+      let toValue = isAppearing ? isAppearingState : disappearedState
+      let fromValue = !isAppearing ? isAppearingState : disappearedState
+      transitionStates[key] = (fromValue, toValue)
     }
 
     animate(delay: targetState.delay)

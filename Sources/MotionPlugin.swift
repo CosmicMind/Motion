@@ -71,11 +71,11 @@ open class MotionPlugin: NSObject, MotionPreprocessor, MotionAnimator {
    - Parameters:
        - context: object holding all parsed and changed modifiers,
        - view: the view to check whether or not the plugin can handle the animation
-       - appearing: true if the view is appearing(i.e. a view in destination ViewController)
+       - isAppearing: true if the view is isAppearing(i.e. a view in destination ViewController)
    If return true, Motion won't animate and won't let any other plugins animate this view.
    The view will also be hidden automatically during the animation.
    */
-  open func canAnimate(view: UIView, appearing: Bool) -> Bool { return false }
+  open func canAnimate(view: UIView, isAppearing: Bool) -> Bool { return false }
 
   /**
    Perform the animation.
@@ -103,9 +103,9 @@ open class MotionPlugin: NSObject, MotionPreprocessor, MotionAnimator {
    This method is called when an interactive animation is in place
    The plugin should pause the animation, and seek to the given progress
    - Parameters:
-     - timePassed: time of the animation to seek to.
+     - elapsedTime: time of the animation to seek to.
    */
-  open func seekTo(timePassed: TimeInterval) {}
+  open func seekTo(elapsedTime: TimeInterval) {}
 
   /**
    For supporting interactive animation only.
@@ -113,10 +113,10 @@ open class MotionPlugin: NSObject, MotionPreprocessor, MotionAnimator {
    This method is called when an interactive animation is ended
    The plugin should resume the animation.
    - Parameters:
-   - timePassed: will be the same value since last `seekTo`
+   - elapsedTime: will be the same value since last `seekTo`
    - reverse: a boolean value indicating whether or not the animation should reverse
    */
-  open func resume(timePassed: TimeInterval, reverse: Bool) -> TimeInterval { return 0 }
+  open func resume(elapsedTime: TimeInterval, isReversed: Bool) -> TimeInterval { return 0 }
 
   /**
    For supporting interactive animation only.

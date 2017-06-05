@@ -29,43 +29,82 @@
 import UIKit
 
 internal class MotionAnimatorViewContext {
-  var animator: MotionAnimator?
-  var snapshot: UIView
-  var duration: TimeInterval = 0
+    /// An optional reference to a MotionAnimator.
+    var animator: MotionAnimator?
+    
+    /// A reference to the snapshot UIView.
+    var snapshot: UIView
+    
+    /// Animation duration time.
+    var duration: TimeInterval = 0
+ 
+    /// The animation target state.
+    var targetState: MotionTargetState
 
-  var targetState: MotionTargetState
+    /// The computed current time of the snapshot layer.
+    var currentTime: TimeInterval {
+        return snapshot.layer.convertTime(CACurrentMediaTime(), from: nil)
+    }
+    
+    /// A container view for the transition.
+    var container: UIView? {
+        return animator?.context.container
+    }
 
-  // computed
-  var currentTime: TimeInterval {
-    return snapshot.layer.convertTime(CACurrentMediaTime(), from: nil)
-  }
-  var container: UIView? {
-    return animator?.context.container
-  }
+    /**
+     An initializer. 
+     - Parameter animator: A MotionAnimator.
+     - Parameter snapshot: A UIView.
+     - Parameter targetState: A MotionTargetState.
+     */
+    required init(animator: MotionAnimator, snapshot: UIView, targetState: MotionTargetState) {
+        self.animator = animator
+        self.snapshot = snapshot
+        self.targetState = targetState
+    }
 
-  class func canAnimate(view: UIView, state: MotionTargetState, appearing: Bool) -> Bool {
-    return false
-  }
+    /// Cleans the context.
+    func clean() {
+        animator = nil
+    }
+    
+    /**
+     A class function that determines if a view can be animated
+     to a given state.
+     - Parameter view: A UIView.
+     - Parameter state: A MotionTargetState.
+     - Parameter isAppearing: A boolean that determines whether the
+     view is appearing.
+     */
+    class func canAnimate(view: UIView, state: MotionTargetState, isAppearing: Bool) -> Bool {
+        return false
+    }
 
-  func apply(state: MotionTargetState) {
-  }
+    /**
+     Applies the given state to the target state.
+     - Parameter state: A MotionTargetState.
+     */
+    func apply(state: MotionTargetState) {}
+    
+    /**
+     Resumes the animation with a given elapsed time and
+     optional reversed boolean.
+     - Parameter elapsedTime: A TimeInterval.
+     - Parameter isReversed: A boolean to reverse the animation 
+     or not.
+     */
+    func resume(elapsedTime: TimeInterval, isReversed: Bool) {}
+    
+    /**
+     Moves the animation to the given elapsed time.
+     - Parameter to elapsedTime: A TimeInterval.
+     */
+    func seek(to elapsedTime: TimeInterval) {}
 
-  func resume(timePassed: TimeInterval, reverse: Bool) {
-  }
-
-  func seek(timePassed: TimeInterval) {
-  }
-
-  func clean() {
-    animator = nil
-  }
-
-  func startAnimations(appearing: Bool) {
-  }
-
-  required init(animator: MotionAnimator, snapshot: UIView, targetState: MotionTargetState) {
-    self.animator = animator
-    self.snapshot = snapshot
-    self.targetState = targetState
-  }
+    /**
+     Starts the animations with an appearing boolean flag.
+     - Parameter isAppearing: A boolean value whether the view
+     is appearing or not.
+     */
+    func startAnimations(isAppearing: Bool) {}
 }

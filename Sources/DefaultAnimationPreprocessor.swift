@@ -217,14 +217,14 @@ class DefaultAnimationPreprocessor: BasePreprocessor {
     self.motion = motion
   }
 
-  func shift(direction: MotionDefaultAnimationType.Direction, appearing: Bool, size: CGSize? = nil, transpose: Bool = false) -> CGPoint {
+  func shift(direction: MotionDefaultAnimationType.Direction, isAppearing: Bool, size: CGSize? = nil, transpose: Bool = false) -> CGPoint {
     let size = size ?? context.container.bounds.size
     let rtn: CGPoint
     switch direction {
     case .left, .right:
-      rtn = CGPoint(x: (direction == .right) == appearing ? -size.width : size.width, y: 0)
+      rtn = CGPoint(x: (direction == .right) == isAppearing ? -size.width : size.width, y: 0)
     case .up, .down:
-      rtn = CGPoint(x: 0, y: (direction == .down) == appearing ? -size.height : size.height)
+      rtn = CGPoint(x: 0, y: (direction == .down) == isAppearing ? -size.height : size.height)
     }
     if transpose {
       return CGPoint(x: rtn.y, y: rtn.x)
@@ -261,7 +261,7 @@ class DefaultAnimationPreprocessor: BasePreprocessor {
     }
 
     if case .auto = defaultAnimation {
-      if animators!.contains(where: { $0.canAnimate(view: toView, appearing: true) || $0.canAnimate(view: fromView, appearing: false) }) {
+      if animators!.contains(where: { $0.canAnimate(view: toView, isAppearing: true) || $0.canAnimate(view: fromView, isAppearing: false) }) {
         defaultAnimation = .none
       } else if inNavigationController {
         defaultAnimation = presenting ? .push(direction:.left) : .pull(direction:.right)
@@ -286,28 +286,28 @@ class DefaultAnimationPreprocessor: BasePreprocessor {
                                        .masksToBounds(false)]
     switch defaultAnimation {
     case .push(let direction):
-      context[toView]!.append(contentsOf: [.translate(shift(direction: direction, appearing: true)),
+      context[toView]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: true)),
                                            .shadowOpacity(0),
                                            .beginWith(modifiers: shadowState),
                                            .timingFunction(.deceleration)])
-      context[fromView]!.append(contentsOf: [.translate(shift(direction: direction, appearing: false) / 3),
+      context[fromView]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: false) / 3),
                                              .overlay(color: .black, opacity: 0.1),
                                              .timingFunction(.deceleration)])
     case .pull(let direction):
       motion.insertToViewFirst = true
-      context[fromView]!.append(contentsOf: [.translate(shift(direction: direction, appearing: false)),
+      context[fromView]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: false)),
                                              .shadowOpacity(0),
                                              .beginWith(modifiers: shadowState)])
-      context[toView]!.append(contentsOf: [.translate(shift(direction: direction, appearing: true) / 3),
+      context[toView]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: true) / 3),
                                            .overlay(color: .black, opacity: 0.1)])
     case .slide(let direction):
-      context[fromView]!.append(contentsOf: [.translate(shift(direction: direction, appearing: false))])
-      context[toView]!.append(contentsOf: [.translate(shift(direction: direction, appearing: true))])
+      context[fromView]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: false))])
+      context[toView]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: true))])
     case .zoomSlide(let direction):
-      context[fromView]!.append(contentsOf: [.translate(shift(direction: direction, appearing: false)), .scale(0.8)])
-      context[toView]!.append(contentsOf: [.translate(shift(direction: direction, appearing: true)), .scale(0.8)])
+      context[fromView]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: false)), .scale(0.8)])
+      context[toView]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: true)), .scale(0.8)])
     case .cover(let direction):
-      context[toView]!.append(contentsOf: [.translate(shift(direction: direction, appearing: true)),
+      context[toView]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: true)),
                                            .shadowOpacity(0),
                                            .beginWith(modifiers: shadowState),
                                            .timingFunction(.deceleration)])
@@ -315,12 +315,12 @@ class DefaultAnimationPreprocessor: BasePreprocessor {
                                              .timingFunction(.deceleration)])
     case .uncover(let direction):
       motion.insertToViewFirst = true
-      context[fromView]!.append(contentsOf: [.translate(shift(direction: direction, appearing: false)),
+      context[fromView]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: false)),
                                              .shadowOpacity(0),
                                              .beginWith(modifiers: shadowState)])
       context[toView]!.append(contentsOf: [.overlay(color: .black, opacity: 0.1)])
     case .pageIn(let direction):
-      context[toView]!.append(contentsOf: [.translate(shift(direction: direction, appearing: true)),
+      context[toView]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: true)),
                                            .shadowOpacity(0),
                                            .beginWith(modifiers: shadowState),
                                            .timingFunction(.deceleration)])
@@ -329,7 +329,7 @@ class DefaultAnimationPreprocessor: BasePreprocessor {
                                              .timingFunction(.deceleration)])
     case .pageOut(let direction):
       motion.insertToViewFirst = true
-      context[fromView]!.append(contentsOf: [.translate(shift(direction: direction, appearing: false)),
+      context[fromView]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: false)),
                                              .shadowOpacity(0),
                                              .beginWith(modifiers: shadowState)])
       context[toView]!.append(contentsOf: [.scale(0.7),

@@ -59,16 +59,16 @@ internal class MotionDefaultAnimator<ViewContext: MotionAnimatorViewContext>: Mo
   var viewContexts: [UIView: ViewContext] = [:]
   internal var insertToViewFirst = false
 
-  public func seekTo(timePassed: TimeInterval) {
+  public func seekTo(elapsedTime: TimeInterval) {
     for viewContext in viewContexts.values {
-      viewContext.seek(timePassed: timePassed)
+      viewContext.seek(to: elapsedTime)
     }
   }
 
-  public func resume(timePassed: TimeInterval, reverse: Bool) -> TimeInterval {
+  public func resume(elapsedTime: TimeInterval, isReversed: Bool) -> TimeInterval {
     var duration: TimeInterval = 0
     for (_, context) in viewContexts {
-      context.resume(timePassed: timePassed, reverse: reverse)
+      context.resume(elapsedTime: elapsedTime, isReversed: isReversed)
       duration = max(duration, context.duration)
     }
     return duration
@@ -80,20 +80,20 @@ internal class MotionDefaultAnimator<ViewContext: MotionAnimatorViewContext>: Mo
     }
   }
 
-  public func canAnimate(view: UIView, appearing: Bool) -> Bool {
+  public func canAnimate(view: UIView, isAppearing: Bool) -> Bool {
     guard let state = context[view] else { return false }
-    return ViewContext.canAnimate(view: view, state: state, appearing: appearing)
+    return ViewContext.canAnimate(view: view, state: state, isAppearing: isAppearing)
   }
 
   public func animate(fromViews: [UIView], toViews: [UIView]) -> TimeInterval {
     var duration: TimeInterval = 0
 
     if insertToViewFirst {
-      for v in toViews { animate(view: v, appearing: true) }
-      for v in fromViews { animate(view: v, appearing: false) }
+      for v in toViews { animate(view: v, isAppearing: true) }
+      for v in fromViews { animate(view: v, isAppearing: false) }
     } else {
-      for v in fromViews { animate(view: v, appearing: false) }
-      for v in toViews { animate(view: v, appearing: true) }
+      for v in fromViews { animate(view: v, isAppearing: false) }
+      for v in toViews { animate(view: v, isAppearing: true) }
     }
 
     for viewContext in viewContexts.values {
@@ -103,11 +103,11 @@ internal class MotionDefaultAnimator<ViewContext: MotionAnimatorViewContext>: Mo
     return duration
   }
 
-  func animate(view: UIView, appearing: Bool) {
+  func animate(view: UIView, isAppearing: Bool) {
     let snapshot = context.snapshotView(for: view)
     let viewContext = ViewContext(animator:self, snapshot: snapshot, targetState: context[view]!)
     viewContexts[view] = viewContext
-    viewContext.startAnimations(appearing: appearing)
+    viewContext.startAnimations(isAppearing: isAppearing)
   }
 
   public func clean() {

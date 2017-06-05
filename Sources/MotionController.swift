@@ -47,14 +47,14 @@ public class MotionController: NSObject {
           }
         }
 
-        let timePassed = progress * totalDuration
+        let elapsedTime = progress * totalDuration
         if interactive {
           for animator in animators {
-            animator.seekTo(timePassed: timePassed)
+            animator.seekTo(elapsedTime: elapsedTime)
           }
         } else {
           for plugin in plugins where plugin.requirePerFrameCallback {
-            plugin.seekTo(timePassed: timePassed)
+            plugin.seekTo(elapsedTime: elapsedTime)
           }
         }
       }
@@ -99,14 +99,14 @@ public class MotionController: NSObject {
   }
   func displayUpdate(_ link: CADisplayLink) {
     if transitioning, duration > 0, let beginTime = beginTime {
-      let timePassed = CACurrentMediaTime() - beginTime
+      let elapsedTime = CACurrentMediaTime() - beginTime
 
-      if timePassed > duration {
+      if elapsedTime > duration {
         progress = finishing ? 1 : 0
         self.beginTime = nil
         complete(finished: finishing)
       } else {
-        var completed = timePassed / totalDuration
+        var completed = elapsedTime / totalDuration
         if !finishing {
           completed = 1 - completed
         }
@@ -156,8 +156,8 @@ public extension MotionController {
     }
     var maxTime: TimeInterval = 0
     for animator in self.animators {
-      maxTime = max(maxTime, animator.resume(timePassed:self.progress * self.totalDuration,
-                                             reverse: false))
+      maxTime = max(maxTime, animator.resume(elapsedTime:self.progress * self.totalDuration,
+                                             isReversed: false))
     }
     self.complete(after: maxTime, finishing: true)
   }
@@ -179,8 +179,8 @@ public extension MotionController {
       if adjustedProgress < 0 {
         adjustedProgress = -adjustedProgress
       }
-      maxTime = max(maxTime, animator.resume(timePassed:adjustedProgress * self.totalDuration,
-                                             reverse: true))
+      maxTime = max(maxTime, animator.resume(elapsedTime:adjustedProgress * self.totalDuration,
+                                             isReversed: true))
     }
     self.complete(after: maxTime, finishing: false)
   }
@@ -286,10 +286,10 @@ internal extension MotionController {
     animatingViews = [([UIView], [UIView])]()
     for animator in animators {
       let currentFromViews = context.fromViews.filter { (view: UIView) -> Bool in
-        return animator.canAnimate(view: view, appearing: false)
+        return animator.canAnimate(view: view, isAppearing: false)
       }
       let currentToViews = context.toViews.filter { (view: UIView) -> Bool in
-        return animator.canAnimate(view: view, appearing: true)
+        return animator.canAnimate(view: view, isAppearing: true)
       }
       animatingViews.append((currentFromViews, currentToViews))
     }
@@ -335,10 +335,10 @@ internal extension MotionController {
       complete(finished: finishing)
       return
     }
-    let timePassed = (finishing ? progress : 1 - progress) * totalDuration
+    let elapsedTime = (finishing ? progress : 1 - progress) * totalDuration
     self.finishing = finishing
-    self.duration = after + timePassed
-    self.beginTime = CACurrentMediaTime() - timePassed
+    self.duration = after + elapsedTime
+    self.beginTime = CACurrentMediaTime() - elapsedTime
   }
 
   func complete(finished: Bool) {

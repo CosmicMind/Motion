@@ -35,12 +35,12 @@ public protocol MotionPreprocessor: class {
 
 public protocol MotionAnimator: class {
   weak var context: MotionContext! { get set }
-  func canAnimate(view: UIView, appearing: Bool) -> Bool
+  func canAnimate(view: UIView, isAppearing: Bool) -> Bool
   func animate(fromViews: [UIView], toViews: [UIView]) -> TimeInterval
   func clean()
 
-  func seekTo(timePassed: TimeInterval)
-  func resume(timePassed: TimeInterval, reverse: Bool) -> TimeInterval
+  func seekTo(elapsedTime: TimeInterval)
+  func resume(elapsedTime: TimeInterval, isReversed: Bool) -> TimeInterval
   func apply(state: MotionTargetState, to view: UIView)
 }
 

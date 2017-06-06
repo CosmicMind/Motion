@@ -408,7 +408,7 @@ extension MotionTransition {
 // other modifiers
 extension MotionTransition {
   /**
-   Transition from/to the state of the view with matching motionID
+   Transition from/to the state of the view with matching motionIdentifier
    Will also force the view to use global coordinate space.
    
    The following layer properties will be animated from the given view.
@@ -430,11 +430,11 @@ extension MotionTransition {
        borderColor
 
    - Parameters:
-     - motionID: the source view's motionId.
+     - motionIdentifier: the source view's motionId.
    */
-  public static func source(motionID: String) -> MotionTransition {
+  public static func source(motionIdentifier: String) -> MotionTransition {
     return MotionTransition { targetState in
-      targetState.source = motionID
+      targetState.source = motionIdentifier
     }
   }
 
@@ -531,12 +531,12 @@ extension MotionTransition {
   }
 
   /**
-   ignore all motionModifiers attributes for a view's direct subviews.
+   ignore all motionTransitions attributes for a view's direct subviews.
    */
   public static var ignoreSubviewModifiers: MotionTransition = .ignoreSubviewModifiers()
 
   /**
-   ignore all motionModifiers attributes for a view's subviews.
+   ignore all motionTransitions attributes for a view's subviews.
    - Parameters:
    - recursive: if false, will only ignore direct subviews' modifiers. default false.
    */

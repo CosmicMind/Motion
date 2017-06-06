@@ -29,8 +29,8 @@
 import UIKit
 
 public class MotionContext {
-  internal var motionIDToSourceView = [String: UIView]()
-  internal var motionIDToDestinationView = [String: UIView]()
+  internal var motionIdentifierToSourceView = [String: UIView]()
+  internal var motionIdentifierToDestinationView = [String: UIView]()
   internal var snapshotViews = [UIView: UIView]()
   internal var viewAlphas = [UIView: CGFloat]()
   internal var targetStates = [UIView: MotionTargetState]()
@@ -45,18 +45,18 @@ public class MotionContext {
   internal func set(fromViews: [UIView], toViews: [UIView]) {
     self.fromViews = fromViews
     self.toViews = toViews
-    process(views: fromViews, idMap: &motionIDToSourceView)
-    process(views: toViews, idMap: &motionIDToDestinationView)
+    process(views: fromViews, idMap: &motionIdentifierToSourceView)
+    process(views: toViews, idMap: &motionIdentifierToDestinationView)
   }
 
   internal func process(views: [UIView], idMap: inout [String: UIView]) {
     for view in views {
       view.layer.removeAllAnimations()
       if container.convert(view.bounds, from: view).intersects(container.bounds) {
-        if let motionID = view.motionID {
-          idMap[motionID] = view
+        if let motionIdentifier = view.motionIdentifier {
+          idMap[motionIdentifier] = view
         }
-        if let modifiers = view.motionModifiers {
+        if let modifiers = view.motionTransitions {
           targetStates[view] = MotionTargetState(modifiers: modifiers)
         }
       }
@@ -83,24 +83,24 @@ public class MotionContext {
 extension MotionContext {
 
   /**
-   - Returns: a source view matching the motionID, nil if not found
+   - Returns: a source view matching the motionIdentifier, nil if not found
    */
-  public func sourceView(for motionID: String) -> UIView? {
-    return motionIDToSourceView[motionID]
+  public func sourceView(for motionIdentifier: String) -> UIView? {
+    return motionIdentifierToSourceView[motionIdentifier]
   }
 
   /**
-   - Returns: a destination view matching the motionID, nil if not found
+   - Returns: a destination view matching the motionIdentifier, nil if not found
    */
-  public func destinationView(for motionID: String) -> UIView? {
-    return motionIDToDestinationView[motionID]
+  public func destinationView(for motionIdentifier: String) -> UIView? {
+    return motionIdentifierToDestinationView[motionIdentifier]
   }
 
   /**
-   - Returns: a view with the same motionID, but on different view controller, nil if not found
+   - Returns: a view with the same motionIdentifier, but on different view controller, nil if not found
    */
   public func pairedView(for view: UIView) -> UIView? {
-    if let id = view.motionID {
+    if let id = view.motionIdentifier {
       if sourceView(for: id) == view {
         return destinationView(for: id)
       } else if destinationView(for: id) == view {
@@ -237,7 +237,7 @@ extension MotionContext {
     }
 
     snapshot.frame = containerView.convert(view.bounds, from: view)
-    snapshot.motionID = view.motionID
+    snapshot.motionIdentifier = view.motionIdentifier
 
     hide(view: view)
 
@@ -352,16 +352,16 @@ extension MotionContext {
     return snapshots
   }
   internal func loadViewAlpha(rootView: UIView) {
-    if let storedAlpha = rootView.motionStoredAlpha {
+    if let storedAlpha = rootView.motionAlpha {
       rootView.alpha = storedAlpha
-      rootView.motionStoredAlpha = nil
+      rootView.motionAlpha = nil
     }
     for subview in rootView.subviews {
       loadViewAlpha(rootView: subview)
     }
   }
   internal func storeViewAlpha(rootView: UIView) {
-    rootView.motionStoredAlpha = viewAlphas[rootView]
+    rootView.motionAlpha = viewAlphas[rootView]
     for subview in rootView.subviews {
       storeViewAlpha(rootView: subview)
     }

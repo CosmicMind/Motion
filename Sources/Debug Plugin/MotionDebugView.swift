@@ -56,7 +56,7 @@ class MotionDebugView: UIView {
   }
 
   var showOnTop: Bool = false
-  var rotation: CGFloat = π / 6
+  var rotation: CGFloat = .pi / 6
   var scale: CGFloat = 0.6
   var translation: CGPoint = .zero
   var progress: Float {
@@ -145,10 +145,10 @@ class MotionDebugView: UIView {
       startRotation = rotation
     }
     rotation = startRotation + panGR.translation(in: nil).x / 150
-    if rotation > π {
-      rotation -= 2 * π
-    } else if rotation < -π {
-      rotation += 2 * π
+    if rotation > .pi {
+      rotation -= 2 * .pi
+    } else if rotation < -.pi {
+      rotation += 2 * .pi
     }
     delegate?.onPerspectiveChanged(translation:translation, rotation: rotation, scale:scale)
   }

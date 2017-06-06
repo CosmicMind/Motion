@@ -111,7 +111,7 @@ public extension Motion {
   }
 
   /// Set the default animation for next transition
-  /// This usually overrides rootView's motionModifiers during the transition
+  /// This usually overrides rootView's motionTransitions during the transition
   ///
   /// - Parameter animation: animation type
   func setDefaultAnimationForNextTransition(_ animation: MotionDefaultAnimationType) {

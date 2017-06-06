@@ -25,7 +25,6 @@
 		96AEB6951EE4610F009A3BE0 /* Motion+CALayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96AEB66F1EE4610F009A3BE0 /* Motion+CALayer.swift */; };
 		96AEB6961EE4610F009A3BE0 /* Motion+CAMediaTimingFunction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96AEB6701EE4610F009A3BE0 /* Motion+CAMediaTimingFunction.swift */; };
 		96AEB6971EE4610F009A3BE0 /* Motion+CG.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96AEB6711EE4610F009A3BE0 /* Motion+CG.swift */; };
-		96AEB6981EE4610F009A3BE0 /* Motion+DispatchQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96AEB6721EE4610F009A3BE0 /* Motion+DispatchQueue.swift */; };
 		96AEB6991EE4610F009A3BE0 /* Motion+UIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96AEB6731EE4610F009A3BE0 /* Motion+UIKit.swift */; };
 		96AEB69A1EE4610F009A3BE0 /* Motion+UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96AEB6741EE4610F009A3BE0 /* Motion+UIView.swift */; };
 		96AEB69B1EE4610F009A3BE0 /* Motion+UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96AEB6751EE4610F009A3BE0 /* Motion+UIViewController.swift */; };
@@ -69,7 +68,6 @@
 		96AEB66F1EE4610F009A3BE0 /* Motion+CALayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Motion+CALayer.swift"; sourceTree = "<group>"; };
 		96AEB6701EE4610F009A3BE0 /* Motion+CAMediaTimingFunction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Motion+CAMediaTimingFunction.swift"; sourceTree = "<group>"; };
 		96AEB6711EE4610F009A3BE0 /* Motion+CG.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Motion+CG.swift"; sourceTree = "<group>"; };
-		96AEB6721EE4610F009A3BE0 /* Motion+DispatchQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Motion+DispatchQueue.swift"; sourceTree = "<group>"; };
 		96AEB6731EE4610F009A3BE0 /* Motion+UIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Motion+UIKit.swift"; sourceTree = "<group>"; };
 		96AEB6741EE4610F009A3BE0 /* Motion+UIView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Motion+UIView.swift"; sourceTree = "<group>"; };
 		96AEB6751EE4610F009A3BE0 /* Motion+UIViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Motion+UIViewController.swift"; sourceTree = "<group>"; };
@@ -139,11 +137,10 @@
 				96AEB66F1EE4610F009A3BE0 /* Motion+CALayer.swift */,
 				96AEB6701EE4610F009A3BE0 /* Motion+CAMediaTimingFunction.swift */,
 				96AEB6711EE4610F009A3BE0 /* Motion+CG.swift */,
-				96AEB6721EE4610F009A3BE0 /* Motion+DispatchQueue.swift */,
+				963150D11EE50DA6002B0D42 /* Motion+Obj-C.swift */,
 				96AEB6731EE4610F009A3BE0 /* Motion+UIKit.swift */,
 				96AEB6741EE4610F009A3BE0 /* Motion+UIView.swift */,
 				96AEB6751EE4610F009A3BE0 /* Motion+UIViewController.swift */,
-				963150D11EE50DA6002B0D42 /* Motion+Obj-C.swift */,
 				963150D91EE51EB4002B0D42 /* MotionAnimationFillMode.swift */,
 			);
 			path = Extensions;
@@ -311,7 +308,6 @@
 				96AEB6961EE4610F009A3BE0 /* Motion+CAMediaTimingFunction.swift in Sources */,
 				96AEB6941EE4610F009A3BE0 /* Motion+Array.swift in Sources */,
 				96AEB6951EE4610F009A3BE0 /* Motion+CALayer.swift in Sources */,
-				96AEB6981EE4610F009A3BE0 /* Motion+DispatchQueue.swift in Sources */,
 				96AEB6A61EE4610F009A3BE0 /* MotionTypes.swift in Sources */,
 				96AEB68E1EE4610F009A3BE0 /* MotionCoreAnimationViewContext.swift in Sources */,
 				96AEB6921EE4610F009A3BE0 /* MotionDebugView.swift in Sources */,

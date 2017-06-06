@@ -31,7 +31,7 @@ import UIKit
 class MatchPreprocessor: BasePreprocessor {
   override func process(fromViews: [UIView], toViews: [UIView]) {
     for tv in toViews {
-      guard let id = tv.motionID, let fv = context.sourceView(for: id) else { continue }
+      guard let id = tv.motionIdentifier, let fv = context.sourceView(for: id) else { continue }
 
       var tvState = context[tv] ?? MotionTargetState()
       var fvState = context[fv] ?? MotionTargetState()

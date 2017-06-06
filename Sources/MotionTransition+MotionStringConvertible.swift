@@ -102,8 +102,8 @@ extension MotionTransition: MotionStringConvertible {
       }
       return .cascade(delta: parameters.getDouble(0) ?? 0.02, direction: cascadeDirection, delayMatchedViews:parameters.getBool(2) ?? false)
     case "source":
-      if let motionID = parameters.get(0)?.name {
-        return .source(motionID: motionID)
+      if let motionIdentifier = parameters.get(0)?.name {
+        return .source(motionIdentifier: motionIdentifier)
       }
     case "useGlobalCoordinateSpace":
       return .useGlobalCoordinateSpace

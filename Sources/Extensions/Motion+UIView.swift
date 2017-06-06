@@ -51,49 +51,101 @@ internal extension UIView {
     }
 }
 
+fileprivate var MotionInstanceKey: UInt8 = 0
+
+fileprivate struct MotionInstance {
+    /// A boolean indicating whether Motion is enabled.
+    fileprivate var isEnabled: Bool
+    
+    /// An optional reference to the motion identifier.
+    fileprivate var identifier: String?
+    
+    /// An optional reference to the motion animations.
+    fileprivate var animations: [MotionAnimation]?
+    
+    /// An optional reference to the motion transition animations.
+    fileprivate var transitions: [MotionTransition]?
+    
+    /// An alpha value.
+    fileprivate var alpha: CGFloat?
+}
+
+extension UIView {
+    /// MotionInstance reference.
+    fileprivate var motionInstance: MotionInstance {
+        get {
+            return AssociatedObject.get(base: self, key: &MotionInstanceKey) {
+                return MotionInstance(isEnabled: true, identifier: nil, animations: nil, transitions: nil, alpha: 1)
+            }
+        }
+        set(value) {
+            AssociatedObject.set(base: self, key: &MotionInstanceKey, value: value)
+        }
+    }
+    
+    /// A boolean that indicates whether motion is enabled.
+    @IBInspectable
+    public var isMotionEnabled: Bool {
+        get {
+            return motionInstance.isEnabled
+        }
+        set(value) {
+            motionInstance.isEnabled = value
+        }
+    }
+    
+    /// An identifier value used to connect views across UIViewControllers.
+    @IBInspectable
+    open var motionIdentifier: String? {
+        get {
+            return motionInstance.identifier
+        }
+        set(value) {
+            motionInstance.identifier = value
+        }
+    }
+    
+    /// The animations to run.
+    open var motionAnimations: [MotionAnimation]? {
+        get {
+            return motionInstance.animations
+        }
+        set(value) {
+            motionInstance.animations = value
+        }
+    }
+    
+    /// The animations to run while in transition.
+    open var motionTransitions: [MotionTransition]? {
+        get {
+            return motionInstance.transitions
+        }
+        set(value) {
+            motionInstance.transitions = value
+        }
+    }
+    
+    /// The animations to run while in transition.
+    @IBInspectable
+    open var motionAlpha: CGFloat? {
+        get {
+            return motionInstance.alpha
+        }
+        set(value) {
+            motionInstance.alpha = value
+        }
+    }
+}
+
 public extension UIView {
-  private struct AssociatedKeys {
-    static var motionID    = "motionID"
-    static var motionModifiers = "motionModifers"
-    static var motionStoredAlpha = "motionStoredAlpha"
-    static var motionEnabled = "motionEnabled"
-  }
+    
 
   /**
-   **motionID** is the identifier for the view. When doing a transition between two view controllers,
-   Motion will search through all the subviews for both view controllers and matches views with the same **motionID**.
-
-   Whenever a pair is discovered,
-   Motion will automatically transit the views from source state to the destination state.
-   */
-  @IBInspectable public var motionID: String? {
-    get { return objc_getAssociatedObject(self, &AssociatedKeys.motionID) as? String }
-    set { objc_setAssociatedObject(self, &AssociatedKeys.motionID, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
-  }
-
-  /**
-   **isMotionEnabled** allows to specify whether a view and its subviews should be consider for animations.
-   If true, Motion will search through all the subviews for motionIds and modifiers. Defaults to true
-   */
-  @IBInspectable public var isMotionEnabled: Bool {
-    get { return objc_getAssociatedObject(self, &AssociatedKeys.motionEnabled) as? Bool ?? true }
-    set { objc_setAssociatedObject(self, &AssociatedKeys.motionEnabled, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
-  }
-
-  /**
-   Use **motionModifiers** to specify animations alongside the main transition. Checkout `MotionTransition.swift` for available modifiers.
-   */
-  public var motionModifiers: [MotionTransition]? {
-    get { return objc_getAssociatedObject(self, &AssociatedKeys.motionModifiers) as? [MotionTransition] }
-    set { objc_setAssociatedObject(self, &AssociatedKeys.motionModifiers, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
-  }
-
-  /**
-   **motionModifierString** provides another way to set **motionModifiers**. It can be assigned through storyboard.
+   **motionModifierString** provides another way to set **motionTransitions**. It can be assigned through storyboard.
    */
   @IBInspectable public var motionModifierString: String? {
     get { fatalError("Reverse lookup is not supported") }
-    set { motionModifiers = newValue?.parse() }
+    set { motionTransitions = newValue?.parse() }
   }
 
   internal func slowSnapshotView() -> UIView {
@@ -117,54 +169,6 @@ public extension UIView {
     }
     return isHidden && (superview is UICollectionView || self is UITableViewCell) ? [] : ([self] + subviews.flatMap { $0.flattenedViewHierarchy })
   }
-
-  /// Used for .overFullScreen presentation
-  internal var motionStoredAlpha: CGFloat? {
-    get {
-      if let doubleValue = (objc_getAssociatedObject(self, &AssociatedKeys.motionStoredAlpha) as? NSNumber)?.doubleValue {
-        return CGFloat(doubleValue)
-      }
-      return nil
-    }
-    set {
-      if let newValue = newValue {
-        objc_setAssociatedObject(self, &AssociatedKeys.motionStoredAlpha, NSNumber(value:newValue.native), .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-      } else {
-        objc_setAssociatedObject(self, &AssociatedKeys.motionStoredAlpha, nil, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-      }
-    }
-  }
-}
-
-fileprivate var MotionInstanceKey: UInt8 = 0
-
-fileprivate struct MotionInstance {
-    /// An optional reference to the motion animations.
-    fileprivate var animations: [MotionAnimation]?
-}
-
-extension UIView {
-    /// MotionInstance reference.
-    fileprivate var motionInstance: MotionInstance {
-        get {
-            return AssociatedObject.get(base: self, key: &MotionInstanceKey) {
-                return MotionInstance(animations: nil)
-            }
-        }
-        set(value) {
-            AssociatedObject.set(base: self, key: &MotionInstanceKey, value: value)
-        }
-    }
-    
-    /// The animations to run.
-    open var motionAnimations: [MotionAnimation]? {
-        get {
-            return motionInstance.animations
-        }
-        set(value) {
-            motionInstance.animations = value
-        }
-    }
 }
 
 extension UIView {

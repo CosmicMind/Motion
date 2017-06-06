@@ -29,37 +29,77 @@
 import UIKit
 
 internal extension Array {
-  func get(_ index: Int) -> Element? {
-    if index < count {
-      return self[index]
+    /**
+     Retrieves the element at the given index if it exists.
+     - Parameter _ index: An Int.
+     - Returns: An optional Element value.
+     */
+    func get(_ index: Int) -> Element? {
+        if index < count {
+            return self[index]
+        }
+        return nil
     }
-    return nil
-  }
 }
 
 internal extension Array where Element: ExprNode {
-  func getCGFloat(_ index: Int) -> CGFloat? {
-    if let s = get(index) as? NumberNode {
-      return CGFloat(s.value)
+    /**
+     Retrieves the element at the given index if it exists
+     as a CGFloat.
+     - Parameter _ index: An Int.
+     - Returns: An optional CGFloat value.
+     */
+    func getCGFloat(_ index: Int) -> CGFloat? {
+        guard let s = get(index) as? NumberNode else {
+            return nil
+        }
+        
+        return CGFloat(s.value)
     }
-    return nil
-  }
-  func getDouble(_ index: Int) -> Double? {
-    if let s = get(index) as? NumberNode {
-      return Double(s.value)
+    
+    /**
+     Retrieves the element at the given index if it exists
+     as a Double.
+     - Parameter _ index: An Int.
+     - Returns: An optional Double value.
+     */
+    func getDouble(_ index: Int) -> Double? {
+        guard let s = get(index) as? NumberNode else {
+            return nil
+        }
+        
+        return Double(s.value)
     }
-    return nil
-  }
-  func getFloat(_ index: Int) -> Float? {
-    if let s = get(index) as? NumberNode {
-      return s.value
+    
+    /**
+     Retrieves the element at the given index if it exists
+     as a Float.
+     - Parameter _ index: An Int.
+     - Returns: An optional Float value.
+     */
+    func getFloat(_ index: Int) -> Float? {
+        guard let s = get(index) as? NumberNode else {
+            return nil
+        }
+        
+        return s.value
     }
-    return nil
-  }
-  func getBool(_ index: Int) -> Bool? {
-    if let s = get(index) as? VariableNode, let f = Bool(s.name) {
-      return f
+    
+    /**
+     Retrieves the element at the given index if it exists
+     as a Bool.
+     - Parameter _ index: An Int.
+     - Returns: An optional Bool value.
+     */
+    func getBool(_ index: Int) -> Bool? {
+        guard let s = get(index) as? VariableNode else {
+            return nil
+        }
+        
+        guard let f = Bool(s.name) else {
+            return nil
+        }
+        
+        return f
     }
-    return nil
-  }
 }

@@ -28,19 +28,21 @@
 
 import UIKit
 
-internal extension CALayer {
-  // return all animations running by this layer.
-  // the returned value is mutable
-  var animations: [(String, CAAnimation)] {
-    if let keys = animationKeys() {
-      return keys.map { return ($0, self.animation(forKey: $0)!.copy() as! CAAnimation) }
-    }
-    return []
-  }
-}
-
 @available(iOS 10, *)
 extension CALayer: CAAnimationDelegate {}
+
+internal extension CALayer {
+    /// Retrieves all currently running animations for the layer.
+    var animations: [(String, CAAnimation)] {
+        guard let keys = animationKeys() else {
+            return []
+        }
+        
+        return keys.map {
+            return ($0, self.animation(forKey: $0)!.copy() as! CAAnimation)
+        }
+    }
+}
 
 extension CALayer {
     /**
@@ -77,6 +79,10 @@ extension CALayer {
         }
     }
     
+    /**
+     Executed when an animation has started. 
+     - Parameter _ anim: A CAAnimation.
+     */
     public func animationDidStart(_ anim: CAAnimation) {}
     
     /**

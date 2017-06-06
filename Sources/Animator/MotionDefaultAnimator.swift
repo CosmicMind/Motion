@@ -56,6 +56,7 @@ extension MotionDefaultAnimator {
 }
 
 extension MotionDefaultAnimator {
+    /// Cleans the contexts.
     func clean() {
         for v in viewToContexts.values {
             v.clean()
@@ -65,6 +66,12 @@ extension MotionDefaultAnimator {
         insertToViewFirst = false
     }
     
+    /**
+     A function that determines if a view can be animated.
+     - Parameter view: A UIView.
+     - Parameter isAppearing: A boolean that determines whether the
+     view is appearing.
+     */
     func canAnimate(view: UIView, isAppearing: Bool) -> Bool {
         guard let state = context[view] else {
             return false
@@ -73,6 +80,12 @@ extension MotionDefaultAnimator {
         return T.canAnimate(view: view, state: state, isAppearing: isAppearing)
     }
     
+    /**
+     Animates the from-views to the to-views.
+     - Parameter fromViews: An Array of UIViews.
+     - Parameter toViews: An Array of UIViews.
+     - Returns: A TimeInterval.
+     */
     func animate(fromViews: [UIView], toViews: [UIView]) -> TimeInterval {
         var duration: TimeInterval = 0
         
@@ -102,12 +115,23 @@ extension MotionDefaultAnimator {
         return duration
     }
     
+    /**
+     Moves the view's animation to the given elapsed time.
+     - Parameter to elapsedTime: A TimeInterval.
+     */
     func seek(to elapsedTime: TimeInterval) {
         for v in viewToContexts.values {
             v.seek(to: elapsedTime)
         }
     }
     
+    /**
+     Resumes the animation with a given elapsed time and
+     optional reversed boolean.
+     - Parameter at elapsedTime: A TimeInterval.
+     - Parameter isReversed: A boolean to reverse the animation
+     or not.
+     */
     func resume(at elapsedTime: TimeInterval, isReversed: Bool) -> TimeInterval {
         var duration: TimeInterval = 0
         
@@ -119,6 +143,11 @@ extension MotionDefaultAnimator {
         return duration
     }
     
+    /**
+     Applies the given state to the given view.
+     - Parameter state: A MotionTargetState.
+     - Parameter to view: A UIView.
+     */
     func apply(state: MotionTargetState, to view: UIView) {
         guard let v = viewToContexts[view] else {
             return

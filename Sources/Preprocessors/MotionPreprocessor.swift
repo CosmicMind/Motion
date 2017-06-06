@@ -28,36 +28,14 @@
 
 import UIKit
 
-public protocol MotionProgressUpdateObserver {
-    func motionDidUpdateProgress(progress: Double)
-}
-
-@objc(MotionViewControllerDelegate)
-public protocol MotionViewControllerDelegate {
-    @objc
-    optional func motionWillStartAnimatingFrom(viewController: UIViewController)
+public protocol MotionPreprocessor: class {
+    /// A reference to a MotionContext.
+    weak var context: MotionContext! { get set }
     
-    @objc
-    optional func motionDidEndAnimatingFrom(viewController: UIViewController)
-    
-    @objc
-    optional func motionDidCancelAnimatingFrom(viewController: UIViewController)
-
-    @objc
-    optional func motionWillStartTransition()
-    
-    @objc
-    optional func motionDidEndTransition()
-    
-    @objc
-    optional func motionDidCancelTransition()
-
-    @objc
-    optional func motionWillStartAnimatingTo(viewController: UIViewController)
-    
-    @objc
-    optional func motionDidEndAnimatingTo(viewController: UIViewController)
-    
-    @objc
-    optional func motionDidCancelAnimatingTo(viewController: UIViewController)
+    /**
+     Processes the transitionary views.
+     - Parameter fromViews: An Array of UIViews.
+     - Parameter toViews: An Array of UIViews.
+     */
+    func process(fromViews: [UIView], toViews: [UIView])
 }

@@ -1,5 +1,3 @@
-//
-//  CascadeEffect.swift
 /*
  * The MIT License (MIT)
  *
@@ -31,7 +29,6 @@
 import UIKit
 
 class BasePreprocessor: MotionPreprocessor {
-  weak public var context: MotionContext!
-
-  func process(fromViews: [UIView], toViews: [UIView]) {}
+    weak public var context: MotionContext!
+    func process(fromViews: [UIView], toViews: [UIView]) {}
 }

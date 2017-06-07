@@ -62,7 +62,7 @@ public class Motion: MotionController {
   /// progress of the current transition. 0 if no transition is happening
   public override var progress: Double {
     didSet {
-      if transitioning {
+      if isTransitioning {
         transitionContext?.updateInteractiveTransition(CGFloat(progress))
       }
     }
@@ -70,7 +70,7 @@ public class Motion: MotionController {
 
   public var isAnimating: Bool = false
   /// a UIViewControllerContextTransitioning object provided by UIKit,
-  /// might be nil when transitioning. This happens when calling motionReplaceViewController
+  /// might be nil when isTransitioning. This happens when calling motionReplaceViewController
   internal weak var transitionContext: UIViewControllerContextTransitioning?
 
   internal var fullScreenSnapshot: UIView!
@@ -129,7 +129,7 @@ public extension Motion {
 // internal methods for transition
 internal extension Motion {
   func start() {
-    guard transitioning else { return }
+    guard isTransitioning else { return }
     if let fvc = fromViewController, let tvc = toViewController {
       closureProcessForMotionDelegate(vc: fvc) {
         $0.motionWillStartTransition?()
@@ -214,7 +214,7 @@ internal extension Motion {
   }
 
   override func complete(finished: Bool) {
-    guard transitioning else { return }
+    guard isTransitioning else { return }
 
     context.clean()
     if finished && presenting && toOverFullScreen {
@@ -304,7 +304,7 @@ internal extension Motion {
 // custom transition helper, used in motion_replaceViewController
 internal extension Motion {
   func transition(from: UIViewController, to: UIViewController, in view: UIView, completion: ((Bool) -> Void)? = nil) {
-    guard !transitioning else { return }
+    guard !isTransitioning else { return }
     presenting = true
     transitionContainer = view
     fromViewController = from
@@ -341,7 +341,7 @@ internal extension Motion {
 
 extension Motion: UIViewControllerAnimatedTransitioning {
   public func animateTransition(using context: UIViewControllerContextTransitioning) {
-    guard !transitioning else { return }
+    guard !isTransitioning else { return }
     transitionContext = context
     fromViewController = fromViewController ?? context.viewController(forKey: .from)
     toViewController = toViewController ?? context.viewController(forKey: .to)

@@ -49,9 +49,9 @@ internal extension UIView {
     }
 }
 
-fileprivate var MotionInstanceKey: UInt8 = 0
+fileprivate var AssociatedInstanceKey: UInt8 = 0
 
-fileprivate struct MotionInstance {
+fileprivate struct AssociatedInstance {
     /// A boolean indicating whether Motion is enabled.
     fileprivate var isEnabled: Bool
     
@@ -69,15 +69,15 @@ fileprivate struct MotionInstance {
 }
 
 extension UIView {
-    /// MotionInstance reference.
-    fileprivate var motionInstance: MotionInstance {
+    /// AssociatedInstance reference.
+    fileprivate var associatedInstance: AssociatedInstance {
         get {
-            return AssociatedObject.get(base: self, key: &MotionInstanceKey) {
-                return MotionInstance(isEnabled: true, identifier: nil, animations: nil, transitions: nil, alpha: 1)
+            return AssociatedObject.get(base: self, key: &AssociatedInstanceKey) {
+                return AssociatedInstance(isEnabled: true, identifier: nil, animations: nil, transitions: nil, alpha: 1)
             }
         }
         set(value) {
-            AssociatedObject.set(base: self, key: &MotionInstanceKey, value: value)
+            AssociatedObject.set(base: self, key: &AssociatedInstanceKey, value: value)
         }
     }
     
@@ -85,10 +85,10 @@ extension UIView {
     @IBInspectable
     public var isMotionEnabled: Bool {
         get {
-            return motionInstance.isEnabled
+            return associatedInstance.isEnabled
         }
         set(value) {
-            motionInstance.isEnabled = value
+            associatedInstance.isEnabled = value
         }
     }
     
@@ -96,30 +96,30 @@ extension UIView {
     @IBInspectable
     open var motionIdentifier: String? {
         get {
-            return motionInstance.identifier
+            return associatedInstance.identifier
         }
         set(value) {
-            motionInstance.identifier = value
+            associatedInstance.identifier = value
         }
     }
     
     /// The animations to run.
     open var motionAnimations: [MotionAnimation]? {
         get {
-            return motionInstance.animations
+            return associatedInstance.animations
         }
         set(value) {
-            motionInstance.animations = value
+            associatedInstance.animations = value
         }
     }
     
     /// The animations to run while in transition.
     open var motionTransitions: [MotionTransition]? {
         get {
-            return motionInstance.transitions
+            return associatedInstance.transitions
         }
         set(value) {
-            motionInstance.transitions = value
+            associatedInstance.transitions = value
         }
     }
     
@@ -127,10 +127,10 @@ extension UIView {
     @IBInspectable
     open var motionAlpha: CGFloat? {
         get {
-            return motionInstance.alpha
+            return associatedInstance.alpha
         }
         set(value) {
-            motionInstance.alpha = value
+            associatedInstance.alpha = value
         }
     }
 }

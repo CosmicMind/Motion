@@ -40,7 +40,7 @@ public class MotionController: NSObject {
   /// progress of the current transition. 0 if no transition is happening
   public internal(set) var progress: Double = 0 {
     didSet {
-      if transitioning {
+      if isTransitioning {
         if let progressUpdateObservers = progressUpdateObservers {
           for observer in progressUpdateObservers {
             observer.motionDidUpdateProgress(progress: progress)
@@ -61,12 +61,12 @@ public class MotionController: NSObject {
     }
   }
   /// whether or not we are doing a transition
-  public var transitioning: Bool {
+  public var isTransitioning: Bool {
     return transitionContainer != nil
   }
 
   /// container we created to hold all animating views, will be a subview of the
-  /// transitionContainer when transitioning
+  /// transitionContainer when isTransitioning
   public internal(set) var container: UIView!
 
   /// this is the container supplied by UIKit
@@ -98,7 +98,7 @@ public class MotionController: NSObject {
     }
   }
   func displayUpdate(_ link: CADisplayLink) {
-    if transitioning, duration > 0, let beginTime = beginTime {
+    if isTransitioning, duration > 0, let beginTime = beginTime {
       let elapsedTime = CACurrentMediaTime() - beginTime
 
       if elapsedTime > duration {
@@ -138,7 +138,7 @@ public extension MotionController {
    - progress: the current progress, must be between -1...1
    */
   public func update(progress: Double) {
-    guard transitioning else { return }
+    guard isTransitioning else { return }
     self.beginTime = nil
     self.progress = max(-1, min(1, progress))
   }
@@ -149,7 +149,7 @@ public extension MotionController {
    current state to the **end** state
    */
   public func end(animate: Bool = true) {
-    guard transitioning else { return }
+    guard isTransitioning else { return }
     if !animate {
       self.complete(finished:true)
       return
@@ -167,7 +167,7 @@ public extension MotionController {
    current state to the **begining** state
    */
   public func cancel(animate: Bool = true) {
-    guard transitioning else { return }
+    guard isTransitioning else { return }
     if !animate {
       self.complete(finished:false)
       return
@@ -196,7 +196,7 @@ public extension MotionController {
    - view: the view to override to
    */
   public func apply(modifiers: [MotionTransition], to view: UIView) {
-    guard transitioning else { return }
+    guard isTransitioning else { return }
     let targetState = MotionTargetState(modifiers: modifiers)
     if let otherView = self.context.pairedView(for: view) {
       for animator in self.animators {
@@ -233,7 +233,7 @@ internal extension MotionController {
   /// must have transitionContainer set already
   /// subclass should call context.set(fromViews:toViews) after inserting fromViews & toViews into the container
   func prepareForTransition() {
-    guard transitioning else { fatalError() }
+    guard isTransitioning else { fatalError() }
     plugins = Motion.enabledPlugins.map({ return $0.init() })
     processors = [
       IgnoreSubviewModifiersPreprocessor(),
@@ -273,14 +273,14 @@ internal extension MotionController {
   }
 
   func processContext() {
-    guard transitioning else { fatalError() }
+    guard isTransitioning else { fatalError() }
     for processor in processors {
       processor.process(fromViews: context.fromViews, toViews: context.toViews)
     }
   }
 
   func prepareForAnimation() {
-    guard transitioning else { fatalError() }
+    guard isTransitioning else { fatalError() }
     animatingViews = [([UIView], [UIView])]()
     for animator in animators {
       let currentFromViews = context.fromViews.filter { (view: UIView) -> Bool in
@@ -296,7 +296,7 @@ internal extension MotionController {
   /// Actually animate the views
   /// subclass should call `prepareForTransition` & `prepareForAnimation` before calling `animate`
   func animate() {
-    guard transitioning else { fatalError() }
+    guard isTransitioning else { fatalError() }
     for (currentFromViews, currentToViews) in animatingViews {
       // auto hide all animated views
       for view in currentFromViews {
@@ -328,7 +328,7 @@ internal extension MotionController {
   }
 
   func complete(after: TimeInterval, finishing: Bool) {
-    guard transitioning else { fatalError() }
+    guard isTransitioning else { fatalError() }
     if after <= 0.001 {
       complete(finished: finishing)
       return
@@ -340,7 +340,7 @@ internal extension MotionController {
   }
 
   func complete(finished: Bool) {
-    guard transitioning else { fatalError() }
+    guard isTransitioning else { fatalError() }
     for animator in animators {
       animator.clean()
     }

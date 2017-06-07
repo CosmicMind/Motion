@@ -53,7 +53,7 @@
 /* Begin PBXFileReference section */
 		963150D11EE50DA6002B0D42 /* Motion+Obj-C.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Motion+Obj-C.swift"; sourceTree = "<group>"; };
 		963150D41EE51C7A002B0D42 /* MotionAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionAnimation.swift; sourceTree = "<group>"; };
-		963150D91EE51EB4002B0D42 /* MotionAnimationFillMode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionAnimationFillMode.swift; sourceTree = "<group>"; };
+		963150D91EE51EB4002B0D42 /* MotionAnimationFillMode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MotionAnimationFillMode.swift; path = ../Extensions/MotionAnimationFillMode.swift; sourceTree = "<group>"; };
 		968989B81EE5B34B003B8F3D /* MotionHasInsertOrder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionHasInsertOrder.swift; sourceTree = "<group>"; };
 		968989DB1EE65F2B003B8F3D /* MotionPreprocessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionPreprocessor.swift; sourceTree = "<group>"; };
 		968989DD1EE6633E003B8F3D /* MotionAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionAnimator.swift; sourceTree = "<group>"; };
@@ -117,6 +117,7 @@
 				96AEB6671EE4610F009A3BE0 /* MotionDefaultAnimator.swift */,
 				96AEB6681EE4610F009A3BE0 /* MotionViewPropertyViewContext.swift */,
 				968989B81EE5B34B003B8F3D /* MotionHasInsertOrder.swift */,
+				963150D91EE51EB4002B0D42 /* MotionAnimationFillMode.swift */,
 			);
 			path = Animator;
 			sourceTree = "<group>";
@@ -141,7 +142,6 @@
 				96AEB6731EE4610F009A3BE0 /* Motion+UIKit.swift */,
 				96AEB6741EE4610F009A3BE0 /* Motion+UIView.swift */,
 				96AEB6751EE4610F009A3BE0 /* Motion+UIViewController.swift */,
-				963150D91EE51EB4002B0D42 /* MotionAnimationFillMode.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";

@@ -195,9 +195,9 @@ public extension MotionController {
    - modifiers: the modifiers to override
    - view: the view to override to
    */
-  public func apply(modifiers: [MotionTransition], to view: UIView) {
+  public func apply(transitions: [MotionTransition], to view: UIView) {
     guard isTransitioning else { return }
-    let targetState = MotionTargetState(modifiers: modifiers)
+    let targetState = MotionTargetState(transitions: transitions)
     if let otherView = self.context.pairedView(for: view) {
       for animator in self.animators {
         animator.apply(state: targetState, to: otherView)
@@ -272,6 +272,8 @@ internal extension MotionController {
     }
   }
 
+    
+    
   func processContext() {
     guard isTransitioning else { fatalError() }
     for processor in processors {

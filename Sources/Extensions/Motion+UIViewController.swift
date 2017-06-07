@@ -312,6 +312,7 @@ extension UIViewController {
     /**
      Replace the current view controller with another view controller on the 
      navigation/modal stack.
+     - Parameter with next: A UIViewController.
      */
     public func motion_replaceViewController(with next: UIViewController) {
         guard !Motion.shared.isTransitioning else {
@@ -328,7 +329,7 @@ extension UIViewController {
             }
             
             if navigationController.isMotionEnabled {
-                Motion.shared.forceNotInteractive = true
+                Motion.shared.forceNonInteractive = true
             }
             
             navigationController.setViewControllers(v, animated: true)

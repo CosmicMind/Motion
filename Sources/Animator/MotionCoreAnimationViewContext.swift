@@ -410,6 +410,11 @@ extension MotionCoreAnimationViewContext {
         return values
     }
     
+    /**
+     Moves a layer's animation to a given elapsed time.
+     - Parameter layer: A CALayer.
+     - Parameter elapsedTime: A TimeInterval.
+     */
     fileprivate func seek(layer: CALayer, elapsedTime: TimeInterval) {
         let timeOffset = elapsedTime - targetState.delay
         for (key, anim) in layer.animations {

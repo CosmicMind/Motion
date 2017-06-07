@@ -56,8 +56,8 @@ public class MotionContext {
         if let motionIdentifier = view.motionIdentifier {
           idMap[motionIdentifier] = view
         }
-        if let modifiers = view.motionTransitions {
-          targetStates[view] = MotionTargetState(modifiers: modifiers)
+        if let transitions = view.motionTransitions {
+          targetStates[view] = MotionTargetState(transitions: transitions)
         }
       }
     }

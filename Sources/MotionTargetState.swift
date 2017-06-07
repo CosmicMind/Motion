@@ -105,16 +105,16 @@ public struct MotionTargetState {
   public var forceAnimate: Bool = false
   public var custom: [String:Any]?
 
-  init(modifiers: [MotionTransition]) {
-    append(contentsOf: modifiers)
+  init(transitions: [MotionTransition]) {
+    append(contentsOf: transitions)
   }
 
-  public mutating func append(_ modifier: MotionTransition) {
-    modifier.apply(&self)
+  public mutating func append(_ transition: MotionTransition) {
+    transition.apply(&self)
   }
 
-  public mutating func append(contentsOf modifiers: [MotionTransition]) {
-    for modifier in modifiers {
+  public mutating func append(contentsOf transitions: [MotionTransition]) {
+    for modifier in transitions {
       modifier.apply(&self)
     }
   }

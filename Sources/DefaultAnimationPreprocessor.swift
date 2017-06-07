@@ -235,11 +235,11 @@ class DefaultAnimationPreprocessor: BasePreprocessor {
   override func process(fromViews: [UIView], toViews: [UIView]) {
     guard let motion = motion else { return }
     var defaultAnimation = motion.defaultAnimation
-    let inNavigationController = motion.inNavigationController
-    let inTabBarController = motion.inTabBarController
+    let inNavigationController = motion.isNavigationController
+    let inTabBarController = motion.isTabBarController
     let toViewController = motion.toViewController
     let fromViewController = motion.fromViewController
-    let presenting = motion.presenting
+    let presenting = motion.isPresenting
     let fromOverFullScreen = motion.fromOverFullScreen
     let toOverFullScreen = motion.toOverFullScreen
     let toView = motion.toView

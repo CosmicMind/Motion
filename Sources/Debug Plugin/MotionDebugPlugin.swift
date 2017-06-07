@@ -38,13 +38,13 @@ public class MotionDebugPlugin: MotionPlugin {
   var updating = false
 
   override public func animate(fromViews: [UIView], toViews: [UIView]) -> TimeInterval {
-    if Motion.shared.forceNotInteractive { return 0 }
+    if Motion.shared.forceNonInteractive { return 0 }
     var hasArc = false
     for v in context.fromViews + context.toViews where context[v]?.arc != nil && context[v]?.position != nil {
       hasArc = true
       break
     }
-    let debugView = MotionDebugView(initialProcess: Motion.shared.presenting ? 0.0 : 1.0, showCurveButton:hasArc, showOnTop:MotionDebugPlugin.showOnTop)
+    let debugView = MotionDebugView(initialProcess: Motion.shared.isPresenting ? 0.0 : 1.0, showCurveButton:hasArc, showOnTop:MotionDebugPlugin.showOnTop)
     debugView.frame = Motion.shared.container.bounds
     debugView.delegate = self
     UIApplication.shared.keyWindow!.addSubview(debugView)
@@ -81,7 +81,7 @@ public class MotionDebugPlugin: MotionPlugin {
 extension MotionDebugPlugin:MotionDebugViewDelegate {
   public func onDone() {
     guard let debugView = debugView else { return }
-    let seekValue = Motion.shared.presenting ? debugView.progress : 1.0 - debugView.progress
+    let seekValue = Motion.shared.isPresenting ? debugView.progress : 1.0 - debugView.progress
     if seekValue > 0.5 {
       Motion.shared.end()
     } else {
@@ -90,7 +90,7 @@ extension MotionDebugPlugin:MotionDebugViewDelegate {
   }
 
   public func onProcessSliderChanged(progress: Float) {
-    let seekValue = Motion.shared.presenting ? progress : 1.0 - progress
+    let seekValue = Motion.shared.isPresenting ? progress : 1.0 - progress
     Motion.shared.update(progress: Double(seekValue))
   }
 

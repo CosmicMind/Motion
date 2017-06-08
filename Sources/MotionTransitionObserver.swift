@@ -26,38 +26,13 @@
  * THE SOFTWARE.
  */
 
-import UIKit
+import Foundation
 
-public protocol MotionProgressUpdateObserver {
-    func motionDidUpdateProgress(progress: Double)
-}
-
-@objc(MotionViewControllerDelegate)
-public protocol MotionViewControllerDelegate {
-    @objc
-    optional func motionWillStartAnimatingFrom(viewController: UIViewController)
-    
-    @objc
-    optional func motionDidEndAnimatingFrom(viewController: UIViewController)
-    
-    @objc
-    optional func motionDidCancelAnimatingFrom(viewController: UIViewController)
-
-    @objc
-    optional func motionWillStartTransition()
-    
-    @objc
-    optional func motionDidEndTransition()
-    
-    @objc
-    optional func motionDidCancelTransition()
-
-    @objc
-    optional func motionWillStartAnimatingTo(viewController: UIViewController)
-    
-    @objc
-    optional func motionDidEndAnimatingTo(viewController: UIViewController)
-    
-    @objc
-    optional func motionDidCancelAnimatingTo(viewController: UIViewController)
+public protocol MotionTransitionObserver {
+    /**
+     Executed when the elapsed time changes during a transition.
+     - Parameter transitionObserver: A MotionTransitionObserver. 
+     - Parameter didUpdateWith elapsedTime: A TimeInterval.
+     */
+    func motion(transitionObserver: MotionTransitionObserver, didUpdateWith elapsedTime: TimeInterval)
 }

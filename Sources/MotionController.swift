@@ -28,105 +28,166 @@
 
 import UIKit
 
-/// Base class for managing a Motion transition
 public class MotionController: NSObject {
-  // MARK: Properties
-  /// context object holding transition informations
-  public internal(set) var context: MotionContext!
-  /// whether or not we are handling transition interactively
-  public var interactive: Bool {
-    return displayLink == nil
-  }
-  /// progress of the current transition. 0 if no transition is happening
-  public internal(set) var progress: Double = 0 {
-    didSet {
-      if isTransitioning {
-        if let progressUpdateObservers = progressUpdateObservers {
-          for observer in progressUpdateObservers {
-            observer.motionDidUpdateProgress(progress: progress)
-          }
-        }
+    /// A reference to the MotionContext.
+    public internal(set) var context: MotionContext!
 
-        let elapsedTime = progress * totalDuration
-        if interactive {
-          for animator in animators {
-            animator.seek(to: elapsedTime)
-          }
+    /// A boolean indicating whether the transition interactive or not.
+    public var isInteractive: Bool {
+        return nil == displayLink
+    }
+    
+    /// Progress of the current transition. 0 if no transition is happening.
+    public internal(set) var elapsedTime: TimeInterval = 0 {
+        didSet {
+            guard isTransitioning else {
+                return
+            }
+            
+            updateTransitionObservers()
+            
+            guard isInteractive else {
+                updatePlugins()
+                return
+            }
+            
+            updateAnimators()
+        }
+    }
+    
+    /// A boolean indicating whether a transition is active.
+    public var isTransitioning: Bool {
+        return nil != transitionContainer
+    }
+
+    /**
+     A view container used to hold all the animating views during a 
+     transition.
+     */
+    public internal(set) var container: UIView!
+
+    /// UIKit's supplied transition container.
+    internal var transitionContainer: UIView!
+
+    /// An optional completion callback.
+    internal var completionCallback: ((Bool) -> Void)?
+    
+    /// Binds the render cycle to the transition animation.
+    internal var displayLink: CADisplayLink?
+    
+    /// An Array of observers that are updated during a transition.
+    internal var transitionObservers: [MotionTransitionObserver]?
+
+    /// Max duration used by MotionAnimators and MotionPlugins.
+    public internal(set) var totalDuration: TimeInterval = 0
+
+    /// The currently running animation duration.
+    internal var currentAnimationDuration: TimeInterval = 0
+    
+    /// The start time of the animation.
+    internal var beginTime: TimeInterval? {
+        didSet {
+            guard nil != beginTime else {
+                displayLink?.isPaused = true
+                displayLink?.remove(from: RunLoop.main, forMode: RunLoopMode(rawValue: RunLoopMode.commonModes.rawValue))
+                displayLink = nil
+                return
+            }
+            
+            guard nil == displayLink else {
+                return
+            }
+            
+            displayLink = CADisplayLink(target: self, selector: #selector(handleDisplayLink(_:)))
+            displayLink?.add(to: RunLoop.main, forMode: RunLoopMode(rawValue: RunLoopMode.commonModes.rawValue))
+        }
+    }
+
+    /// A boolean indicating if the transition has finished.
+    internal var isFinished = true
+
+    /// An Array of MotionPreprocessors used during a transition.
+    internal var processors: [MotionPreprocessor]!
+
+    /// An Array of MotionAnimators used during a transition.
+    internal var animators: [MotionAnimator]!
+
+    /// An Array of MotionPlugins used during a transition.
+    internal var plugins: [MotionPlugin]!
+
+    /// The matching from-views to to-views based on the motionIdentifier value.
+    internal var transitionPairs: [(fromViews: [UIView], toViews: [UIView])]!
+
+    /// Plugins that are enabled during the transition.
+    internal static var enabledPlugins = [MotionPlugin.Type]()
+
+    /// Initializer.
+    internal override init() {}
+}
+
+fileprivate extension MotionController {
+    /// Updates the transition observers.
+    func updateTransitionObservers() {
+        guard let observers = transitionObservers else {
+            return
+        }
+        
+        for v in observers {
+            v.motion(transitionObserver: v, didUpdateWith: elapsedTime)
+        }
+    }
+    
+    /// Updates the animators.
+    func updateAnimators() {
+        let v = elapsedTime * totalDuration
+        for a in animators {
+            a.seek(to: v)
+        }
+    }
+    
+    /// Updates the plugins.
+    func updatePlugins() {
+        let v = elapsedTime * totalDuration
+        for p in plugins where p.requirePerFrameCallback {
+            p.seek(to: v)
+        }
+    }
+}
+
+fileprivate extension MotionController {
+    @objc
+    func handleDisplayLink(_ link: CADisplayLink) {
+        guard isTransitioning else {
+            return
+        }
+        
+        guard 0 < currentAnimationDuration else {
+            return
+        }
+        
+        guard let t = beginTime else {
+            return
+        }
+        
+        let cTime = CACurrentMediaTime() - t
+        
+        if cTime > currentAnimationDuration {
+            elapsedTime = isFinished ? 1 : 0
+            
+            beginTime = nil
+            
+            complete(isFinished: isFinished)
+        
         } else {
-          for plugin in plugins where plugin.requirePerFrameCallback {
-            plugin.seek(to: elapsedTime)
-          }
+            var eTime = cTime / totalDuration
+            
+            if !isFinished {
+                eTime = 1 - eTime
+            }
+            
+            elapsedTime = max(0, min(1, eTime))
         }
-      }
     }
-  }
-  /// whether or not we are doing a transition
-  public var isTransitioning: Bool {
-    return transitionContainer != nil
-  }
-
-  /// container we created to hold all animating views, will be a subview of the
-  /// transitionContainer when isTransitioning
-  public internal(set) var container: UIView!
-
-  /// this is the container supplied by UIKit
-  internal var transitionContainer: UIView!
-
-  internal var completionCallback: ((Bool) -> Void)?
-
-  internal var displayLink: CADisplayLink?
-  internal var progressUpdateObservers: [MotionProgressUpdateObserver]?
-
-  /// max duration needed by the default animator and plugins
-  public internal(set) var totalDuration: TimeInterval = 0.0
-
-  /// current animation complete duration.
-  /// (differs from totalDuration because this one could be the duration for finishing interactive transition)
-  internal var duration: TimeInterval = 0.0
-  internal var beginTime: TimeInterval? {
-    didSet {
-      if beginTime != nil {
-        if displayLink == nil {
-          displayLink = CADisplayLink(target: self, selector: #selector(displayUpdate(_:)))
-          displayLink!.add(to: RunLoop.main, forMode: RunLoopMode(rawValue: RunLoopMode.commonModes.rawValue))
-        }
-      } else {
-        displayLink?.isPaused = true
-        displayLink?.remove(from: RunLoop.main, forMode: RunLoopMode(rawValue: RunLoopMode.commonModes.rawValue))
-        displayLink = nil
-      }
-    }
-  }
-  func displayUpdate(_ link: CADisplayLink) {
-    if isTransitioning, duration > 0, let beginTime = beginTime {
-      let elapsedTime = CACurrentMediaTime() - beginTime
-
-      if elapsedTime > duration {
-        progress = finishing ? 1 : 0
-        self.beginTime = nil
-        complete(finished: finishing)
-      } else {
-        var completed = elapsedTime / totalDuration
-        if !finishing {
-          completed = 1 - completed
-        }
-        completed = max(0, min(1, completed))
-        progress = completed
-      }
-    }
-  }
-
-  internal var finishing: Bool = true
-
-  internal var processors: [MotionPreprocessor]!
-  internal var animators: [MotionAnimator]!
-  internal var plugins: [MotionPlugin]!
-
-  internal var animatingViews: [(fromViews: [UIView], toViews: [UIView])]!
-
-  internal static var enabledPlugins: [MotionPlugin.Type] = []
-
-  internal override init() {}
 }
 
 public extension MotionController {
@@ -140,7 +201,7 @@ public extension MotionController {
   public func update(progress: Double) {
     guard isTransitioning else { return }
     self.beginTime = nil
-    self.progress = max(-1, min(1, progress))
+    self.elapsedTime = max(-1, min(1, progress))
   }
 
   /**
@@ -151,14 +212,14 @@ public extension MotionController {
   public func end(animate: Bool = true) {
     guard isTransitioning else { return }
     if !animate {
-      self.complete(finished:true)
+      self.complete(isFinished:true)
       return
     }
     var maxTime: TimeInterval = 0
     for animator in self.animators {
-      maxTime = max(maxTime, animator.resume(at: self.progress * self.totalDuration, isReversed: false))
+      maxTime = max(maxTime, animator.resume(at: self.elapsedTime * self.totalDuration, isReversed: false))
     }
-    self.complete(after: maxTime, finishing: true)
+    self.complete(after: maxTime, isFinished: true)
   }
 
   /**
@@ -169,18 +230,18 @@ public extension MotionController {
   public func cancel(animate: Bool = true) {
     guard isTransitioning else { return }
     if !animate {
-      self.complete(finished:false)
+      self.complete(isFinished:false)
       return
     }
     var maxTime: TimeInterval = 0
     for animator in self.animators {
-      var adjustedProgress = self.progress
+      var adjustedProgress = self.elapsedTime
       if adjustedProgress < 0 {
         adjustedProgress = -adjustedProgress
       }
       maxTime = max(maxTime, animator.resume(at: adjustedProgress * self.totalDuration, isReversed: true))
     }
-    self.complete(after: maxTime, finishing: false)
+    self.complete(after: maxTime, isFinished: false)
   }
 
   /**
@@ -219,11 +280,11 @@ public extension MotionController {
    - Parameters:
    - observer: the observer
    */
-  func observeForProgressUpdate(observer: MotionProgressUpdateObserver) {
-    if progressUpdateObservers == nil {
-      progressUpdateObservers = []
+  func observeForProgressUpdate(observer: MotionTransitionObserver) {
+    if transitionObservers == nil {
+      transitionObservers = []
     }
-    progressUpdateObservers!.append(observer)
+    transitionObservers!.append(observer)
   }
 }
 
@@ -283,7 +344,7 @@ internal extension MotionController {
 
   func prepareForAnimation() {
     guard isTransitioning else { fatalError() }
-    animatingViews = [([UIView], [UIView])]()
+    transitionPairs = [([UIView], [UIView])]()
     for animator in animators {
       let currentFromViews = context.fromViews.filter { (view: UIView) -> Bool in
         return animator.canAnimate(view: view, isAppearing: false)
@@ -291,7 +352,7 @@ internal extension MotionController {
       let currentToViews = context.toViews.filter { (view: UIView) -> Bool in
         return animator.canAnimate(view: view, isAppearing: true)
       }
-      animatingViews.append((currentFromViews, currentToViews))
+      transitionPairs.append((currentFromViews, currentToViews))
     }
   }
 
@@ -299,7 +360,7 @@ internal extension MotionController {
   /// subclass should call `prepareForTransition` & `prepareForAnimation` before calling `animate`
   func animate() {
     guard isTransitioning else { fatalError() }
-    for (currentFromViews, currentToViews) in animatingViews {
+    for (currentFromViews, currentToViews) in transitionPairs {
       // auto hide all animated views
       for view in currentFromViews {
         context.hide(view: view)
@@ -312,8 +373,8 @@ internal extension MotionController {
     var totalDuration: TimeInterval = 0
     var animatorWantsInteractive = false
     for (i, animator) in animators.enumerated() {
-      let duration = animator.animate(fromViews: animatingViews[i].0,
-                                      toViews: animatingViews[i].1)
+      let duration = animator.animate(fromViews: transitionPairs[i].0,
+                                      toViews: transitionPairs[i].1)
       if duration == .infinity {
         animatorWantsInteractive = true
       } else {
@@ -325,23 +386,23 @@ internal extension MotionController {
     if animatorWantsInteractive {
       update(progress: 0)
     } else {
-      complete(after: totalDuration, finishing: true)
+      complete(after: totalDuration, isFinished: true)
     }
   }
 
-  func complete(after: TimeInterval, finishing: Bool) {
+  func complete(after: TimeInterval, isFinished: Bool) {
     guard isTransitioning else { fatalError() }
     if after <= 0.001 {
-      complete(finished: finishing)
+      complete(isFinished: isFinished)
       return
     }
-    let elapsedTime = (finishing ? progress : 1 - progress) * totalDuration
-    self.finishing = finishing
-    self.duration = after + elapsedTime
-    self.beginTime = CACurrentMediaTime() - elapsedTime
+    let v = (isFinished ? elapsedTime : 1 - elapsedTime) * totalDuration
+    self.isFinished = isFinished
+    self.currentAnimationDuration = after + v
+    self.beginTime = CACurrentMediaTime() - v
   }
 
-  func complete(finished: Bool) {
+  func complete(isFinished: Bool) {
     guard isTransitioning else { fatalError() }
     for animator in animators {
       animator.clean()
@@ -351,8 +412,8 @@ internal extension MotionController {
 
     let completion = completionCallback
 
-    animatingViews = nil
-    progressUpdateObservers = nil
+    transitionPairs = nil
+    transitionObservers = nil
     transitionContainer = nil
     completionCallback = nil
     container = nil
@@ -361,10 +422,10 @@ internal extension MotionController {
     plugins = nil
     context = nil
     beginTime = nil
-    progress = 0
+    elapsedTime = 0
     totalDuration = 0
 
-    completion?(finished)
+    completion?(isFinished)
   }
 }
 

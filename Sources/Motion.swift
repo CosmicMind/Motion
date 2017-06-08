@@ -58,11 +58,13 @@ public class Motion: MotionController {
     public internal(set) var isPresenting = true
 
     /// Progress of the current transition, 0 if a transition is not happening.
-    public override var progress: Double {
+    public override var elapsedTime: TimeInterval {
         didSet {
-            if isTransitioning {
-                transitionContext?.updateInteractiveTransition(CGFloat(progress))
+            guard isTransitioning else {
+                return
             }
+            
+            transitionContext?.updateInteractiveTransition(CGFloat(elapsedTime))
         }
     }
 
@@ -155,7 +157,7 @@ public extension Motion {
     }
 }
 
-internal extension Motion {
+fileprivate extension Motion {
     /// Starts the transition animation.
     func start() {
         guard isTransitioning else {
@@ -165,51 +167,25 @@ internal extension Motion {
         prepareViewControllers()
         prepareSnapshotView()
         prepareForTransition()
-        prepareMotionContext()
+        prepareContext()
         prepareToView()
         prepareViewHierarchy()
-
         processContext()
         prepareForAnimation()
-
-        context.hide(view: toView)
-
-        #if os(tvOS)
-            animate()
-        #else
-            if isNavigationController {
-                // When animating within navigationController, we have to dispatch later into the main queue.
-                // otherwise snapshots will be pure white. Possibly a bug with UIKit
-                DispatchQueue.main.async { [weak self] in
-                    self?.animate()
-                }
-            } else {
-                animate()
-            }
-        #endif
+        processForAnimation()
     }
-    
+}
+
+internal extension Motion {
     override func animate() {
         context.unhide(view: toView)
         
-        if let containerBackgroundColor = containerBackgroundColor {
-            container.backgroundColor = containerBackgroundColor
-        } else if !toOverFullScreen && !fromOverFullScreen {
-            container.backgroundColor = toView.backgroundColor
-        }
-        
-        if fromOverFullScreen {
-            insertToViewFirst = true
-        }
-    
-        for animator in animators {
-            if let animator = animator as? MotionHasInsertOrder {
-                animator.insertToViewFirst = insertToViewFirst
-            }
-        }
+        updateContainerBackgroundColor()
+        updateInsertOrder()
         
         super.animate()
-        fullScreenSnapshot!.removeFromSuperview()
+        
+        fullScreenSnapshot?.removeFromSuperview()
     }
     
     override func complete(finished: Bool) {
@@ -218,13 +194,13 @@ internal extension Motion {
         }
         
         context.clean()
-    
+        
         if finished && isPresenting && toOverFullScreen {
             // finished presenting a overFullScreen VC
             context.unhide(rootView: toView)
             context.removeSnapshots(rootView: toView)
             context.storeViewAlpha(rootView: fromView)
-      
+            
             fromViewController!.motionStoredSnapshot = container
             fromView.removeFromSuperview()
             fromView.addSubview(container)
@@ -262,7 +238,7 @@ internal extension Motion {
         let tContext = transitionContext
         let fvc = fromViewController
         let tvc = toViewController
-
+        
         transitionContext = nil
         fromViewController = nil
         toViewController = nil
@@ -274,7 +250,7 @@ internal extension Motion {
         defaultAnimation = .auto
         
         super.complete(finished: finished)
-
+        
         if finished {
             if let fvc = fvc, let tvc = tvc {
                 processForMotionDelegate(viewController: fvc) {
@@ -344,7 +320,7 @@ fileprivate extension Motion {
     }
     
     /// Prepares the MotionContext instance.
-    func prepareMotionContext() {
+    func prepareContext() {
         context.loadViewAlpha(rootView: toView)
         context.loadViewAlpha(rootView: fromView)
         container.addSubview(toView)
@@ -369,6 +345,52 @@ internal extension Motion {
     override func prepareForTransition() {
         super.prepareForTransition()
         insert(preprocessor: DefaultAnimationPreprocessor(motion: self), before: DurationPreprocessor.self)
+    }
+    
+    override func prepareForAnimation() {
+        super.prepareForAnimation()
+        context.hide(view: toView)
+    }
+}
+
+fileprivate extension Motion {
+    /// Processes the animations.
+    func processForAnimation() {
+        #if os(tvOS)
+            animate()
+        #else
+            if isNavigationController {
+                // When animating within navigationController, we have to dispatch later into the main queue.
+                // otherwise snapshots will be pure white. Possibly a bug with UIKit
+                DispatchQueue.main.async { [weak self] in
+                    self?.animate()
+                }
+            } else {
+                animate()
+            }
+        #endif
+    }
+}
+
+fileprivate extension Motion {
+    /// Updates the container background color.
+    func updateContainerBackgroundColor() {
+        if let v = containerBackgroundColor {
+            container.backgroundColor = v
+        } else if !toOverFullScreen && !fromOverFullScreen {
+            container.backgroundColor = toView.backgroundColor
+        }
+    }
+    
+    /// Updates the insertToViewFirst boolean for animators.
+    func updateInsertOrder() {
+        if fromOverFullScreen {
+            insertToViewFirst = true
+        }
+        
+        for v in animators {
+            (v as? MotionHasInsertOrder)?.insertToViewFirst = insertToViewFirst
+        }
     }
 }
 
@@ -418,99 +440,113 @@ internal extension Motion {
     }
 }
 
-// MARK: UIKit Protocol Conformance
-
-/*****************************
- * UIKit protocol extensions *
- *****************************/
-
 extension Motion: UIViewControllerAnimatedTransitioning {
-  public func animateTransition(using context: UIViewControllerContextTransitioning) {
-    guard !isTransitioning else { return }
-    transitionContext = context
-    fromViewController = fromViewController ?? context.viewController(forKey: .from)
-    toViewController = toViewController ?? context.viewController(forKey: .to)
-    transitionContainer = context.containerView
-    start()
-  }
-  public func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-    return 0.375 // doesn't matter, real duration will be calculated later
-  }
-
-  public func animationEnded(_ transitionCompleted: Bool) {
-    isAnimating = !transitionCompleted
-  }
+    /**
+     The animation method that is used to coordinate the transition.
+     - Parameter using transitionContext: A UIViewControllerContextTransitioning.
+     */
+    public func animateTransition(using context: UIViewControllerContextTransitioning) {
+        guard !isTransitioning else {
+            return
+        }
+        
+        transitionContext = context
+        fromViewController = fromViewController ?? context.viewController(forKey: .from)
+        toViewController = toViewController ?? context.viewController(forKey: .to)
+        transitionContainer = context.containerView
+        
+        start()
+    }
+    
+    /**
+     Returns the transition duration time interval.
+     - Parameter using transitionContext: An optional UIViewControllerContextTransitioning.
+     - Returns: A TimeInterval that is the total animation time including delays.
+     */
+    public func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
+        return 0 // Will be updated dynamically.
+    }
+    
+    public func animationEnded(_ transitionCompleted: Bool) {
+        isAnimating = !transitionCompleted
+    }
 }
 
-extension Motion:UIViewControllerTransitioningDelegate {
-  var interactiveTransitioning: UIViewControllerInteractiveTransitioning? {
-    return forceNonInteractive ? nil : self
-  }
+extension Motion {
+    /// A reference to the interactive transitioning.
+    fileprivate var interactiveTransitioning: UIViewControllerInteractiveTransitioning? {
+        return self
+    }
+}
 
-  public func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-    self.isPresenting = true
-    self.fromViewController = fromViewController ?? presenting
-    self.toViewController = toViewController ?? presented
-    return self
-  }
-
-  public func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-    self.isPresenting = false
-    self.fromViewController = fromViewController ?? dismissed
-    return self
-  }
-
-  public func interactionControllerForDismissal(using animator: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
-    return interactiveTransitioning
-  }
-
-  public func interactionControllerForPresentation(using animator: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
-    return interactiveTransitioning
-  }
+extension Motion: UIViewControllerTransitioningDelegate {
+    public func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        self.isPresenting = true
+        self.fromViewController = fromViewController ?? presenting
+        self.toViewController = toViewController ?? presented
+        return self
+    }
+    
+    public func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        self.isPresenting = false
+        self.fromViewController = fromViewController ?? dismissed
+        return self
+    }
+    
+    public func interactionControllerForDismissal(using animator: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
+        return interactiveTransitioning
+    }
+    
+    public func interactionControllerForPresentation(using animator: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
+        return interactiveTransitioning
+    }
 }
 
 extension Motion: UIViewControllerInteractiveTransitioning {
-  public var wantsInteractiveStart: Bool {
-    return true
-  }
-  public func startInteractiveTransition(_ transitionContext: UIViewControllerContextTransitioning) {
-    animateTransition(using: transitionContext)
-  }
+    public var wantsInteractiveStart: Bool {
+        return true
+    }
+    public func startInteractiveTransition(_ transitionContext: UIViewControllerContextTransitioning) {
+        animateTransition(using: transitionContext)
+    }
 }
 
 extension Motion: UINavigationControllerDelegate {
-  public func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationControllerOperation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-    self.isPresenting = operation == .push
-    self.fromViewController = fromViewController ?? fromVC
-    self.toViewController = toViewController ?? toVC
-    self.isNavigationController = true
-    return self
-  }
-
-  public func navigationController(_ navigationController: UINavigationController, interactionControllerFor animationController: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
-    return interactiveTransitioning
-  }
+    public func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationControllerOperation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        self.isPresenting = .push == operation
+        self.fromViewController = fromViewController ?? fromVC
+        self.toViewController = toViewController ?? toVC
+        self.isNavigationController = true
+        return self
+    }
+    
+    public func navigationController(_ navigationController: UINavigationController, interactionControllerFor animationController: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
+        return interactiveTransitioning
+    }
 }
 
 extension Motion: UITabBarControllerDelegate {
-  public func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
-    return !isAnimating
-  }
-
-  public func tabBarController(_ tabBarController: UITabBarController, interactionControllerFor animationController: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
-    return interactiveTransitioning
-  }
-
-  public func tabBarController(_ tabBarController: UITabBarController, animationControllerForTransitionFrom fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-    isAnimating = true
-    let fromVCIndex = tabBarController.childViewControllers.index(of: fromVC)!
-    let toVCIndex = tabBarController.childViewControllers.index(of: toVC)!
-    self.isPresenting = toVCIndex > fromVCIndex
-    self.fromViewController = fromViewController ?? fromVC
-    self.toViewController = toViewController ?? toVC
-    self.isTabBarController = true
-    return self
-  }
+    public func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
+        return !isAnimating
+    }
+    
+    public func tabBarController(_ tabBarController: UITabBarController, interactionControllerFor animationController: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
+        return interactiveTransitioning
+    }
+    
+    public func tabBarController(_ tabBarController: UITabBarController, animationControllerForTransitionFrom fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        isAnimating = true
+        
+        let fromVCIndex = tabBarController.childViewControllers.index(of: fromVC)!
+        let toVCIndex = tabBarController.childViewControllers.index(of: toVC)!
+        
+        self.isPresenting = toVCIndex > fromVCIndex
+        self.fromViewController = fromViewController ?? fromVC
+        self.toViewController = toViewController ?? toVC
+        self.isTabBarController = true
+        
+        return self
+    }
 }
 
 public typealias MotionDelayCancelBlock = (Bool) -> Void

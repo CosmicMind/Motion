@@ -37,11 +37,11 @@ public class MotionIndependentController: MotionController {
     transitionContainer = rootView
     completionCallback = completion
 
-    prepareForTransition()
+    prepareTransition()
     context.defaultCoordinateSpace = .sameParent
     context.set(fromViews: fromViews, toViews: toViews)
     processContext()
-    prepareForAnimation()
+    prepareTransitionPairs()
     animate()
   }
 }

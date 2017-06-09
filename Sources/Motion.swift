@@ -166,12 +166,12 @@ fileprivate extension Motion {
         
         prepareViewControllers()
         prepareSnapshotView()
-        prepareForTransition()
+        prepareTransition()
         prepareContext()
         prepareToView()
         prepareViewHierarchy()
         processContext()
-        prepareForAnimation()
+        prepareTransitionPairs()
         processForAnimation()
     }
 }
@@ -188,7 +188,7 @@ internal extension Motion {
         fullScreenSnapshot?.removeFromSuperview()
     }
     
-    override func complete(finished: Bool) {
+    override func complete(isFinished finished: Bool) {
         guard isTransitioning else {
             return
         }
@@ -220,13 +220,13 @@ internal extension Motion {
         }
         
         // move fromView & toView back from our container back to the one supplied by UIKit
-        if (toOverFullScreen && finished) || (fromOverFullScreen && !finished) {
-            transitionContainer.addSubview(finished ? fromView : toView)
+        if (toOverFullScreen && isFinished) || (fromOverFullScreen && !finished) {
+            transitionContainer.addSubview(isFinished ? fromView : toView)
         }
         
-        transitionContainer.addSubview(finished ? toView : fromView)
+        transitionContainer.addSubview(isFinished ? toView : fromView)
         
-        if isPresenting != finished, !isContainerController {
+        if isPresenting != isFinished, !isContainerController {
             // only happens when present a .overFullScreen VC
             // bug: http://openradar.appspot.com/radar?id=5320103646199808
             UIApplication.shared.keyWindow!.addSubview(isPresenting ? fromView : toView)
@@ -249,7 +249,7 @@ internal extension Motion {
         insertToViewFirst = false
         defaultAnimation = .auto
         
-        super.complete(finished: finished)
+        super.complete(isFinished: isFinished)
         
         if finished {
             if let fvc = fvc, let tvc = tvc {
@@ -342,13 +342,13 @@ fileprivate extension Motion {
 }
 
 internal extension Motion {
-    override func prepareForTransition() {
-        super.prepareForTransition()
+    override func prepareTransition() {
+        super.prepareTransition()
         insert(preprocessor: DefaultAnimationPreprocessor(motion: self), before: DurationPreprocessor.self)
     }
     
-    override func prepareForAnimation() {
-        super.prepareForAnimation()
+    override func prepareTransitionPairs() {
+        super.prepareTransitionPairs()
         context.hide(view: toView)
     }
 }

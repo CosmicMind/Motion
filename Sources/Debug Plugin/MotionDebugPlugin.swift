@@ -91,7 +91,7 @@ extension MotionDebugPlugin:MotionDebugViewDelegate {
 
   public func onProcessSliderChanged(progress: Float) {
     let seekValue = Motion.shared.isPresenting ? progress : 1.0 - progress
-    Motion.shared.update(progress: Double(seekValue))
+    Motion.shared.update(elapsedTime: Double(seekValue))
   }
 
   func onPerspectiveChanged(translation: CGPoint, rotation: CGFloat, scale: CGFloat) {

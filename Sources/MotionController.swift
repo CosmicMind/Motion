@@ -107,7 +107,7 @@ public class MotionController: NSObject {
     internal var isFinished = true
 
     /// An Array of MotionPreprocessors used during a transition.
-    internal var processors: [MotionPreprocessor]!
+    internal var preprocessors: [MotionPreprocessor]!
 
     /// An Array of MotionAnimators used during a transition.
     internal var animators: [MotionAnimator]!
@@ -123,6 +123,25 @@ public class MotionController: NSObject {
 
     /// Initializer.
     internal override init() {}
+}
+
+public extension MotionController {
+    /**
+     Receive callbacks on each animation frame.
+     Observers will be cleaned when a transition completes.
+     - Parameter observer: A MotionTransitionObserver.
+     */
+    func addTransitionObserver(observer: MotionTransitionObserver) {
+        defer {
+            transitionObservers?.append(observer)
+        }
+        
+        guard nil == transitionObservers else {
+            return
+        }
+        
+        transitionObservers = []
+    }
 }
 
 fileprivate extension MotionController {
@@ -155,6 +174,10 @@ fileprivate extension MotionController {
 }
 
 fileprivate extension MotionController {
+    /**
+     Handler for the DisplayLink updates.
+     - Parameter _ link: CADisplayLink.
+     */
     @objc
     func handleDisplayLink(_ link: CADisplayLink) {
         guard isTransitioning else {
@@ -180,7 +203,7 @@ fileprivate extension MotionController {
         
         } else {
             var eTime = cTime / totalDuration
-            
+
             if !isFinished {
                 eTime = 1 - eTime
             }
@@ -191,269 +214,329 @@ fileprivate extension MotionController {
 }
 
 public extension MotionController {
-  // MARK: Interactive Transition
-
-  /**
-   Update the progress for the interactive transition.
-   - Parameters:
-   - progress: the current progress, must be between -1...1
-   */
-  public func update(progress: Double) {
-    guard isTransitioning else { return }
-    self.beginTime = nil
-    self.elapsedTime = max(-1, min(1, progress))
-  }
-
-  /**
-   Finish the interactive transition.
-   Will stop the interactive transition and animate from the
-   current state to the **end** state
-   */
-  public func end(animate: Bool = true) {
-    guard isTransitioning else { return }
-    if !animate {
-      self.complete(isFinished:true)
-      return
+    /**
+     Updates the elapsed time for the interactive transition.
+     - Parameter elapsedTime t: the current progress, must be between -1...1.
+     */
+    public func update(elapsedTime t: TimeInterval) {
+        guard isTransitioning else {
+            return
+        }
+        
+        beginTime = nil
+        elapsedTime = max(-1, min(1, t))
     }
-    var maxTime: TimeInterval = 0
-    for animator in self.animators {
-      maxTime = max(maxTime, animator.resume(at: self.elapsedTime * self.totalDuration, isReversed: false))
-    }
-    self.complete(after: maxTime, isFinished: true)
-  }
-
-  /**
-   Cancel the interactive transition.
-   Will stop the interactive transition and animate from the
-   current state to the **begining** state
-   */
-  public func cancel(animate: Bool = true) {
-    guard isTransitioning else { return }
-    if !animate {
-      self.complete(isFinished:false)
-      return
-    }
-    var maxTime: TimeInterval = 0
-    for animator in self.animators {
-      var adjustedProgress = self.elapsedTime
-      if adjustedProgress < 0 {
-        adjustedProgress = -adjustedProgress
-      }
-      maxTime = max(maxTime, animator.resume(at: adjustedProgress * self.totalDuration, isReversed: true))
-    }
-    self.complete(after: maxTime, isFinished: false)
-  }
-
-  /**
-   Override modifiers during an interactive animation.
-
-   For example:
-
-   Motion.shared.apply([.position(x:50, y:50)], to:view)
-
-   will set the view's position to 50, 50
-   - Parameters:
-   - modifiers: the modifiers to override
-   - view: the view to override to
-   */
-  public func apply(transitions: [MotionTransition], to view: UIView) {
-    guard isTransitioning else { return }
-    let targetState = MotionTargetState(transitions: transitions)
-    if let otherView = self.context.pairedView(for: view) {
-      for animator in self.animators {
-        animator.apply(state: targetState, to: otherView)
-      }
-    }
-    for animator in self.animators {
-      animator.apply(state: targetState, to: view)
-    }
-  }
-}
-
-public extension MotionController {
-  // MARK: Observe Progress
-
-  /**
-   Receive callbacks on each animation frame.
-   Observers will be cleaned when transition completes
-
-   - Parameters:
-   - observer: the observer
-   */
-  func observeForProgressUpdate(observer: MotionTransitionObserver) {
-    if transitionObservers == nil {
-      transitionObservers = []
-    }
-    transitionObservers!.append(observer)
-  }
-}
-
-// internal methods for transition
-internal extension MotionController {
-  /// Load plugins, processors, animators, container, & context
-  /// must have transitionContainer set already
-  /// subclass should call context.set(fromViews:toViews) after inserting fromViews & toViews into the container
-  func prepareForTransition() {
-    guard isTransitioning else { fatalError() }
-    plugins = Motion.enabledPlugins.map({ return $0.init() })
-    processors = [
-      IgnoreSubviewModifiersPreprocessor(),
-      MatchPreprocessor(),
-      SourcePreprocessor(),
-      CascadePreprocessor(),
-      DurationPreprocessor()
-    ]
-    animators = [
-      MotionDefaultAnimator<MotionCoreAnimationViewContext>()
-    ]
-
-    if #available(iOS 10, tvOS 10, *) {
-      animators.append(MotionDefaultAnimator<MotionViewPropertyViewContext>())
-    }
-
-    // There is no covariant in Swift, so we need to add plugins one by one.
-    for plugin in plugins {
-      processors.append(plugin)
-      animators.append(plugin)
-    }
-
-    transitionContainer.isUserInteractionEnabled = false
-
-    // a view to hold all the animating views
-    container = UIView(frame: transitionContainer.bounds)
-    transitionContainer.addSubview(container)
-
-    context = MotionContext(container:container)
-
-    for processor in processors {
-      processor.context = context
-    }
-    for animator in animators {
-      animator.context = context
-    }
-  }
-
     
+    /**
+     Finish the interactive transition.
+     Will stop the interactive transition and animate from the
+     current state to the **end** state
+     - Parameter isAnimated: A boolean indicating if the completion is animated.
+     */
+    public func end(isAnimated: Bool = true) {
+        guard isTransitioning else {
+            return
+        }
+        
+        guard isAnimated else {
+            complete(isFinished: true)
+            return
+        }
+        
+        var v: TimeInterval = 0
+        for a in animators {
+            v = max(v, a.resume(at: elapsedTime * totalDuration, isReversed: false))
+        }
+        
+        complete(after: v, isFinished: true)
+    }
+
+    /**
+     Cancel the interactive transition.
+     Will stop the interactive transition and animate from the
+     current state to the **begining** state
+     - Parameter isAnimated: A boolean indicating if the completion is animated.
+     */
+    public func cancel(isAnimated: Bool = true) {
+        guard isTransitioning else {
+            return
+        }
+        
+        guard isAnimated else {
+            complete(isFinished:false)
+            return
+        }
+        
+        var v: TimeInterval = 0
+        for a in animators {
+            var t = elapsedTime
+            if t < 0 {
+                t = -t
+            }
+            
+            v = max(v, a.resume(at: t * totalDuration, isReversed: true))
+        }
+        
+        complete(after: v, isFinished: false)
+    }
+
+    /**
+     Override transition animations during an interactive animation.
+
+     For example:
+
+     Motion.shared.apply([.position(x:50, y:50)], to: view)
+
+     will set the view's position to 50, 50
+     - Parameter transitions: An Array of MotionTransitions.
+     - Parameter to view: A UIView.
+     */
+    public func apply(transitions: [MotionTransition], to view: UIView) {
+        guard isTransitioning else {
+            return
+        }
+        
+        let s = MotionTargetState(transitions: transitions)
+        let v = context.pairedView(for: view) ?? view
+        
+        for a in animators {
+            a.apply(state: s, to: v)
+        }
+    }
+}
+
+internal extension MotionController {
+    /**
+     Load plugins, processors, animators, container, & context
+     The transitionContainer must already be set.
+     Subclasses should call context.set(fromViews: toViews) after
+     inserting fromViews & toViews into the container
+     */
+    func prepareTransition() {
+        guard isTransitioning else {
+            fatalError()
+        }
+        
+        prepareTransitionContainer()
+        prepareContext()
+        preparePreprocessors()
+        prepareAnimators()
+        preparePlugins()
+    }
     
-  func processContext() {
-    guard isTransitioning else { fatalError() }
-    for processor in processors {
-      processor.process(fromViews: context.fromViews, toViews: context.toViews)
+    /// Prepares the transition from-view & to-view pairs.
+    func prepareTransitionPairs() {
+        guard isTransitioning else {
+            fatalError()
+        }
+        
+        transitionPairs = [([UIView], [UIView])]()
+        
+        for a in animators {
+            let fv = context.fromViews.filter { (view: UIView) -> Bool in
+                return a.canAnimate(view: view, isAppearing: false)
+            }
+            
+            let tv = context.toViews.filter { (view: UIView) -> Bool in
+                return a.canAnimate(view: view, isAppearing: true)
+            }
+            
+            transitionPairs.append((fv, tv))
+        }
     }
-  }
-
-  func prepareForAnimation() {
-    guard isTransitioning else { fatalError() }
-    transitionPairs = [([UIView], [UIView])]()
-    for animator in animators {
-      let currentFromViews = context.fromViews.filter { (view: UIView) -> Bool in
-        return animator.canAnimate(view: view, isAppearing: false)
-      }
-      let currentToViews = context.toViews.filter { (view: UIView) -> Bool in
-        return animator.canAnimate(view: view, isAppearing: true)
-      }
-      transitionPairs.append((currentFromViews, currentToViews))
-    }
-  }
-
-  /// Actually animate the views
-  /// subclass should call `prepareForTransition` & `prepareForAnimation` before calling `animate`
-  func animate() {
-    guard isTransitioning else { fatalError() }
-    for (currentFromViews, currentToViews) in transitionPairs {
-      // auto hide all animated views
-      for view in currentFromViews {
-        context.hide(view: view)
-      }
-      for view in currentToViews {
-        context.hide(view: view)
-      }
-    }
-
-    var totalDuration: TimeInterval = 0
-    var animatorWantsInteractive = false
-    for (i, animator) in animators.enumerated() {
-      let duration = animator.animate(fromViews: transitionPairs[i].0,
-                                      toViews: transitionPairs[i].1)
-      if duration == .infinity {
-        animatorWantsInteractive = true
-      } else {
-        totalDuration = max(totalDuration, duration)
-      }
-    }
-
-    self.totalDuration = totalDuration
-    if animatorWantsInteractive {
-      update(progress: 0)
-    } else {
-      complete(after: totalDuration, isFinished: true)
-    }
-  }
-
-  func complete(after: TimeInterval, isFinished: Bool) {
-    guard isTransitioning else { fatalError() }
-    if after <= 0.001 {
-      complete(isFinished: isFinished)
-      return
-    }
-    let v = (isFinished ? elapsedTime : 1 - elapsedTime) * totalDuration
-    self.isFinished = isFinished
-    self.currentAnimationDuration = after + v
-    self.beginTime = CACurrentMediaTime() - v
-  }
-
-  func complete(isFinished: Bool) {
-    guard isTransitioning else { fatalError() }
-    for animator in animators {
-      animator.clean()
-    }
-
-    transitionContainer!.isUserInteractionEnabled = true
-
-    let completion = completionCallback
-
-    transitionPairs = nil
-    transitionObservers = nil
-    transitionContainer = nil
-    completionCallback = nil
-    container = nil
-    processors = nil
-    animators = nil
-    plugins = nil
-    context = nil
-    beginTime = nil
-    elapsedTime = 0
-    totalDuration = 0
-
-    completion?(isFinished)
-  }
-}
-
-// MARK: Plugin Support
-internal extension MotionController {
-  static func isEnabled(plugin: MotionPlugin.Type) -> Bool {
-    return enabledPlugins.index(where: { return $0 == plugin}) != nil
-  }
-
-  static func enable(plugin: MotionPlugin.Type) {
-    disable(plugin: plugin)
-    enabledPlugins.append(plugin)
-  }
-
-  static func disable(plugin: MotionPlugin.Type) {
-    if let index = enabledPlugins.index(where: { return $0 == plugin}) {
-      enabledPlugins.remove(at: index)
-    }
-  }
 }
 
 internal extension MotionController {
-  // should call this after `prepareForTransition` & before `processContext`
-  func insert<T>(preprocessor: MotionPreprocessor, before: T.Type) {
-    let processorIndex = processors.index {
-      $0 is T
-      } ?? processors.count
-    preprocessor.context = context
-    processors.insert(preprocessor, at: processorIndex)
-  }
+    func processContext() {
+        guard isTransitioning else {
+            fatalError()
+        }
+        
+        for v in preprocessors {
+            v.process(fromViews: context.fromViews, toViews: context.toViews)
+        }
+    }
+    
+    /// Actually animate the views
+    /// subclass should call `prepareTransition` & `prepareTransitionPairs` before calling `animate`
+    func animate() {
+        guard isTransitioning else {
+            fatalError()
+        }
+        
+        for (currentFromViews, currentToViews) in transitionPairs {
+            // auto hide all animated views
+            for view in currentFromViews {
+                context.hide(view: view)
+            }
+            
+            for view in currentToViews {
+                context.hide(view: view)
+            }
+        }
+        
+        var totalDuration: TimeInterval = 0
+        var animatorWantsInteractive = false
+        
+        for (i, animator) in animators.enumerated() {
+            let duration = animator.animate(fromViews: transitionPairs[i].0, toViews: transitionPairs[i].1)
+            
+            if duration == .infinity {
+                animatorWantsInteractive = true
+            } else {
+                totalDuration = max(totalDuration, duration)
+            }
+        }
+        
+        self.totalDuration = totalDuration
+        if animatorWantsInteractive {
+            update(elapsedTime: 0)
+        } else {
+            complete(after: totalDuration, isFinished: true)
+        }
+    }
+    
+    func complete(after: TimeInterval, isFinished: Bool) {
+        guard isTransitioning else {
+            fatalError()
+        }
+        
+        if after <= 0.001 {
+            complete(isFinished: isFinished)
+            return
+        }
+        
+        let v = (isFinished ? elapsedTime : 1 - elapsedTime) * totalDuration
+        self.isFinished = isFinished
+        self.currentAnimationDuration = after + v
+        self.beginTime = CACurrentMediaTime() - v
+    }
+    
+    func complete(isFinished: Bool) {
+        guard isTransitioning else {
+            fatalError()
+        }
+        
+        for animator in animators {
+            animator.clean()
+        }
+        
+        transitionContainer!.isUserInteractionEnabled = true
+        
+        let completion = completionCallback
+        
+        transitionPairs = nil
+        transitionObservers = nil
+        transitionContainer = nil
+        completionCallback = nil
+        container = nil
+        preprocessors = nil
+        animators = nil
+        plugins = nil
+        context = nil
+        beginTime = nil
+        elapsedTime = 0
+        totalDuration = 0
+        
+        completion?(isFinished)
+    }
+}
+
+fileprivate extension MotionController {
+    /// Prepares the transition container.
+    func prepareTransitionContainer() {
+        transitionContainer.isUserInteractionEnabled = false
+        
+        // a view to hold all the animating views
+        container = UIView(frame: transitionContainer.bounds)
+        transitionContainer.addSubview(container)
+    }
+    
+    /// Prepares the context.
+    func prepareContext() {
+        context = MotionContext(container:container)
+    }
+    
+    /// Prepares the preprocessors.
+    func preparePreprocessors() {
+        preprocessors = [
+            IgnoreSubviewModifiersPreprocessor(),
+            MatchPreprocessor(),
+            SourcePreprocessor(),
+            CascadePreprocessor(),
+            DurationPreprocessor()
+        ]
+        
+        for v in preprocessors {
+            v.context = context
+        }
+    }
+    
+    /// Prepares the animators.
+    func prepareAnimators() {
+        animators = [
+            MotionDefaultAnimator<MotionCoreAnimationViewContext>()
+        ]
+        
+        if #available(iOS 10, tvOS 10, *) {
+            animators.append(MotionDefaultAnimator<MotionViewPropertyViewContext>())
+        }
+        
+        for v in animators {
+            v.context = context
+        }
+    }
+    
+    /// Prepares the plugins.
+    func preparePlugins() {
+        plugins = Motion.enabledPlugins.map({
+            return $0.init()
+        })
+        
+        for plugin in plugins {
+            preprocessors.append(plugin)
+            animators.append(plugin)
+        }
+    }
+}
+
+internal extension MotionController {
+    /**
+     Checks if a given plugin is enabled.
+     - Parameter plugin: A MotionPlugin.Type.
+     - Returns: A boolean indicating if the plugin is enabled or not.
+     */
+    static func isEnabled(plugin: MotionPlugin.Type) -> Bool {
+        return nil != enabledPlugins.index(where: { return $0 == plugin })
+    }
+    
+    /**
+     Enables a given plugin.
+     - Parameter plugin: A MotionPlugin.Type.
+     */
+    static func enable(plugin: MotionPlugin.Type) {
+        disable(plugin: plugin)
+        enabledPlugins.append(plugin)
+    }
+
+    /**
+     Disables a given plugin.
+     - Parameter plugin: A MotionPlugin.Type.
+     */
+    static func disable(plugin: MotionPlugin.Type) {
+        guard let index = enabledPlugins.index(where: { return $0 == plugin }) else {
+            return
+        }
+        
+        enabledPlugins.remove(at: index)
+    }
+}
+
+internal extension MotionController {
+    // should call this after `prepareTransitionPairs` & before `processContext`
+    func insert<T>(preprocessor: MotionPreprocessor, before: T.Type) {
+        let v = preprocessors.index { $0 is T } ?? preprocessors.count
+        preprocessor.context = context
+        preprocessors.insert(preprocessor, at: v)
+    }
 }

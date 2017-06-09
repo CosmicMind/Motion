@@ -347,6 +347,7 @@ internal extension MotionController {
 }
 
 internal extension MotionController {
+    /// Executes the preprocessors' process function.
     func processContext() {
         guard isTransitioning else {
             fatalError()
@@ -357,45 +358,53 @@ internal extension MotionController {
         }
     }
     
-    /// Actually animate the views
-    /// subclass should call `prepareTransition` & `prepareTransitionPairs` before calling `animate`
+    /**
+     Animates the views. Subclasses should call `prepareTransition` &
+     `prepareTransitionPairs` before calling `animate`.
+     */
     func animate() {
         guard isTransitioning else {
             fatalError()
         }
         
-        for (currentFromViews, currentToViews) in transitionPairs {
-            // auto hide all animated views
-            for view in currentFromViews {
+        for (fv, tv) in transitionPairs {
+            for view in fv {
                 context.hide(view: view)
             }
             
-            for view in currentToViews {
+            for view in tv {
                 context.hide(view: view)
             }
         }
         
-        var totalDuration: TimeInterval = 0
-        var animatorWantsInteractive = false
+        var t: TimeInterval = 0
+        var v = false
         
-        for (i, animator) in animators.enumerated() {
-            let duration = animator.animate(fromViews: transitionPairs[i].0, toViews: transitionPairs[i].1)
+        for (i, a) in animators.enumerated() {
+            let d = a.animate(fromViews: transitionPairs[i].0, toViews: transitionPairs[i].1)
             
-            if duration == .infinity {
-                animatorWantsInteractive = true
+            if d == .infinity {
+                v = true
             } else {
-                totalDuration = max(totalDuration, duration)
+                t = max(t, d)
             }
         }
         
-        self.totalDuration = totalDuration
-        if animatorWantsInteractive {
+        totalDuration = t
+        
+        if v {
             update(elapsedTime: 0)
         } else {
-            complete(after: totalDuration, isFinished: true)
+            complete(after: t, isFinished: true)
         }
     }
     
+    /**
+     Complete the transition.
+     - Parameter after: A TimeInterval.
+     - Parameter isFinished: A Boolean indicating if the transition 
+     has completed.
+     */
     func complete(after: TimeInterval, isFinished: Bool) {
         guard isTransitioning else {
             fatalError()
@@ -412,16 +421,21 @@ internal extension MotionController {
         self.beginTime = CACurrentMediaTime() - v
     }
     
+    /**
+     Complete the transition.
+     - Parameter isFinished: A Boolean indicating if the transition
+     has completed.
+    */
     func complete(isFinished: Bool) {
         guard isTransitioning else {
             fatalError()
         }
         
-        for animator in animators {
-            animator.clean()
+        for a in animators {
+            a.clean()
         }
         
-        transitionContainer!.isUserInteractionEnabled = true
+        transitionContainer?.isUserInteractionEnabled = true
         
         let completion = completionCallback
         

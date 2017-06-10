@@ -29,19 +29,40 @@
 import UIKit
 
 public class MotionIndependentController: MotionController {
-  public override init() {
-    super.init()
-  }
+    /// An initializer.
+    public override init() {
+        super.init()
+    }
 
-  public func transition(rootView: UIView, fromViews: [UIView], toViews: [UIView], completion: ((Bool) -> Void)? = nil) {
-    transitionContainer = rootView
-    completionCallback = completion
+    /**
+     Transitions source views to their corresponding destination view
+     within a given root view.
+     - Parameter rootView: A UIView.
+     - Parameter fromViews: An Array of UIViews.
+     - Parameter toViews: An Array of UIViews.
+     - Parameter completion: An optional callback.
+     */
+    public func transition(rootView: UIView, fromViews: [UIView], toViews: [UIView], completion: ((Bool) -> Void)? = nil) {
+        transitionContainer = rootView
+        completionCallback = completion
 
-    prepareTransition()
-    context.defaultCoordinateSpace = .sameParent
-    context.set(fromViews: fromViews, toViews: toViews)
-    processContext()
-    prepareTransitionPairs()
-    animate()
-  }
+        prepareTransition()
+        prepareContext(fromViews: fromViews, toViews: toViews)
+        prepareTransitionPairs()
+        
+        animate()
+    }
+}
+
+fileprivate extension MotionIndependentController {
+    /** 
+     Prepares the context.
+     - Parameter fromViews: An Array of UIViews.
+     - PArameter toViews: An Array of UIViews.
+     */
+    func prepareContext(fromViews: [UIView], toViews: [UIView]) {
+        context.defaultCoordinateSpace = .sameParent
+        context.set(fromViews: fromViews, toViews: toViews)
+        processContext()
+    }
 }

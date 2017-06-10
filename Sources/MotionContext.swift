@@ -42,7 +42,7 @@ public class MotionContext {
     internal var viewToAlphas = [UIView: CGFloat]()
     
     /// A reference of view to transition target state.
-    internal var viewToTargetState = [UIView: MotionTargetState]()
+    internal var viewToTargetState = [UIView: MotionTransitionState]()
     
     /// A reference of the superview to the subviews snapshots.
     internal var superviewToNoSnapshotSubviewMap = [UIView: [(Int, UIView)]]()
@@ -96,7 +96,7 @@ internal extension MotionContext {
                 }
                 
                 if let i = v.motionTransitions {
-                    viewToTargetState[v] = MotionTargetState(transitions: i)
+                    viewToTargetState[v] = MotionTransitionState(transitions: i)
                 }
             }
         }
@@ -106,11 +106,11 @@ internal extension MotionContext {
 public extension MotionContext {
     /**
      A subscript that takes a given view and retrieves a
-     MotionTargetState if one exists.
+     MotionTransitionState if one exists.
      - Parameter view: A UIView.
-     - Returns: An optional MotionTargetState.
+     - Returns: An optional MotionTransitionState.
      */
-    subscript(view: UIView) -> MotionTargetState? {
+    subscript(view: UIView) -> MotionTransitionState? {
         get {
             return viewToTargetState[view]
         }
@@ -207,7 +207,7 @@ public extension MotionContext {
         case .layerRender:
             snapshot = view.slowSnapshotView()
         
-        case .noSnapshot:
+        case .useOriginal:
             if nil == superviewToNoSnapshotSubviewMap[view.superview!] {
                 superviewToNoSnapshotSubviewMap[view.superview!] = []
             }
@@ -268,7 +268,7 @@ public extension MotionContext {
         view.layer.cornerRadius = oldCornerRadius
         view.alpha = oldAlpha
 
-        if .noSnapshot != snapshotType {
+        if .useOriginal != snapshotType {
             snapshot.layer.allowsGroupOpacity = false
 
             if !(view is UINavigationBar), let contentView = snapshot.subviews.get(0) {
@@ -362,7 +362,7 @@ internal extension MotionContext {
      - Parameter view: A UIView.
      */
     func hide(view: UIView) {
-        guard nil == viewToAlphas[view], .noSnapshot != self[view]?.snapshotType else {
+        guard nil == viewToAlphas[view], .useOriginal != self[view]?.snapshotType else {
             return
         }
         

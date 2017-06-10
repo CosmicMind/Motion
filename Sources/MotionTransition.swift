@@ -29,14 +29,14 @@
 import UIKit
 
 public final class MotionTransition {
-    /// A reference to the callback that applies the MotionTargetState.
-    internal let apply: (inout MotionTargetState) -> Void
+    /// A reference to the callback that applies the MotionTransitionState.
+    internal let apply: (inout MotionTransitionState) -> Void
     
     /**
      An initializer that accepts a given callback.
      - Parameter applyFunction: A given callback.
      */
-    public init(applyFunction: @escaping (inout MotionTargetState) -> Void) {
+    public init(applyFunction: @escaping (inout MotionTransitionState) -> Void) {
         apply = applyFunction
     }
 }
@@ -458,7 +458,7 @@ extension MotionTransition {
     public static func beginWith(transitions: [MotionTransition]) -> MotionTransition {
         return MotionTransition { targetState in
             if targetState.beginState == nil {
-                targetState.beginState = MotionTargetState.MotionTargetStateWrapper(state: [])
+                targetState.beginState = MotionTransitionStateWrapper(state: [])
             }
             targetState.beginState!.state.append(contentsOf: transitions)
         }
@@ -504,16 +504,16 @@ extension MotionTransition {
     /**
      ignore all motionTransitions attributes for a view's direct subviews.
      */
-    public static var ignoreSubviewModifiers: MotionTransition = .ignoreSubviewModifiers()
+    public static var ignoreSubviewTransitions: MotionTransition = .ignoreSubviewTransitions()
     
     /**
      ignore all motionTransitions attributes for a view's subviews.
      - Parameters:
      - recursive: if false, will only ignore direct subviews' transitions. default false.
      */
-    public static func ignoreSubviewModifiers(recursive: Bool = false) -> MotionTransition {
+    public static func ignoreSubviewTransitions(recursive: Bool = false) -> MotionTransition {
         return MotionTransition { targetState in
-            targetState.ignoreSubviewModifiers = recursive
+            targetState.ignoreSubviewTransitions = recursive
         }
     }
     
@@ -550,7 +550,7 @@ extension MotionTransition {
      its view structure after the transition finishes.
      */
     public static var useNoSnapshot: MotionTransition = MotionTransition { targetState in
-        targetState.snapshotType = .noSnapshot
+        targetState.snapshotType = .useOriginal
     }
     
     /**

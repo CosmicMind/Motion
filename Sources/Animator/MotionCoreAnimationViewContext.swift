@@ -48,7 +48,7 @@ internal class MotionCoreAnimationViewContext: MotionAnimatorViewContext {
         overlayLayer = nil
     }
     
-    override class func canAnimate(view: UIView, state: MotionTargetState, isAppearing: Bool) -> Bool {
+    override class func canAnimate(view: UIView, state: MotionTransitionState, isAppearing: Bool) -> Bool {
         return  nil != state.position           ||
                 nil != state.size               ||
                 nil != state.transform          ||
@@ -67,7 +67,7 @@ internal class MotionCoreAnimationViewContext: MotionAnimatorViewContext {
                        state.forceAnimate
     }
     
-    override func apply(state: MotionTargetState) {
+    override func apply(state: MotionTransitionState) {
         let ts = viewState(targetState: state)
         
         for (key, targetValue) in ts {
@@ -319,10 +319,10 @@ extension MotionCoreAnimationViewContext {
     
     /**
      Constructs a map of key paths to animation state values.
-     - Parameter targetState state: A MotionTargetState.
+     - Parameter targetState state: A MotionTransitionState.
      - Returns: A map of key paths to animation values.
      */
-    fileprivate func viewState(targetState ts: MotionTargetState) -> [String: Any?] {
+    fileprivate func viewState(targetState ts: MotionTransitionState) -> [String: Any?] {
         var ts = ts
         var values = [String: Any?]()
         

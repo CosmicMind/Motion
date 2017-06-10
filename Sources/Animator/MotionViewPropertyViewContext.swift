@@ -33,7 +33,7 @@ internal class MotionViewPropertyViewContext: MotionAnimatorViewContext {
     /// A reference to the UIViewPropertyAnimator.
     fileprivate var viewPropertyAnimator: UIViewPropertyAnimator?
     
-    override class func canAnimate(view: UIView, state: MotionTargetState, isAppearing: Bool) -> Bool {
+    override class func canAnimate(view: UIView, state: MotionTransitionState, isAppearing: Bool) -> Bool {
         return view is UIVisualEffectView && nil != state.opacity
     }
 

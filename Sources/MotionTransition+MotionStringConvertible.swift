@@ -109,8 +109,8 @@ extension MotionTransition: MotionStringConvertible {
       return .useGlobalCoordinateSpace
     case "useSameParentCoordinateSpace":
       return .useSameParentCoordinateSpace
-    case "ignoreSubviewModifiers":
-      return .ignoreSubviewModifiers(recursive:parameters.getBool(0) ?? false)
+    case "ignoreSubviewTransitions":
+      return .ignoreSubviewTransitions(recursive:parameters.getBool(0) ?? false)
     case "zPosition":
       if let zPosition = parameters.getCGFloat(0) {
         return .zPosition(zPosition)

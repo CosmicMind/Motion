@@ -127,7 +127,7 @@ open class MotionPlugin: NSObject, MotionPreprocessor, MotionAnimator {
        - state: the target state to override
        - view: the view to override
    */
-  open func apply(state: MotionTargetState, to view: UIView) {}
+  open func apply(state: MotionTransitionState, to view: UIView) {}
 }
 
 // methods for enable/disable the current plugin

@@ -41,8 +41,8 @@ class MatchPreprocessor: MotionPreprocessor {
         for tv in toViews {
             guard let id = tv.motionIdentifier, let fv = context.sourceView(for: id) else { continue }
             
-            var tvState = context[tv] ?? MotionTargetState()
-            var fvState = context[fv] ?? MotionTargetState()
+            var tvState = context[tv] ?? MotionTransitionState()
+            var fvState = context[fv] ?? MotionTransitionState()
             
             if let beginStateIfMatched = tvState.beginStateIfMatched {
                 tvState.append(.beginWith(transitions: beginStateIfMatched))

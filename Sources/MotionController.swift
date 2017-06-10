@@ -132,15 +132,11 @@ public extension MotionController {
      - Parameter observer: A MotionTransitionObserver.
      */
     func addTransitionObserver(observer: MotionTransitionObserver) {
-        defer {
-            transitionObservers?.append(observer)
+        if nil == transitionObservers {
+            transitionObservers = []
         }
         
-        guard nil == transitionObservers else {
-            return
-        }
-        
-        transitionObservers = []
+        transitionObservers?.append(observer)
     }
 }
 
@@ -296,7 +292,7 @@ public extension MotionController {
             return
         }
         
-        let s = MotionTargetState(transitions: transitions)
+        let s = MotionTransitionState(transitions: transitions)
         let v = context.transitionPairedView(for: view) ?? view
         
         for a in animators {

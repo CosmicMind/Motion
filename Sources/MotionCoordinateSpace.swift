@@ -28,37 +28,8 @@
 
 import UIKit
 
-class IgnoreSubviewModifiersPreprocessor: MotionPreprocessor {
-    /// A reference to a MotionContext.
-    weak var context: MotionContext!
-    
-    func process(fromViews: [UIView], toViews: [UIView]) {
-    process(views:fromViews)
-    process(views:toViews)
-  }
-
-  func process(views: [UIView]) {
-    for view in views {
-      guard let recursive = context[view]?.ignoreSubviewTransitions else { continue }
-      var parentView = view
-      if view is UITableView, let wrapperView = view.subviews.get(0) {
-        parentView = wrapperView
-      }
-
-      if recursive {
-        cleanSubviewModifiers(parentView)
-      } else {
-        for subview in parentView.subviews {
-          context[subview] = nil
-        }
-      }
-    }
-  }
-
-  private func cleanSubviewModifiers(_ parentView: UIView) {
-    for view in parentView.subviews {
-      context[view] = nil
-      cleanSubviewModifiers(view)
-    }
-  }
+public enum MotionCoordinateSpace {
+    case global
+    case local
+    case sameParent
 }

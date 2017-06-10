@@ -145,10 +145,10 @@ extension MotionDefaultAnimator {
     
     /**
      Applies the given state to the given view.
-     - Parameter state: A MotionTargetState.
+     - Parameter state: A MotionTransitionState.
      - Parameter to view: A UIView.
      */
-    func apply(state: MotionTargetState, to view: UIView) {
+    func apply(state: MotionTransitionState, to view: UIView) {
         guard let v = viewToContexts[view] else {
             return
         }

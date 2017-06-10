@@ -29,341 +29,462 @@
 import UIKit
 
 public class MotionContext {
-  internal var motionIdentifierToSourceView = [String: UIView]()
-  internal var motionIdentifierToDestinationView = [String: UIView]()
-  internal var snapshotViews = [UIView: UIView]()
-  internal var viewAlphas = [UIView: CGFloat]()
-  internal var targetStates = [UIView: MotionTargetState]()
-  internal var superviewToNoSnapshotSubviewMap: [UIView: [(Int, UIView)]] = [:]
-
-  internal var defaultCoordinateSpace: MotionCoordinateSpace = .local
-
-  internal init(container: UIView) {
-    self.container = container
-  }
-
-  internal func set(fromViews: [UIView], toViews: [UIView]) {
-    self.fromViews = fromViews
-    self.toViews = toViews
-    process(views: fromViews, idMap: &motionIdentifierToSourceView)
-    process(views: toViews, idMap: &motionIdentifierToDestinationView)
-  }
-
-  internal func process(views: [UIView], idMap: inout [String: UIView]) {
-    for view in views {
-      view.layer.removeAllAnimations()
-      if container.convert(view.bounds, from: view).intersects(container.bounds) {
-        if let motionIdentifier = view.motionIdentifier {
-          idMap[motionIdentifier] = view
-        }
-        if let transitions = view.motionTransitions {
-          targetStates[view] = MotionTargetState(transitions: transitions)
-        }
-      }
+    /// A reference of motion identifiers to source views.
+    internal var motionIdentifierToSourceView = [String: UIView]()
+    
+    /// A reference of motion identifiers to destination views.
+    internal var motionIdentifierToDestinationView = [String: UIView]()
+    
+    /// A reference of the snapshot to source/destination view.
+    internal var viewToSnapshot = [UIView: UIView]()
+    
+    /// A reference to the view to view alpha value.
+    internal var viewToAlphas = [UIView: CGFloat]()
+    
+    /// A reference of view to transition target state.
+    internal var viewToTargetState = [UIView: MotionTargetState]()
+    
+    /// A reference of the superview to the subviews snapshots.
+    internal var superviewToNoSnapshotSubviewMap = [UIView: [(Int, UIView)]]()
+    
+    /// A reference to the default coordinate space for transitions.
+    internal var defaultCoordinateSpace = MotionCoordinateSpace.local
+    
+    /// The container view holding all of the animating views.
+    public let container: UIView
+    
+    /// A flattened list of all views from the source view controller.
+    public var fromViews: [UIView]!
+    
+    /// A flattened list of all views from the destination view controller.
+    public var toViews: [UIView]!
+    
+    /**
+     An initializer that accepts a container transition view.
+     - Parameter container: A UIView.
+     */
+    internal init(container: UIView) {
+        self.container = container
     }
-  }
-
-  /**
-   The container holding all of the animating views
-   */
-  public let container: UIView
-
-  /**
-   A flattened list of all views from source ViewController
-   */
-  public var fromViews: [UIView]!
-
-  /**
-   A flattened list of all views from destination ViewController
-   */
-  public var toViews: [UIView]!
 }
 
-// public
-extension MotionContext {
-
-  /**
-   - Returns: a source view matching the motionIdentifier, nil if not found
-   */
-  public func sourceView(for motionIdentifier: String) -> UIView? {
-    return motionIdentifierToSourceView[motionIdentifier]
-  }
-
-  /**
-   - Returns: a destination view matching the motionIdentifier, nil if not found
-   */
-  public func destinationView(for motionIdentifier: String) -> UIView? {
-    return motionIdentifierToDestinationView[motionIdentifier]
-  }
-
-  /**
-   - Returns: a view with the same motionIdentifier, but on different view controller, nil if not found
-   */
-  public func pairedView(for view: UIView) -> UIView? {
-    if let id = view.motionIdentifier {
-      if sourceView(for: id) == view {
-        return destinationView(for: id)
-      } else if destinationView(for: id) == view {
-        return sourceView(for: id)
-      }
+internal extension MotionContext {
+    /**
+     Sets the from-views and to-views within the transition context.
+     - Parameter fromViews: An Array of UIViews.
+     - Parameter toViews: An Array of UIViews.
+     */
+    func set(fromViews: [UIView], toViews: [UIView]) {
+        self.fromViews = fromViews
+        self.toViews = toViews
+        map(views: fromViews, identifierMap: &motionIdentifierToSourceView)
+        map(views: toViews, identifierMap: &motionIdentifierToDestinationView)
     }
-    return nil
-  }
-
-  /**
-   - Returns: a snapshot view for animation
-   */
-  public func snapshotView(for view: UIView) -> UIView {
-    if let snapshot = snapshotViews[view] {
-      return snapshot
-    }
-
-    var containerView = container
-    let coordinateSpace = targetStates[view]?.coordinateSpace ?? defaultCoordinateSpace
-    switch coordinateSpace {
-    case .local:
-      containerView = view
-      while containerView != container, snapshotViews[containerView] == nil, let superview = containerView.superview {
-        containerView = superview
-      }
-      if let snapshot = snapshotViews[containerView] {
-        containerView = snapshot
-      }
-    case .sameParent:
-      containerView = view.superview!
-    case .global:
-      break
-    }
-
-    unhide(view: view)
-
-    // capture a snapshot without alpha & cornerRadius
-    let oldCornerRadius = view.layer.cornerRadius
-    let oldAlpha = view.alpha
-    view.layer.cornerRadius = 0
-    view.alpha = 1
-
-    let snapshot: UIView
-    let snapshotType: MotionSnapshotType = self[view]?.snapshotType ?? .optimized
-
-    switch snapshotType {
-    case .normal:
-      snapshot = view.snapshotView(afterScreenUpdates: true)!
-    case .layerRender:
-      snapshot = view.slowSnapshotView()
-    case .noSnapshot:
-      if superviewToNoSnapshotSubviewMap[view.superview!] == nil {
-        superviewToNoSnapshotSubviewMap[view.superview!] = []
-      }
-      superviewToNoSnapshotSubviewMap[view.superview!]!.append((view.superview!.subviews.index(of: view)!, view))
-      snapshot = view
-    case .optimized:
-      #if os(tvOS)
-        snapshot = view.snapshotView(afterScreenUpdates: true)!
-      #else
-        if #available(iOS 9.0, *), let stackView = view as? UIStackView {
-          snapshot = stackView.slowSnapshotView()
-        } else if let imageView = view as? UIImageView, view.subviews.isEmpty {
-          let contentView = UIImageView(image: imageView.image)
-          contentView.frame = imageView.bounds
-          contentView.contentMode = imageView.contentMode
-          contentView.tintColor = imageView.tintColor
-          contentView.backgroundColor = imageView.backgroundColor
-          let snapShotView = UIView()
-          snapShotView.addSubview(contentView)
-          snapshot = snapShotView
-        } else if let barView = view as? UINavigationBar, barView.isTranslucent {
-          let newBarView = UINavigationBar(frame: barView.frame)
-
-          newBarView.barStyle = barView.barStyle
-          newBarView.tintColor = barView.tintColor
-          newBarView.barTintColor = barView.barTintColor
-          newBarView.clipsToBounds = false
-
-          // take a snapshot without the background
-          barView.layer.sublayers![0].opacity = 0
-          let realSnapshot = barView.snapshotView(afterScreenUpdates: true)!
-          barView.layer.sublayers![0].opacity = 1
-
-          newBarView.addSubview(realSnapshot)
-          snapshot = newBarView
-        } else if let effectView = view as? UIVisualEffectView {
-          snapshot = UIVisualEffectView(effect: effectView.effect)
-          snapshot.frame = effectView.bounds
-        } else {
-          snapshot = view.snapshotView(afterScreenUpdates: true)!
+    
+    /**
+     Maps the views to their respective identifier index.
+     - Parameter views: An Array of UIViews.
+     - Parameter identifierMap: A Dicionary of String to UIView pairs.
+     */
+    func map(views: [UIView], identifierMap: inout [String: UIView]) {
+        for v in views {
+            v.layer.removeAllAnimations()
+            
+            if container.convert(v.bounds, from: v).intersects(container.bounds) {
+                if let i = v.motionIdentifier {
+                    identifierMap[i] = v
+                }
+                
+                if let i = v.motionTransitions {
+                    viewToTargetState[v] = MotionTargetState(transitions: i)
+                }
+            }
         }
-      #endif
     }
-
-    #if os(tvOS)
-      if let imageView = view as? UIImageView, imageView.adjustsImageWhenAncestorFocused {
-        snapshot.frame = imageView.focusedFrameGuide.layoutFrame
-      }
-    #endif
-
-    view.layer.cornerRadius = oldCornerRadius
-    view.alpha = oldAlpha
-
-    if snapshotType != .noSnapshot {
-      snapshot.layer.allowsGroupOpacity = false
-
-      if !(view is UINavigationBar), let contentView = snapshot.subviews.get(0) {
-        // the Snapshot's contentView must have hold the cornerRadius value,
-        // since the snapshot might not have maskToBounds set
-        contentView.layer.cornerRadius = view.layer.cornerRadius
-        contentView.layer.masksToBounds = true
-      }
-
-      snapshot.layer.cornerRadius = view.layer.cornerRadius
-      snapshot.layer.zPosition = view.layer.zPosition
-      snapshot.layer.opacity = view.layer.opacity
-      snapshot.layer.isOpaque = view.layer.isOpaque
-      snapshot.layer.anchorPoint = view.layer.anchorPoint
-      snapshot.layer.masksToBounds = view.layer.masksToBounds
-      snapshot.layer.borderColor = view.layer.borderColor
-      snapshot.layer.borderWidth = view.layer.borderWidth
-      snapshot.layer.transform = view.layer.transform
-      snapshot.layer.contentsRect = view.layer.contentsRect
-      snapshot.layer.contentsScale = view.layer.contentsScale
-
-      if self[view]?.displayShadow ?? true {
-        snapshot.layer.shadowRadius = view.layer.shadowRadius
-        snapshot.layer.shadowOpacity = view.layer.shadowOpacity
-        snapshot.layer.shadowColor = view.layer.shadowColor
-        snapshot.layer.shadowOffset = view.layer.shadowOffset
-        snapshot.layer.shadowPath = view.layer.shadowPath
-      }
-    }
-
-    snapshot.frame = containerView.convert(view.bounds, from: view)
-    snapshot.motionIdentifier = view.motionIdentifier
-
-    hide(view: view)
-
-    if let pairedView = pairedView(for: view), let pairedSnapshot = snapshotViews[pairedView] {
-      let siblingViews = pairedView.superview!.subviews
-      let nextSiblings = siblingViews[siblingViews.index(of: pairedView)!+1..<siblingViews.count]
-      containerView.addSubview(pairedSnapshot)
-      containerView.addSubview(snapshot)
-      for subview in pairedView.subviews {
-        insertGlobalViewTree(view: subview)
-      }
-      for sibling in nextSiblings {
-        insertGlobalViewTree(view: sibling)
-      }
-    } else {
-      containerView.addSubview(snapshot)
-    }
-    containerView.addSubview(snapshot)
-    snapshotViews[view] = snapshot
-    return snapshot
-  }
-
-  func insertGlobalViewTree(view: UIView) {
-    if targetStates[view]?.coordinateSpace == .global, let snapshot = snapshotViews[view] {
-      container.addSubview(snapshot)
-    }
-    for subview in view.subviews {
-      insertGlobalViewTree(view: subview)
-    }
-  }
-
-  public subscript(view: UIView) -> MotionTargetState? {
-    get {
-      return targetStates[view]
-    }
-    set {
-      targetStates[view] = newValue
-    }
-  }
-
-  public func clean() {
-    for (superview, subviews) in superviewToNoSnapshotSubviewMap {
-      for (index, view) in subviews.reversed() {
-        superview.insertSubview(view, at: index)
-      }
-    }
-  }
 }
 
-// internal
-extension MotionContext {
-  public func hide(view: UIView) {
-    if viewAlphas[view] == nil, self[view]?.snapshotType != .noSnapshot {
-      if view is UIVisualEffectView {
-        view.isHidden = true
-        viewAlphas[view] = 1
-      } else {
-        viewAlphas[view] = view.isOpaque ? .infinity : view.alpha
-        view.alpha = 0
-      }
+public extension MotionContext {
+    /**
+     A subscript that takes a given view and retrieves a
+     MotionTargetState if one exists.
+     - Parameter view: A UIView.
+     - Returns: An optional MotionTargetState.
+     */
+    subscript(view: UIView) -> MotionTargetState? {
+        get {
+            return viewToTargetState[view]
+        }
+        set {
+            viewToTargetState[view] = newValue
+        }
     }
-  }
-  public func unhide(view: UIView) {
-    if let oldAlpha = viewAlphas[view] {
-      if view is UIVisualEffectView {
-        view.isHidden = false
-      } else if oldAlpha == .infinity {
+}
+
+public extension MotionContext {
+    /**
+     Retrieves a source view matching the motionIdentifier, nil if not found.
+     - Parameter for motionIdentifier: A String.
+     - Returns: An optional UIView.
+     */
+    func sourceView(for motionIdentifier: String) -> UIView? {
+        return motionIdentifierToSourceView[motionIdentifier]
+    }
+
+    /**
+     Retrieves a destination view matching the motionIdentifier, nil if not found.
+     - Parameter for motionIdentifier: A String.
+     - Returns: An optional UIView.
+     */
+    func destinationView(for motionIdentifier: String) -> UIView? {
+        return motionIdentifierToDestinationView[motionIdentifier]
+    }
+
+    /**
+     Retrieves the matching view with the same motionIdentifier found in the 
+     source and destination view controllers.
+     - Returns: An optional UIView.
+     */
+    func transitionPairedView(for view: UIView) -> UIView? {
+        if let i = view.motionIdentifier {
+            if view == sourceView(for: i) {
+                return destinationView(for: i)
+            
+            } else if view == destinationView(for: i) {
+                return sourceView(for: i)
+            }
+        }
+        
+        return nil
+    }
+
+    /**
+     Retrieves the snapshot view for a given view.
+     - Parameter for view: A UIView.
+     - Returns: A UIView.
+     */
+    func snapshotView(for view: UIView) -> UIView {
+        if let v = viewToSnapshot[view] {
+            return v
+        }
+
+        var containerView = container
+        let coordinateSpace = viewToTargetState[view]?.coordinateSpace ?? defaultCoordinateSpace
+        
+        switch coordinateSpace {
+        case .local:
+            containerView = view
+            
+            while containerView != container, nil == viewToSnapshot[containerView], let superview = containerView.superview {
+                containerView = superview
+            }
+            
+            if let snapshot = viewToSnapshot[containerView] {
+                containerView = snapshot
+            }
+        case .sameParent:
+            containerView = view.superview!
+            
+        case .global:
+            break
+        }
+
+        unhide(view: view)
+
+        // Capture a snapshot without the alpha & cornerRadius values.
+        let oldCornerRadius = view.layer.cornerRadius
+        view.layer.cornerRadius = 0
+        
+        let oldAlpha = view.alpha
         view.alpha = 1
-        view.isOpaque = true
-      } else {
-        view.alpha = oldAlpha
-      }
-      viewAlphas[view] = nil
-    }
-  }
-  internal func unhideAll() {
-    for view in viewAlphas.keys {
-      unhide(view: view)
-    }
-    viewAlphas.removeAll()
-  }
-  internal func unhide(rootView: UIView) {
-    unhide(view: rootView)
-    for subview in rootView.subviews {
-      unhide(rootView: subview)
-    }
-  }
 
-  internal func removeAllSnapshots() {
-    for (view, snapshot) in snapshotViews {
-      if view != snapshot {
-        // do not remove when it is using .useNoSnapshot
-        snapshot.removeFromSuperview()
-      }
+        let snapshot: UIView
+        let snapshotType: MotionSnapshotType = self[view]?.snapshotType ?? .optimized
+        
+        switch snapshotType {
+        case .normal:
+            snapshot = view.snapshotView(afterScreenUpdates: true)!
+            
+        case .layerRender:
+            snapshot = view.slowSnapshotView()
+        
+        case .noSnapshot:
+            if nil == superviewToNoSnapshotSubviewMap[view.superview!] {
+                superviewToNoSnapshotSubviewMap[view.superview!] = []
+            }
+            
+            superviewToNoSnapshotSubviewMap[view.superview!]!.append((view.superview!.subviews.index(of: view)!, view))
+            snapshot = view
+            
+        case .optimized:
+            #if os(tvOS)
+                snapshot = view.snapshotView(afterScreenUpdates: true)!
+            
+            #else
+                if #available(iOS 9.0, *), let stackView = view as? UIStackView {
+                    snapshot = stackView.slowSnapshotView()
+                
+                } else if let imageView = view as? UIImageView, view.subviews.isEmpty {
+                    let contentView = UIImageView(image: imageView.image)
+                    contentView.frame = imageView.bounds
+                    contentView.contentMode = imageView.contentMode
+                    contentView.tintColor = imageView.tintColor
+                    contentView.backgroundColor = imageView.backgroundColor
+                    
+                    let snapShotView = UIView()
+                    snapShotView.addSubview(contentView)
+                    snapshot = snapShotView
+                
+                } else if let navigationBar = view as? UINavigationBar, navigationBar.isTranslucent {
+                    let newNavigationBar = UINavigationBar(frame: navigationBar.frame)
+                    newNavigationBar.barStyle = navigationBar.barStyle
+                    newNavigationBar.tintColor = navigationBar.tintColor
+                    newNavigationBar.barTintColor = navigationBar.barTintColor
+                    newNavigationBar.clipsToBounds = false
+
+                    // Take a snapshot without the background.
+                    navigationBar.layer.sublayers![0].opacity = 0
+                    let realSnapshot = navigationBar.snapshotView(afterScreenUpdates: true)!
+                    navigationBar.layer.sublayers![0].opacity = 1
+
+                    newNavigationBar.addSubview(realSnapshot)
+                    snapshot = newNavigationBar
+                    
+                } else if let effectView = view as? UIVisualEffectView {
+                    snapshot = UIVisualEffectView(effect: effectView.effect)
+                    snapshot.frame = effectView.bounds
+                
+                } else {
+                    snapshot = view.snapshotView(afterScreenUpdates: true)!
+                }
+            #endif
+        }
+
+        #if os(tvOS)
+            if let imageView = view as? UIImageView, imageView.adjustsImageWhenAncestorFocused {
+                snapshot.frame = imageView.focusedFrameGuide.layoutFrame
+            }
+        #endif
+
+        view.layer.cornerRadius = oldCornerRadius
+        view.alpha = oldAlpha
+
+        if .noSnapshot != snapshotType {
+            snapshot.layer.allowsGroupOpacity = false
+
+            if !(view is UINavigationBar), let contentView = snapshot.subviews.get(0) {
+                /** 
+                 The snapshot's contentView must have the cornerRadius value,
+                 since the snapshot might not have maskToBounds set
+                 */
+                contentView.layer.cornerRadius = view.layer.cornerRadius
+                contentView.layer.masksToBounds = true
+            }
+
+            snapshot.layer.cornerRadius = view.layer.cornerRadius
+            snapshot.layer.zPosition = view.layer.zPosition
+            snapshot.layer.opacity = view.layer.opacity
+            snapshot.layer.isOpaque = view.layer.isOpaque
+            snapshot.layer.anchorPoint = view.layer.anchorPoint
+            snapshot.layer.masksToBounds = view.layer.masksToBounds
+            snapshot.layer.borderColor = view.layer.borderColor
+            snapshot.layer.borderWidth = view.layer.borderWidth
+            snapshot.layer.transform = view.layer.transform
+            snapshot.layer.contentsRect = view.layer.contentsRect
+            snapshot.layer.contentsScale = view.layer.contentsScale
+
+            if self[view]?.displayShadow ?? true {
+                snapshot.layer.shadowRadius = view.layer.shadowRadius
+                snapshot.layer.shadowOpacity = view.layer.shadowOpacity
+                snapshot.layer.shadowColor = view.layer.shadowColor
+                snapshot.layer.shadowOffset = view.layer.shadowOffset
+                snapshot.layer.shadowPath = view.layer.shadowPath
+            }
+        }
+
+        snapshot.frame = containerView.convert(view.bounds, from: view)
+        snapshot.motionIdentifier = view.motionIdentifier
+
+        hide(view: view)
+
+        if let pairedView = transitionPairedView(for: view), let pairedSnapshot = viewToSnapshot[pairedView] {
+            let siblingViews = pairedView.superview!.subviews
+            let nextSiblings = siblingViews[siblingViews.index(of: pairedView)!+1..<siblingViews.count]
+            
+            containerView.addSubview(pairedSnapshot)
+            containerView.addSubview(snapshot)
+            
+            for subview in pairedView.subviews {
+                insertGlobalViewTree(view: subview)
+            }
+            
+            for sibling in nextSiblings {
+                insertGlobalViewTree(view: sibling)
+            }
+            
+        } else {
+            containerView.addSubview(snapshot)
+        }
+        
+        containerView.addSubview(snapshot)
+        
+        viewToSnapshot[view] = snapshot
+        
+        return snapshot
     }
-  }
-  internal func removeSnapshots(rootView: UIView) {
-    if let snapshot = snapshotViews[rootView], snapshot != rootView {
-      snapshot.removeFromSuperview()
+
+    /**
+     Inserts the given view into the global context space.
+     - Parameter view: A UIView.
+     */
+    func insertGlobalViewTree(view: UIView) {
+        if .global == viewToTargetState[view]?.coordinateSpace, let snapshot = viewToSnapshot[view] {
+            container.addSubview(snapshot)
+        }
+        
+        for v in view.subviews {
+            insertGlobalViewTree(view: v)
+        }
     }
-    for subview in rootView.subviews {
-      removeSnapshots(rootView: subview)
+
+    /// Restores the transition subview map with its superview.
+    func clean() {
+        for (superview, subviews) in superviewToNoSnapshotSubviewMap {
+            for (index, view) in subviews.reversed() {
+                superview.insertSubview(view, at: index)
+            }
+        }
     }
-  }
-  internal func snapshots(rootView: UIView) -> [UIView] {
-    var snapshots = [UIView]()
-    for v in rootView.flattenedViewHierarchy {
-      if let snapshot = snapshotViews[v] {
-        snapshots.append(snapshot)
-      }
+}
+
+internal extension MotionContext {
+    /**
+     Hides a given view.
+     - Parameter view: A UIView.
+     */
+    func hide(view: UIView) {
+        guard nil == viewToAlphas[view], .noSnapshot != self[view]?.snapshotType else {
+            return
+        }
+        
+        if view is UIVisualEffectView {
+            view.isHidden = true
+            viewToAlphas[view] = 1
+        
+        } else {
+            viewToAlphas[view] = view.isOpaque ? .infinity : view.alpha
+            view.alpha = 0
+        }
     }
-    return snapshots
-  }
-  internal func loadViewAlpha(rootView: UIView) {
-    if let storedAlpha = rootView.motionAlpha {
-      rootView.alpha = storedAlpha
-      rootView.motionAlpha = nil
+    
+    /**
+     Shows a given view that was hidden.
+     - Parameter view: A UIView.
+     */
+    func unhide(view: UIView) {
+        guard let oldAlpha = viewToAlphas[view] else {
+            return
+        }
+        
+        if view is UIVisualEffectView {
+            view.isHidden = false
+        
+        } else if oldAlpha == .infinity {
+            view.alpha = 1
+            view.isOpaque = true
+        
+        } else {
+            view.alpha = oldAlpha
+        }
+        
+        viewToAlphas[view] = nil
     }
-    for subview in rootView.subviews {
-      loadViewAlpha(rootView: subview)
+    
+    /// Shows all given views that are hidden.
+    func unhideAll() {
+        for v in viewToAlphas.keys {
+            unhide(view: v)
+        }
+        
+        viewToAlphas.removeAll()
     }
-  }
-  internal func storeViewAlpha(rootView: UIView) {
-    rootView.motionAlpha = viewAlphas[rootView]
-    for subview in rootView.subviews {
-      storeViewAlpha(rootView: subview)
+    
+    /**
+     Show a given view and its subviews that are hidden.
+     - Parameter rootView: A UIView.
+     */
+    func unhide(rootView: UIView) {
+        unhide(view: rootView)
+        
+        for subview in rootView.subviews {
+            unhide(rootView: subview)
+        }
     }
-  }
+
+    /// Removes all snapshots that are not using .useNoSnapshot.
+    func removeAllSnapshots() {
+        for (k, v) in viewToSnapshot {
+            if k != v {
+                v.removeFromSuperview()
+            }
+        }
+    }
+    
+    /**
+     Removes the snapshots for a given view and all its subviews.
+     - Parameter rootView: A UIVIew.
+     */
+    func removeSnapshots(rootView: UIView) {
+        if let v = viewToSnapshot[rootView], v != rootView {
+            v.removeFromSuperview()
+        }
+        
+        for v in rootView.subviews {
+            removeSnapshots(rootView: v)
+        }
+    }
+  
+    /**
+     Retrieves the snapshots for a given view and all its subviews.
+     - Parameter rootView: A UIView.
+     - Returns: An Array of UIViews.
+     */
+    func snapshots(rootView: UIView) -> [UIView] {
+        var snapshots = [UIView]()
+        
+        for v in rootView.flattenedViewHierarchy {
+            if let snapshot = viewToSnapshot[v] {
+                snapshots.append(snapshot)
+            }
+        }
+        
+        return snapshots
+    }
+    
+    /**
+     Sets the alpha values for a given view and its subviews to the
+     stored alpha value.
+     - Parameter rootView: A UIView.
+     */
+    func loadViewAlpha(rootView: UIView) {
+        if let storedAlpha = rootView.motionAlpha {
+            rootView.alpha = storedAlpha
+            rootView.motionAlpha = nil
+        }
+        
+        for subview in rootView.subviews {
+            loadViewAlpha(rootView: subview)
+        }
+    }
+    
+    /**
+     Stores the alpha values for a given view and its subviews.
+     - Parameter rootView: A UIView.
+     */
+    func storeViewAlpha(rootView: UIView) {
+        rootView.motionAlpha = viewToAlphas[rootView]
+        
+        for subview in rootView.subviews {
+            storeViewAlpha(rootView: subview)
+        }
+    }
 }

@@ -297,7 +297,7 @@ public extension MotionController {
         }
         
         let s = MotionTargetState(transitions: transitions)
-        let v = context.pairedView(for: view) ?? view
+        let v = context.transitionPairedView(for: view) ?? view
         
         for a in animators {
             a.apply(state: s, to: v)

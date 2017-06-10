@@ -94,9 +94,9 @@ class CascadePreprocessor: BasePreprocessor {
         let delay = TimeInterval(i) * deltaTime + initialDelay
 
         func applyDelay(view: UIView) {
-          if context.pairedView(for: view) == nil {
+          if context.transitionPairedView(for: view) == nil {
             context[view]?.delay = delay
-          } else if delayMatchedViews, let paired = context.pairedView(for: view) {
+          } else if delayMatchedViews, let paired = context.transitionPairedView(for: view) {
             context[view]?.delay = finalDelay
             context[paired]?.delay = finalDelay
           }

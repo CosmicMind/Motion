@@ -28,7 +28,7 @@
 
 import UIKit
 
-public enum MotionDefaultAnimationType {
+public enum MotionTransitionType {
   public enum Direction: MotionStringConvertible {
     case left, right, up, down
     public static func from(node: ExprNode) -> Direction? {
@@ -54,15 +54,15 @@ public enum MotionDefaultAnimationType {
   case zoom
   case zoomOut
 
-  indirect case selectBy(presenting: MotionDefaultAnimationType, dismissing: MotionDefaultAnimationType)
+  indirect case selectBy(presenting: MotionTransitionType, dismissing: MotionTransitionType)
 
-  public static func autoReverse(presenting: MotionDefaultAnimationType) -> MotionDefaultAnimationType {
+  public static func autoReverse(presenting: MotionTransitionType) -> MotionTransitionType {
     return .selectBy(presenting: presenting, dismissing: presenting.reversed())
   }
 
   case none
 
-  func reversed() -> MotionDefaultAnimationType {
+  func reversed() -> MotionTransitionType {
     switch self {
     case .push(direction: .up):
       return .pull(direction: .down)
@@ -152,8 +152,8 @@ public enum MotionDefaultAnimationType {
   }
 }
 
-extension MotionDefaultAnimationType: MotionStringConvertible {
-  public static func from(node: ExprNode) -> MotionDefaultAnimationType? {
+extension MotionTransitionType: MotionStringConvertible {
+  public static func from(node: ExprNode) -> MotionTransitionType? {
     let name: String = node.name
     let parameters: [ExprNode] = (node as? CallNode)?.arguments ?? []
 
@@ -197,9 +197,9 @@ extension MotionDefaultAnimationType: MotionStringConvertible {
     case "zoomOut": return .zoomOut
     case "selectBy":
       if let presentingNode = parameters.get(0),
-        let presenting = MotionDefaultAnimationType.from(node: presentingNode),
+        let presenting = MotionTransitionType.from(node: presentingNode),
         let dismissingNode = parameters.get(1),
-        let dismissing = MotionDefaultAnimationType.from(node: dismissingNode) {
+        let dismissing = MotionTransitionType.from(node: dismissingNode) {
         return .selectBy(presenting: presenting, dismissing: dismissing)
       }
     case "none": return .none
@@ -209,7 +209,7 @@ extension MotionDefaultAnimationType: MotionStringConvertible {
   }
 }
 
-class DefaultAnimationPreprocessor: MotionPreprocessor {
+class TransitionPreprocessor: MotionPreprocessor {
     /// A reference to a MotionContext.
     weak var context: MotionContext!
     
@@ -219,7 +219,7 @@ class DefaultAnimationPreprocessor: MotionPreprocessor {
     self.motion = motion
   }
 
-  func shift(direction: MotionDefaultAnimationType.Direction, isAppearing: Bool, size: CGSize? = nil, transpose: Bool = false) -> CGPoint {
+  func shift(direction: MotionTransitionType.Direction, isAppearing: Bool, size: CGSize? = nil, transpose: Bool = false) -> CGPoint {
     let size = size ?? context.container.bounds.size
     let rtn: CGPoint
     switch direction {
@@ -254,11 +254,11 @@ class DefaultAnimationPreprocessor: MotionPreprocessor {
     let animators = motion.animators
 
     if case .auto = defaultAnimation {
-      if inNavigationController, let navAnim = toViewController?.navigationController?.motionNavigationAnimationType {
+      if inNavigationController, let navAnim = toViewController?.navigationController?.motionNavigationTransitionType {
         defaultAnimation = navAnim
-      } else if inTabBarController, let tabAnim = toViewController?.tabBarController?.motionTabBarAnimationType {
+      } else if inTabBarController, let tabAnim = toViewController?.tabBarController?.motionTabBarTransitionType {
         defaultAnimation = tabAnim
-      } else if let modalAnim = (presenting ? toViewController : fromViewController)?.motionModalAnimationType {
+      } else if let modalAnim = (presenting ? toViewController : fromViewController)?.motionModalTransitionType {
         defaultAnimation = modalAnim
       }
     }

@@ -32,13 +32,13 @@ fileprivate var AssociatedInstanceKey: UInt8 = 0
 
 fileprivate struct AssociatedInstance {
     /// A reference to the modal animation.
-    var modalAnimationType: MotionDefaultAnimationType
+    var modalTransitionType: MotionTransitionType
     
     /// A reference to the navigation animation.
-    var navigationAnimationType: MotionDefaultAnimationType
+    var navigationTransitionType: MotionTransitionType
     
     /// A reference to the tabBar animation.
-    var tabBarAnimationType: MotionDefaultAnimationType
+    var tabBarTransitionType: MotionTransitionType
     
     /// A reference to the stored snapshot.
     var storedSnapshot: UIView?
@@ -61,9 +61,9 @@ extension UIViewController {
     fileprivate var associatedInstance: AssociatedInstance {
         get {
             return AssociatedObject.get(base: self, key: &AssociatedInstanceKey) {
-                return AssociatedInstance(modalAnimationType: .auto,
-                                          navigationAnimationType: .auto,
-                                          tabBarAnimationType: .auto,
+                return AssociatedInstance(modalTransitionType: .auto,
+                                          navigationTransitionType: .auto,
+                                          tabBarTransitionType: .auto,
                                           storedSnapshot: nil,
                                           previousNavigationDelegate: nil,
                                           previousTabBarDelegate: nil)
@@ -75,22 +75,22 @@ extension UIViewController {
     }
     
     /// default motion animation type for presenting & dismissing modally
-    public var motionModalAnimationType: MotionDefaultAnimationType {
+    public var motionModalTransitionType: MotionTransitionType {
         get {
-            return associatedInstance.modalAnimationType
+            return associatedInstance.modalTransitionType
         }
         set(value) {
-            associatedInstance.modalAnimationType = value
+            associatedInstance.modalTransitionType = value
         }
     }
     
     @IBInspectable
-    public var motionModalAnimationTypeString: String? {
+    public var motionModalTransitionTypeString: String? {
         get {
-            return associatedInstance.modalAnimationType.label
+            return associatedInstance.modalTransitionType.label
         }
         set(value) {
-            associatedInstance.modalAnimationType = value?.parseOne() ?? .auto
+            associatedInstance.modalTransitionType = value?.parseOne() ?? .auto
         }
     }
 
@@ -170,45 +170,45 @@ extension UIViewController {
 
 extension UINavigationController {
     /// Default motion animation type for push and pop within the navigation controller.
-    public var motionNavigationAnimationType: MotionDefaultAnimationType {
+    public var motionNavigationTransitionType: MotionTransitionType {
         get {
-            return associatedInstance.navigationAnimationType
+            return associatedInstance.navigationTransitionType
         }
         set(value) {
-            associatedInstance.navigationAnimationType = value
+            associatedInstance.navigationTransitionType = value
         }
     }
     
-    /// A String representation for the motionNavigationAnimationType.
+    /// A String representation for the motionNavigationTransitionType.
     @IBInspectable
-    public var motionNavigationAnimationTypeString: String? {
+    public var motionNavigationTransitionTypeString: String? {
         get {
-            return associatedInstance.navigationAnimationType.label
+            return associatedInstance.navigationTransitionType.label
         }
         set(value) {
-            associatedInstance.navigationAnimationType = value?.parseOne() ?? .auto
+            associatedInstance.navigationTransitionType = value?.parseOne() ?? .auto
         }
     }
 }
 
 extension UITabBarController {
     /// Default motion animation type for switching tabs within the tab bar controller.
-    public var motionTabBarAnimationType: MotionDefaultAnimationType {
+    public var motionTabBarTransitionType: MotionTransitionType {
         get {
-            return associatedInstance.tabBarAnimationType
+            return associatedInstance.tabBarTransitionType
         }
         set(value) {
-            associatedInstance.tabBarAnimationType = value
+            associatedInstance.tabBarTransitionType = value
         }
     }
     
-    /// A String representation for the motionTabBarAnimationTypeString.
+    /// A String representation for the motionTabBarTransitionTypeString.
     @IBInspectable
-    public var motionTabBarAnimationTypeString: String? {
+    public var motionTabBarTransitionTypeString: String? {
         get {
-            return associatedInstance.tabBarAnimationType.label }
+            return associatedInstance.tabBarTransitionType.label }
         set(value) {
-            associatedInstance.tabBarAnimationType = value?.parseOne() ?? .auto
+            associatedInstance.tabBarTransitionType = value?.parseOne() ?? .auto
         }
     }
 }

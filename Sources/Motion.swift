@@ -81,7 +81,7 @@ public class Motion: MotionController {
     internal var fullScreenSnapshot: UIView!
 
     /// Default animation type.
-    internal var defaultAnimation = MotionDefaultAnimationType.auto
+    internal var defaultAnimation = MotionTransitionType.auto
 
     /// The color of the transitioning container.
     internal var containerBackgroundColor: UIColor?
@@ -142,9 +142,9 @@ public extension Motion {
     /**
      Set the default animation for the next transition. This may override the
      root-view's motionTransitions during the transition.
-     - Parameter animation: A MotionDefaultAnimationType.
+     - Parameter animation: A MotionTransitionType.
      */
-    func setDefaultAnimationForNextTransition(_ animation: MotionDefaultAnimationType) {
+    func setDefaultAnimationForNextTransition(_ animation: MotionTransitionType) {
         defaultAnimation = animation
     }
 
@@ -344,7 +344,7 @@ fileprivate extension Motion {
 internal extension Motion {
     override func prepareTransition() {
         super.prepareTransition()
-        insert(preprocessor: DefaultAnimationPreprocessor(motion: self), before: DurationPreprocessor.self)
+        insert(preprocessor: TransitionPreprocessor(motion: self), before: DurationPreprocessor.self)
     }
     
     override func prepareTransitionPairs() {

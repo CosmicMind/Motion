@@ -48,5 +48,5 @@ public enum MotionSnapshotType {
      This will mess up the view hierarchy, therefore, view controllers have to rebuild
      their view structure after the transition finishes.
      */
-    case useOriginal
+    case noSnapshot
 }

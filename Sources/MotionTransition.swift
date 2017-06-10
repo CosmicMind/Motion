@@ -456,115 +456,113 @@ extension MotionTransition {
      For destination views, they replace the target state (final appearance).
      */
     public static func beginWith(transitions: [MotionTransition]) -> MotionTransition {
-        return MotionTransition { targetState in
-            if targetState.beginState == nil {
-                targetState.beginState = MotionTransitionStateWrapper(state: [])
+        return MotionTransition {
+            if $0.beginState == nil {
+                $0.beginState = MotionTransitionStateWrapper(state: [])
             }
-            targetState.beginState!.state.append(contentsOf: transitions)
+            
+            $0.beginState?.state.append(contentsOf: transitions)
         }
     }
     
     /**
-     Apply transitions directly to the view at the start of the transition if the view is matched with another view.
-     The transitions supplied here won't be animated.
+     Apply transitions directly to the view at the start of the transition if the view is 
+     matched with another view. The transitions supplied here won't be animated.
      For source views, transitions are set directly at the begining of the animation.
      For destination views, they replace the target state (final appearance).
      */
     public static func beginWithIfMatched(transitions: [MotionTransition]) -> MotionTransition {
-        return MotionTransition { targetState in
-            if targetState.beginStateIfMatched == nil {
-                targetState.beginStateIfMatched = []
+        return MotionTransition {
+            if $0.beginStateIfMatched == nil {
+                $0.beginStateIfMatched = []
             }
-            targetState.beginStateIfMatched!.append(contentsOf: transitions)
+            
+            $0.beginStateIfMatched?.append(contentsOf: transitions)
         }
     }
     
     /**
      Use global coordinate space.
      
-     When using global coordinate space. The view become a independent view that is not a subview of any view.
-     It won't move when its parent view moves, and won't be affected by parent view's attributes.
+     When using global coordinate space. The view becomes an independent view that is not 
+     a subview of any view. It won't move when its parent view moves, and won't be affected 
+     by parent view attributes.
      
      When a view is matched, this is automatically enabled.
-     The `source` modifier will also enable this.
-     
-     Global coordinate space is default for all views prior to version 0.1.3
+     The `source` transition will also enable this.
      */
-    public static var useGlobalCoordinateSpace: MotionTransition = MotionTransition { targetState in
-        targetState.coordinateSpace = .global
+    public static var useGlobalCoordinateSpace = MotionTransition {
+        $0.coordinateSpace = .global
     }
     
-    /**
-     Use same parent coordinate space.
-     */
-    public static var useSameParentCoordinateSpace: MotionTransition = MotionTransition { targetState in
-        targetState.coordinateSpace = .sameParent
+    /// Use same parent coordinate space.
+    public static var useSameParentCoordinateSpace = MotionTransition {
+        $0.coordinateSpace = .sameParent
     }
     
-    /**
-     ignore all motionTransitions attributes for a view's direct subviews.
-     */
+    /// Ignore all motion transition attributes for a view's direct subviews.
     public static var ignoreSubviewTransitions: MotionTransition = .ignoreSubviewTransitions()
     
     /**
-     ignore all motionTransitions attributes for a view's subviews.
-     - Parameters:
-     - recursive: if false, will only ignore direct subviews' transitions. default false.
+     Ignore all motion transition attributes for a view's subviews.
+     - Parameter recursive: If false, will only ignore direct subviews' transitions. 
+     default false.
      */
     public static func ignoreSubviewTransitions(recursive: Bool = false) -> MotionTransition {
-        return MotionTransition { targetState in
-            targetState.ignoreSubviewTransitions = recursive
+        return MotionTransition {
+            $0.ignoreSubviewTransitions = recursive
         }
     }
     
     /**
-     Will create snapshot optimized for different view type.
+     This will create a snapshot optimized for different view types.
      For custom views or views with masking, useOptimizedSnapshot might create snapshots
      that appear differently than the actual view.
      In that case, use .useNormalSnapshot or .useSlowRenderSnapshot to disable the optimization.
      
      This modifier actually does nothing by itself since .useOptimizedSnapshot is the default.
      */
-    public static var useOptimizedSnapshot: MotionTransition = MotionTransition { targetState in
-        targetState.snapshotType = .optimized
+    public static var useOptimizedSnapshot = MotionTransition {
+        $0.snapshotType = .optimized
+    }
+    
+    /// Create a snapshot using snapshotView(afterScreenUpdates:).
+    public static var useNormalSnapshot = MotionTransition {
+        $0.snapshotType = .normal
     }
     
     /**
-     Create snapshot using snapshotView(afterScreenUpdates:).
+     Create a snapshot using layer.render(in: currentContext).
+     This is slower than .useNormalSnapshot but gives more accurate snapshots for some views 
+     (eg. UIStackView).
      */
-    public static var useNormalSnapshot: MotionTransition = MotionTransition { targetState in
-        targetState.snapshotType = .normal
+    public static var useLayerRenderSnapshot = MotionTransition {
+        $0.snapshotType = .layerRender
     }
     
     /**
-     Create snapshot using layer.render(in: currentContext).
-     This is slower than .useNormalSnapshot but gives more accurate snapshot for some views (eg. UIStackView).
-     */
-    public static var useLayerRenderSnapshot: MotionTransition = MotionTransition { targetState in
-        targetState.snapshotType = .layerRender
-    }
-    
-    /**
-     Force Motion to not create any snapshot when animating this view.
+     Force Motion to not create any snapshots when animating this view.
      This will mess up the view hierarchy, therefore, view controllers have to rebuild
-     its view structure after the transition finishes.
+     their view structure after the transition finishes.
      */
-    public static var useNoSnapshot: MotionTransition = MotionTransition { targetState in
-        targetState.snapshotType = .useOriginal
+    public static var useNoSnapshot = MotionTransition {
+        $0.snapshotType = .noSnapshot
     }
     
     /**
-     Force the view to animate (Motion will create animation context & snapshots for them, so that they can be interact)
+     Force the view to animate (Motion will create animation contexts & snapshots for them, so 
+     that they can be interactive).
      */
-    public static var forceAnimate = MotionTransition { targetState in
-        targetState.forceAnimate = true
+    public static var forceAnimate = MotionTransition {
+        $0.forceAnimate = true
     }
     
     /**
-     Force Motion use scale based size animation. This will convert all .size modifier into .scale modifier.
-     This is to help Motion animate layers that doesn't support bounds animation. Also gives better performance.
+     Force Motion to use scale based size animation. This will convert all .size transitions into 
+     a .scale transition. This is to help Motion animate layers that doesn't support bounds animations.
+     This also gives better performance.
      */
-    public static var useScaleBasedSizeChange: MotionTransition = MotionTransition { targetState in
-        targetState.useScaleBasedSizeChange = true
+    public static var useScaleBasedSizeChange = MotionTransition {
+        $0.useScaleBasedSizeChange = true
     }
 }

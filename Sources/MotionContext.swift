@@ -207,7 +207,7 @@ public extension MotionContext {
         case .layerRender:
             snapshot = view.slowSnapshotView()
         
-        case .useOriginal:
+        case .noSnapshot:
             if nil == superviewToNoSnapshotSubviewMap[view.superview!] {
                 superviewToNoSnapshotSubviewMap[view.superview!] = []
             }
@@ -268,7 +268,7 @@ public extension MotionContext {
         view.layer.cornerRadius = oldCornerRadius
         view.alpha = oldAlpha
 
-        if .useOriginal != snapshotType {
+        if .noSnapshot != snapshotType {
             snapshot.layer.allowsGroupOpacity = false
 
             if !(view is UINavigationBar), let contentView = snapshot.subviews.get(0) {
@@ -362,7 +362,7 @@ internal extension MotionContext {
      - Parameter view: A UIView.
      */
     func hide(view: UIView) {
-        guard nil == viewToAlphas[view], .useOriginal != self[view]?.snapshotType else {
+        guard nil == viewToAlphas[view], .noSnapshot != self[view]?.snapshotType else {
             return
         }
         

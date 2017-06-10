@@ -39,7 +39,6 @@
 		96AEB6A31EE4610F009A3BE0 /* MotionPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96AEB67D1EE4610F009A3BE0 /* MotionPlugin.swift */; };
 		96AEB6A41EE4610F009A3BE0 /* MotionStringConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96AEB67E1EE4610F009A3BE0 /* MotionStringConvertible.swift */; };
 		96AEB6A51EE4610F009A3BE0 /* MotionTransitionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96AEB67F1EE4610F009A3BE0 /* MotionTransitionState.swift */; };
-		96AEB6A61EE4610F009A3BE0 /* MotionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96AEB6801EE4610F009A3BE0 /* MotionViewController.swift */; };
 		96AEB6A71EE4610F009A3BE0 /* Lexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96AEB6821EE4610F009A3BE0 /* Lexer.swift */; };
 		96AEB6A81EE4610F009A3BE0 /* Nodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96AEB6831EE4610F009A3BE0 /* Nodes.swift */; };
 		96AEB6A91EE4610F009A3BE0 /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96AEB6841EE4610F009A3BE0 /* Parser.swift */; };
@@ -84,7 +83,6 @@
 		96AEB67D1EE4610F009A3BE0 /* MotionPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionPlugin.swift; sourceTree = "<group>"; };
 		96AEB67E1EE4610F009A3BE0 /* MotionStringConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionStringConvertible.swift; sourceTree = "<group>"; };
 		96AEB67F1EE4610F009A3BE0 /* MotionTransitionState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionTransitionState.swift; sourceTree = "<group>"; };
-		96AEB6801EE4610F009A3BE0 /* MotionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionViewController.swift; sourceTree = "<group>"; };
 		96AEB6821EE4610F009A3BE0 /* Lexer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Lexer.swift; sourceTree = "<group>"; };
 		96AEB6831EE4610F009A3BE0 /* Nodes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Nodes.swift; sourceTree = "<group>"; };
 		96AEB6841EE4610F009A3BE0 /* Parser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Parser.swift; sourceTree = "<group>"; };
@@ -209,11 +207,10 @@
 				966A7F0A1EEC424000A2DAAC /* MotionCoordinateSpace.swift */,
 				96AEB67F1EE4610F009A3BE0 /* MotionTransitionState.swift */,
 				96AEB67B1EE4610F009A3BE0 /* MotionTransition.swift */,
-				96AEB67C1EE4610F009A3BE0 /* MotionTransition+MotionStringConvertible.swift */,
+				96E49A3F1EEA08F8006D5A93 /* MotionTransitionObserver.swift */,
 				96AEB67D1EE4610F009A3BE0 /* MotionPlugin.swift */,
 				96AEB67E1EE4610F009A3BE0 /* MotionStringConvertible.swift */,
-				96AEB6801EE4610F009A3BE0 /* MotionViewController.swift */,
-				96E49A3F1EEA08F8006D5A93 /* MotionTransitionObserver.swift */,
+				96AEB67C1EE4610F009A3BE0 /* MotionTransition+MotionStringConvertible.swift */,
 				96AEB6811EE4610F009A3BE0 /* Parser */,
 				96AEB6861EE4610F009A3BE0 /* Preprocessors */,
 			);
@@ -315,7 +312,6 @@
 				96AEB6961EE4610F009A3BE0 /* Motion+CAMediaTimingFunction.swift in Sources */,
 				96AEB6941EE4610F009A3BE0 /* Motion+Array.swift in Sources */,
 				96AEB6951EE4610F009A3BE0 /* Motion+CALayer.swift in Sources */,
-				96AEB6A61EE4610F009A3BE0 /* MotionViewController.swift in Sources */,
 				96AEB68E1EE4610F009A3BE0 /* MotionCoreAnimationViewContext.swift in Sources */,
 				96AEB6921EE4610F009A3BE0 /* MotionDebugView.swift in Sources */,
 				96E49A401EEA08F8006D5A93 /* MotionTransitionObserver.swift in Sources */,

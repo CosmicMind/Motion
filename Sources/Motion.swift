@@ -28,6 +28,87 @@
 
 import UIKit
 
+@objc(MotionViewControllerDelegate)
+public protocol MotionViewControllerDelegate {
+    /**
+     An optional delegation method that is executed motion will start the transition.
+     - Parameter motion: A Motion instance.
+     - Parameter willStartTransitionFrom viewController: A UIViewController.
+     */
+    @objc
+    optional func motionWillStartTransition(motion: Motion)
+    
+    /**
+     An optional delegation method that is executed motion did end the transition.
+     - Parameter motion: A Motion instance.
+     - Parameter willStartTransitionFrom viewController: A UIViewController.
+     */
+    @objc
+    optional func motionDidEndTransition(motion: Motion)
+    
+    /**
+     An optional delegation method that is executed motion did cancel the transition.
+     - Parameter motion: A Motion instance.
+     - Parameter willStartTransitionFrom viewController: A UIViewController.
+     */
+    @objc
+    optional func motionDidCancelTransition(motion: Motion)
+    
+    /**
+     An optional delegation method that is executed when the source
+     view controller will start the transition.
+     - Parameter motion: A Motion instance.
+     - Parameter willStartTransitionFrom viewController: A UIViewController.
+     */
+    @objc
+    optional func motion(motion: Motion, willStartTransitionFrom viewController: UIViewController)
+    
+    /**
+     An optional delegation method that is executed when the source
+     view controller did end the transition.
+     - Parameter motion: A Motion instance.
+     - Parameter willStartTransitionFrom viewController: A UIViewController.
+     */
+    @objc
+    optional func motion(motion: Motion, didEndTransitionFrom viewController: UIViewController)
+    
+    /**
+     An optional delegation method that is executed when the source
+     view controller did cancel the transition.
+     - Parameter motion: A Motion instance.
+     - Parameter willStartTransitionFrom viewController: A UIViewController.
+     */
+    @objc
+    optional func motion(motion: Motion, didCancelTransitionFrom viewController: UIViewController)
+    
+    /**
+     An optional delegation method that is executed when the destination
+     view controller will start the transition.
+     - Parameter motion: A Motion instance.
+     - Parameter willStartTransitionFrom viewController: A UIViewController.
+     */
+    @objc
+    optional func motion(motion: Motion, willStartTransitionTo viewController: UIViewController)
+    
+    /**
+     An optional delegation method that is executed when the destination
+     view controller did end the transition.
+     - Parameter motion: A Motion instance.
+     - Parameter willStartTransitionFrom viewController: A UIViewController.
+     */
+    @objc
+    optional func motion(motion: Motion, didEndTransitionTo viewController: UIViewController)
+    
+    /**
+     An optional delegation method that is executed when the destination
+     view controller did cancel the transition.
+     - Parameter motion: A Motion instance.
+     - Parameter willStartTransitionFrom viewController: A UIViewController.
+     */
+    @objc
+    optional func motion(motion: Motion, didCancelTransitionTo viewController: UIViewController)
+}
+
 /**
  ### The singleton class/object for controlling interactive transitions.
 
@@ -253,28 +334,44 @@ internal extension Motion {
         
         if finished {
             if let fvc = fvc, let tvc = tvc {
-                processForMotionDelegate(viewController: fvc) {
-                    $0.motionDidEndAnimatingTo?(viewController: tvc)
-                    $0.motionDidEndTransition?()
+                processForMotionDelegate(viewController: fvc) { [weak self] in
+                    guard let s = self else {
+                        return
+                    }
+                    
+                    $0.motion?(motion: s, didEndTransitionTo: tvc)
+                    $0.motionDidEndTransition?(motion: s)
                 }
                 
-                processForMotionDelegate(viewController: tvc) {
-                    $0.motionDidEndAnimatingFrom?(viewController: fvc)
-                    $0.motionDidEndTransition?()
+                processForMotionDelegate(viewController: tvc) { [weak self] in
+                    guard let s = self else {
+                        return
+                    }
+                    
+                    $0.motion?(motion: s, didEndTransitionFrom: fvc)
+                    $0.motionDidEndTransition?(motion: s)
                 }
             }
             
             tContext?.finishInteractiveTransition()
         } else {
             if let fvc = fvc, let tvc = tvc {
-                processForMotionDelegate(viewController: fvc) {
-                    $0.motionDidCancelAnimatingTo?(viewController: tvc)
-                    $0.motionDidCancelTransition?()
+                processForMotionDelegate(viewController: fvc) { [weak self] in
+                    guard let s = self else {
+                        return
+                    }
+                    
+                    $0.motion?(motion: s, didCancelTransitionTo: tvc)
+                    $0.motionDidCancelTransition?(motion: s)
                 }
                 
-                processForMotionDelegate(viewController: tvc) {
-                    $0.motionDidCancelAnimatingFrom?(viewController: fvc)
-                    $0.motionDidCancelTransition?()
+                processForMotionDelegate(viewController: tvc) { [weak self] in
+                    guard let s = self else {
+                        return
+                    }
+                    
+                    $0.motion?(motion: s, didCancelTransitionFrom: fvc)
+                    $0.motionDidCancelTransition?(motion: s)
                 }
             }
             
@@ -292,14 +389,22 @@ fileprivate extension Motion {
             return
         }
         
-        processForMotionDelegate(viewController: fvc) {
-            $0.motionWillStartTransition?()
-            $0.motionWillStartAnimatingTo?(viewController: tvc)
+        processForMotionDelegate(viewController: fvc) { [weak self] in
+            guard let s = self else {
+                return
+            }
+            
+            $0.motionWillStartTransition?(motion: s)
+            $0.motion?(motion: s, willStartTransitionTo: tvc)
         }
         
-        processForMotionDelegate(viewController: tvc) {
-            $0.motionWillStartTransition?()
-            $0.motionWillStartAnimatingFrom?(viewController: fvc)
+        processForMotionDelegate(viewController: tvc) { [weak self] in
+            guard let s = self else {
+                return
+            }
+            
+            $0.motionWillStartTransition?(motion: s)
+            $0.motion?(motion: s, willStartTransitionFrom: fvc)
         }
     }
     

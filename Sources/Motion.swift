@@ -269,14 +269,14 @@ internal extension Motion {
         fullScreenSnapshot?.removeFromSuperview()
     }
     
-    override func complete(isFinished finished: Bool) {
+    override func complete(isFinished: Bool) {
         guard isTransitioning else {
             return
         }
         
         context.clean()
         
-        if finished && isPresenting && toOverFullScreen {
+        if isFinished && isPresenting && toOverFullScreen {
             // finished presenting a overFullScreen VC
             context.unhide(rootView: toView)
             context.removeSnapshots(rootView: toView)
@@ -285,7 +285,7 @@ internal extension Motion {
             fromViewController!.motionStoredSnapshot = container
             fromView.removeFromSuperview()
             fromView.addSubview(container)
-        } else if !finished && !isPresenting && fromOverFullScreen {
+        } else if !isFinished && !isPresenting && fromOverFullScreen {
             // cancelled dismissing a overFullScreen VC
             context.unhide(rootView: fromView)
             context.removeSnapshots(rootView: fromView)
@@ -301,7 +301,7 @@ internal extension Motion {
         }
         
         // move fromView & toView back from our container back to the one supplied by UIKit
-        if (toOverFullScreen && isFinished) || (fromOverFullScreen && !finished) {
+        if (toOverFullScreen && isFinished) || (fromOverFullScreen && !isFinished) {
             transitionContainer.addSubview(isFinished ? fromView : toView)
         }
         
@@ -320,6 +320,23 @@ internal extension Motion {
         let fvc = fromViewController
         let tvc = toViewController
         
+        resetTransition()
+        
+        super.complete(isFinished: isFinished)
+        
+        if isFinished {
+            processEndTransitionDelegation(transitionContext: tContext, fromViewController: fvc, toViewController: tvc)
+        } else {
+            processCancelTransitionDelegation(transitionContext: tContext, fromViewController: fvc, toViewController: tvc)
+        }
+        
+        tContext?.completeTransition(isFinished)
+    }
+}
+
+fileprivate extension Motion {
+    /// Resets the transition values.
+    func resetTransition() {
         transitionContext = nil
         fromViewController = nil
         toViewController = nil
@@ -329,83 +346,13 @@ internal extension Motion {
         forceNonInteractive = false
         insertToViewFirst = false
         defaultAnimation = .auto
-        
-        super.complete(isFinished: isFinished)
-        
-        if finished {
-            if let fvc = fvc, let tvc = tvc {
-                processForMotionDelegate(viewController: fvc) { [weak self] in
-                    guard let s = self else {
-                        return
-                    }
-                    
-                    $0.motion?(motion: s, didEndTransitionTo: tvc)
-                    $0.motionDidEndTransition?(motion: s)
-                }
-                
-                processForMotionDelegate(viewController: tvc) { [weak self] in
-                    guard let s = self else {
-                        return
-                    }
-                    
-                    $0.motion?(motion: s, didEndTransitionFrom: fvc)
-                    $0.motionDidEndTransition?(motion: s)
-                }
-            }
-            
-            tContext?.finishInteractiveTransition()
-        } else {
-            if let fvc = fvc, let tvc = tvc {
-                processForMotionDelegate(viewController: fvc) { [weak self] in
-                    guard let s = self else {
-                        return
-                    }
-                    
-                    $0.motion?(motion: s, didCancelTransitionTo: tvc)
-                    $0.motionDidCancelTransition?(motion: s)
-                }
-                
-                processForMotionDelegate(viewController: tvc) { [weak self] in
-                    guard let s = self else {
-                        return
-                    }
-                    
-                    $0.motion?(motion: s, didCancelTransitionFrom: fvc)
-                    $0.motionDidCancelTransition?(motion: s)
-                }
-            }
-            
-            tContext?.cancelInteractiveTransition()
-        }
-        
-        tContext?.completeTransition(finished)
     }
 }
 
 fileprivate extension Motion {
     /// Prepares the from and to view controllers.
     func prepareViewControllers() {
-        guard let fvc = fromViewController, let tvc = toViewController else {
-            return
-        }
-        
-        processForMotionDelegate(viewController: fvc) { [weak self] in
-            guard let s = self else {
-                return
-            }
-            
-            $0.motionWillStartTransition?(motion: s)
-            $0.motion?(motion: s, willStartTransitionTo: tvc)
-        }
-        
-        processForMotionDelegate(viewController: tvc) { [weak self] in
-            guard let s = self else {
-                return
-            }
-            
-            $0.motionWillStartTransition?(motion: s)
-            $0.motion?(motion: s, willStartTransitionFrom: fvc)
-        }
+        processStartTransitionDelegation(fromViewController: fromViewController, toViewController: toViewController)
     }
     
     /// Prepares the snapshot view, which hides any flashing that may occur.
@@ -474,6 +421,111 @@ fileprivate extension Motion {
                 animate()
             }
         #endif
+    }
+    
+    /**
+     Processes the start transition delegation methods.
+     - Parameter fromViewController: An optional UIViewController.
+     - Parameter toViewController: An optional UIViewController.
+     */
+    func processStartTransitionDelegation(fromViewController: UIViewController?, toViewController: UIViewController?) {
+        guard let fvc = fromViewController else {
+            return
+        }
+        
+        guard let tvc = toViewController else {
+            return
+        }
+        
+        processForMotionDelegate(viewController: fvc) { [weak self] in
+            guard let s = self else {
+                return
+            }
+            
+            $0.motion?(motion: s, willStartTransitionTo: tvc)
+            $0.motionWillStartTransition?(motion: s)
+        }
+        
+        processForMotionDelegate(viewController: tvc) { [weak self] in
+            guard let s = self else {
+                return
+            }
+            
+            $0.motion?(motion: s, willStartTransitionFrom: fvc)
+            $0.motionWillStartTransition?(motion: s)
+        }
+    }
+    
+    /**
+     Processes the end transition delegation methods.
+     - Parameter transitionContext: An optional UIViewControllerContextTransitioning.
+     - Parameter fromViewController: An optional UIViewController.
+     - Parameter toViewController: An optional UIViewController.
+     */
+    func processEndTransitionDelegation(transitionContext: UIViewControllerContextTransitioning?, fromViewController: UIViewController?, toViewController: UIViewController?) {
+        guard let fvc = fromViewController else {
+            return
+        }
+        
+        guard let tvc = toViewController else {
+            return
+        }
+        
+        processForMotionDelegate(viewController: fvc) { [weak self] in
+            guard let s = self else {
+                return
+            }
+                
+            $0.motion?(motion: s, didEndTransitionTo: tvc)
+            $0.motionDidEndTransition?(motion: s)
+        }
+            
+        processForMotionDelegate(viewController: tvc) { [weak self] in
+            guard let s = self else {
+                return
+            }
+            
+            $0.motion?(motion: s, didEndTransitionFrom: fvc)
+            $0.motionDidEndTransition?(motion: s)
+        }
+        
+        transitionContext?.finishInteractiveTransition()
+    }
+    
+    /**
+     Processes the cancel transition delegation methods.
+     - Parameter transitionContext: An optional UIViewControllerContextTransitioning.
+     - Parameter fromViewController: An optional UIViewController.
+     - Parameter toViewController: An optional UIViewController.
+     */
+    func processCancelTransitionDelegation(transitionContext: UIViewControllerContextTransitioning?, fromViewController: UIViewController?, toViewController: UIViewController?) {
+        guard let fvc = fromViewController else {
+            return
+        }
+        
+        guard let tvc = toViewController else {
+            return
+        }
+        
+        processForMotionDelegate(viewController: fvc) { [weak self] in
+            guard let s = self else {
+                return
+            }
+            
+            $0.motion?(motion: s, didCancelTransitionTo: tvc)
+            $0.motionDidCancelTransition?(motion: s)
+        }
+        
+        processForMotionDelegate(viewController: tvc) { [weak self] in
+            guard let s = self else {
+                return
+            }
+            
+            $0.motion?(motion: s, didCancelTransitionFrom: fvc)
+            $0.motionDidCancelTransition?(motion: s)
+        }
+        
+        transitionContext?.finishInteractiveTransition()
     }
 }
 

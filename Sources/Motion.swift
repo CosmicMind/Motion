@@ -629,14 +629,12 @@ extension Motion: UIViewControllerAnimatedTransitioning {
     }
 }
 
-extension Motion {
-    /// A reference to the interactive transitioning.
-    fileprivate var interactiveTransitioning: UIViewControllerInteractiveTransitioning? {
-        return self
-    }
-}
-
 extension Motion: UIViewControllerTransitioningDelegate {
+    /// A reference to the interactive transitioning instance.
+    var interactiveTransitioning: UIViewControllerInteractiveTransitioning? {
+        return forceNonInteractive ? nil : self
+    }
+    
     public func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         self.isPresenting = true
         self.fromViewController = fromViewController ?? presenting

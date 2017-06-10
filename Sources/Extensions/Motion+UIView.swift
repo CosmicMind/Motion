@@ -170,7 +170,7 @@ public extension UIView {
 }
 
 extension UIView {
-    /// Computes the rotation of the view.
+    /// Computes the rotate of the view.
     open var motionRotationAngle: CGFloat {
         get {
             return CGFloat(atan2f(Float(transform.b), Float(transform.a))) * 180 / CGFloat(Double.pi)

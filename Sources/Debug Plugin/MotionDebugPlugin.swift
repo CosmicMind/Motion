@@ -94,12 +94,12 @@ extension MotionDebugPlugin:MotionDebugViewDelegate {
     Motion.shared.update(elapsedTime: Double(seekValue))
   }
 
-  func onPerspectiveChanged(translation: CGPoint, rotation: CGFloat, scale: CGFloat) {
+  func onPerspectiveChanged(translation: CGPoint, rotate: CGFloat, scale: CGFloat) {
     var t = CATransform3DIdentity
     t.m34 = -1 / 4000
     t = CATransform3DTranslate(t, translation.x, translation.y, 0)
     t = CATransform3DScale(t, scale, scale, 1)
-    t = CATransform3DRotate(t, rotation, 0, 1, 0)
+    t = CATransform3DRotate(t, rotate, 0, 1, 0)
     Motion.shared.container.layer.sublayerTransform = t
   }
 
@@ -160,7 +160,7 @@ extension MotionDebugPlugin:MotionDebugViewDelegate {
       t.m34 = -1 / 4000
       t = CATransform3DTranslate(t, debugView!.translation.x, debugView!.translation.y, 0)
       t = CATransform3DScale(t, debugView!.scale, debugView!.scale, 1)
-      t = CATransform3DRotate(t, debugView!.rotation, 0, 1, 0)
+      t = CATransform3DRotate(t, debugView!.rotate, 0, 1, 0)
     } else {
       for v in Motion.shared.container.subviews {
         animateZPosition(view:v, to:self.zPositionMap[v] ?? 0)

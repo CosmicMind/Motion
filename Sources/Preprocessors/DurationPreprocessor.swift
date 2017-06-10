@@ -8,15 +8,22 @@
 
 import UIKit
 
-class DurationPreprocessor: BasePreprocessor {
-
-  override func process(fromViews: [UIView], toViews: [UIView]) {
-    var maxDuration: TimeInterval = 0
-    maxDuration = applyOptimizedDurationIfNoDuration(views:fromViews)
-    maxDuration = max(maxDuration, applyOptimizedDurationIfNoDuration(views:toViews))
-    setDurationForInfiniteDuration(views: fromViews, duration: maxDuration)
-    setDurationForInfiniteDuration(views: toViews, duration: maxDuration)
-  }
+class DurationPreprocessor: MotionPreprocessor {
+    /// A reference to a MotionContext.
+    weak var context: MotionContext!
+    
+    /**
+     Implementation for processor.
+     - Parameter fromViews: An Array of UIViews.
+     - Parameter toViews: An Array of UIViews.
+     */
+    func process(fromViews: [UIView], toViews: [UIView]) {
+        var maxDuration: TimeInterval = 0
+        maxDuration = applyOptimizedDurationIfNoDuration(views:fromViews)
+        maxDuration = max(maxDuration, applyOptimizedDurationIfNoDuration(views:toViews))
+        setDurationForInfiniteDuration(views: fromViews, duration: maxDuration)
+        setDurationForInfiniteDuration(views: toViews, duration: maxDuration)
+    }
 
   func optimizedDurationFor(view: UIView) -> TimeInterval {
     let targetState = context[view]!

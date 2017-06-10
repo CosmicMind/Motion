@@ -70,8 +70,11 @@ public enum CascadeDirection {
   }
 }
 
-class CascadePreprocessor: BasePreprocessor {
-  override func process(fromViews: [UIView], toViews: [UIView]) {
+class CascadePreprocessor: MotionPreprocessor {
+    /// A reference to a MotionContext.
+    weak var context: MotionContext!
+    
+    func process(fromViews: [UIView], toViews: [UIView]) {
     process(views:fromViews)
     process(views:toViews)
   }

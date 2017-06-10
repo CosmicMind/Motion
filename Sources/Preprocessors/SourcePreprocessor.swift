@@ -28,15 +28,18 @@
 
 import UIKit
 
-class SourcePreprocessor: BasePreprocessor {
-  override func process(fromViews: [UIView], toViews: [UIView]) {
+class SourcePreprocessor: MotionPreprocessor {
+    /// A reference to a MotionContext.
+    weak var context: MotionContext!
+
+func process(fromViews: [UIView], toViews: [UIView]) {
     for fv in fromViews {
-      guard let id = context[fv]?.source,
+      guard let id = context[fv]?.motionIdentifier,
             let tv = context.destinationView(for: id) else { continue }
       prepareFor(view: fv, targetView: tv)
     }
     for tv in toViews {
-      guard let id = context[tv]?.source,
+      guard let id = context[tv]?.motionIdentifier,
             let fv = context.sourceView(for: id) else { continue }
       prepareFor(view: tv, targetView: fv)
     }

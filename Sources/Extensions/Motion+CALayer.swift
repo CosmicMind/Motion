@@ -232,30 +232,30 @@ extension CALayer {
                 case let .transform(transform):
                     a.append(MotionBasicAnimation.transform(transform: transform))
                     
-                case let .rotationAngle(angle):
-                    let rotate = MotionBasicAnimation.rotation(angle: angle)
+                case let .rotate(angle):
+                    let rotate = MotionBasicAnimation.rotate(angle: angle)
                     a.append(rotate)
                     
-                case let .rotationAngleX(angle):
-                    a.append(MotionBasicAnimation.rotationX(angle: angle))
+                case let .rotateX(angle):
+                    a.append(MotionBasicAnimation.rotateX(angle: angle))
                     
-                case let .rotationAngleY(angle):
-                    a.append(MotionBasicAnimation.rotationY(angle: angle))
+                case let .rotateY(angle):
+                    a.append(MotionBasicAnimation.rotateY(angle: angle))
                     
-                case let .rotationAngleZ(angle):
-                    a.append(MotionBasicAnimation.rotationZ(angle: angle))
+                case let .rotateZ(angle):
+                    a.append(MotionBasicAnimation.rotateZ(angle: angle))
                     
-                case let .spin(rotations):
-                    a.append(MotionBasicAnimation.spin(rotations: rotations))
+                case let .spin(rotates):
+                    a.append(MotionBasicAnimation.spin(rotates: rotates))
                     
-                case let .spinX(rotations):
-                    a.append(MotionBasicAnimation.spinX(rotations: rotations))
+                case let .spinX(rotates):
+                    a.append(MotionBasicAnimation.spinX(rotates: rotates))
                     
-                case let .spinY(rotations):
-                    a.append(MotionBasicAnimation.spinY(rotations: rotations))
+                case let .spinY(rotates):
+                    a.append(MotionBasicAnimation.spinY(rotates: rotates))
                     
-                case let .spinZ(rotations):
-                    a.append(MotionBasicAnimation.spinZ(rotations: rotations))
+                case let .spinZ(rotates):
+                    a.append(MotionBasicAnimation.spinZ(rotates: rotates))
                     
                 case let .scale(to):
                     a.append(MotionBasicAnimation.scale(to: to))

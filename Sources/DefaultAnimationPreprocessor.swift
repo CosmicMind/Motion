@@ -209,8 +209,10 @@ extension MotionDefaultAnimationType: MotionStringConvertible {
   }
 }
 
-class DefaultAnimationPreprocessor: BasePreprocessor {
-
+class DefaultAnimationPreprocessor: MotionPreprocessor {
+    /// A reference to a MotionContext.
+    weak var context: MotionContext!
+    
   weak var motion: Motion?
 
   init(motion: Motion) {
@@ -232,7 +234,12 @@ class DefaultAnimationPreprocessor: BasePreprocessor {
     return rtn
   }
 
-  override func process(fromViews: [UIView], toViews: [UIView]) {
+    /**
+     Implementation for processor.
+     - Parameter fromViews: An Array of UIViews.
+     - Parameter toViews: An Array of UIViews.
+     */
+  func process(fromViews: [UIView], toViews: [UIView]) {
     guard let motion = motion else { return }
     var defaultAnimation = motion.defaultAnimation
     let inNavigationController = motion.isNavigationController
@@ -279,60 +286,60 @@ class DefaultAnimationPreprocessor: BasePreprocessor {
     context[fromView] = [.timingFunction(.standard), .duration(0.35)]
     context[toView] = [.timingFunction(.standard), .duration(0.35)]
 
-    let shadowState: [MotionTransition] = [.shadowOpacity(0.5),
-                                       .shadowColor(.black),
-                                       .shadowRadius(5),
-                                       .shadowOffset(.zero),
+    let shadowState: [MotionTransition] = [.shadow(opacity: 0.5),
+                                           .shadow(color: .black),
+                                           .shadow(radius: 5),
+                                           .shadow(offset: .zero),
                                        .masksToBounds(false)]
     switch defaultAnimation {
     case .push(let direction):
-      context[toView]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: true)),
-                                           .shadowOpacity(0),
-                                           .beginWith(modifiers: shadowState),
+        context[toView]!.append(contentsOf: [.translate(to: shift(direction: direction, isAppearing: true)),
+                                             .shadow(opacity: 0),
+                                           .beginWith(transitions: shadowState),
                                            .timingFunction(.deceleration)])
-      context[fromView]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: false) / 3),
+        context[fromView]!.append(contentsOf: [.translate(to: shift(direction: direction, isAppearing: false) / 3),
                                              .overlay(color: .black, opacity: 0.1),
                                              .timingFunction(.deceleration)])
     case .pull(let direction):
       motion.insertToViewFirst = true
-      context[fromView]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: false)),
-                                             .shadowOpacity(0),
-                                             .beginWith(modifiers: shadowState)])
-      context[toView]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: true) / 3),
+      context[fromView]!.append(contentsOf: [.translate(to: shift(direction: direction, isAppearing: false)),
+                                             .shadow(opacity: 0),
+                                             .beginWith(transitions: shadowState)])
+      context[toView]!.append(contentsOf: [.translate(to: shift(direction: direction, isAppearing: true) / 3),
                                            .overlay(color: .black, opacity: 0.1)])
     case .slide(let direction):
-      context[fromView]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: false))])
-      context[toView]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: true))])
+        context[fromView]!.append(contentsOf: [.translate(to: shift(direction: direction, isAppearing: false))])
+        context[toView]!.append(contentsOf: [.translate(to: shift(direction: direction, isAppearing: true))])
     case .zoomSlide(let direction):
-      context[fromView]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: false)), .scale(0.8)])
-      context[toView]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: true)), .scale(0.8)])
+        context[fromView]!.append(contentsOf: [.translate(to: shift(direction: direction, isAppearing: false)), .scale(to: 0.8)])
+        context[toView]!.append(contentsOf: [.translate(to: shift(direction: direction, isAppearing: true)), .scale(to: 0.8)])
     case .cover(let direction):
-      context[toView]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: true)),
-                                           .shadowOpacity(0),
-                                           .beginWith(modifiers: shadowState),
+        context[toView]!.append(contentsOf: [.translate(to: shift(direction: direction, isAppearing: true)),
+                                             .shadow(opacity: 0),
+                                           .beginWith(transitions: shadowState),
                                            .timingFunction(.deceleration)])
       context[fromView]!.append(contentsOf: [.overlay(color: .black, opacity: 0.1),
                                              .timingFunction(.deceleration)])
     case .uncover(let direction):
       motion.insertToViewFirst = true
-      context[fromView]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: false)),
-                                             .shadowOpacity(0),
-                                             .beginWith(modifiers: shadowState)])
+      context[fromView]!.append(contentsOf: [.translate(to: shift(direction: direction, isAppearing: false)),
+                                             .shadow(opacity: 0),
+                                             .beginWith(transitions: shadowState)])
       context[toView]!.append(contentsOf: [.overlay(color: .black, opacity: 0.1)])
     case .pageIn(let direction):
-      context[toView]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: true)),
-                                           .shadowOpacity(0),
-                                           .beginWith(modifiers: shadowState),
+      context[toView]!.append(contentsOf: [.translate(to: shift(direction: direction, isAppearing: true)),
+                                           .shadow(opacity: 0),
+                                           .beginWith(transitions: shadowState),
                                            .timingFunction(.deceleration)])
-      context[fromView]!.append(contentsOf: [.scale(0.7),
+      context[fromView]!.append(contentsOf: [.scale(to: 0.7),
                                              .overlay(color: .black, opacity: 0.1),
                                              .timingFunction(.deceleration)])
     case .pageOut(let direction):
       motion.insertToViewFirst = true
-      context[fromView]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: false)),
-                                             .shadowOpacity(0),
-                                             .beginWith(modifiers: shadowState)])
-      context[toView]!.append(contentsOf: [.scale(0.7),
+      context[fromView]!.append(contentsOf: [.translate(to: shift(direction: direction, isAppearing: false)),
+                                             .shadow(opacity: 0),
+                                             .beginWith(transitions: shadowState)])
+      context[toView]!.append(contentsOf: [.scale(to: 0.7),
                                            .overlay(color: .black, opacity: 0.1)])
     case .fade:
       // TODO: clean up this. overFullScreen logic shouldn't be here
@@ -348,15 +355,15 @@ class DefaultAnimationPreprocessor: BasePreprocessor {
         }
       #endif
 
-      context[toView]!.append(.durationMatchLongest)
-      context[fromView]!.append(.durationMatchLongest)
+      context[toView]!.append(.preferredDurationMatchesLongest)
+      context[fromView]!.append(.preferredDurationMatchesLongest)
     case .zoom:
       motion.insertToViewFirst = true
-      context[fromView]!.append(contentsOf: [.scale(1.3), .fade])
-      context[toView]!.append(contentsOf: [.scale(0.7)])
+      context[fromView]!.append(contentsOf: [.scale(to: 1.3), .fade])
+      context[toView]!.append(contentsOf: [.scale(to: 0.7)])
     case .zoomOut:
-      context[toView]!.append(contentsOf: [.scale(1.3), .fade])
-      context[fromView]!.append(contentsOf: [.scale(0.7)])
+      context[toView]!.append(contentsOf: [.scale(to: 1.3), .fade])
+      context[fromView]!.append(contentsOf: [.scale(to: 0.7)])
     default:
       fatalError("Not implemented")
     }

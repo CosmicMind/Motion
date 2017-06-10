@@ -42,7 +42,6 @@
 		96AEB6A81EE4610F009A3BE0 /* Nodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96AEB6831EE4610F009A3BE0 /* Nodes.swift */; };
 		96AEB6A91EE4610F009A3BE0 /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96AEB6841EE4610F009A3BE0 /* Parser.swift */; };
 		96AEB6AA1EE4610F009A3BE0 /* Regex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96AEB6851EE4610F009A3BE0 /* Regex.swift */; };
-		96AEB6AB1EE4610F009A3BE0 /* BasePreprocessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96AEB6871EE4610F009A3BE0 /* BasePreprocessor.swift */; };
 		96AEB6AC1EE4610F009A3BE0 /* CascadePreprocessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96AEB6881EE4610F009A3BE0 /* CascadePreprocessor.swift */; };
 		96AEB6AD1EE4610F009A3BE0 /* DurationPreprocessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96AEB6891EE4610F009A3BE0 /* DurationPreprocessor.swift */; };
 		96AEB6AE1EE4610F009A3BE0 /* IgnoreSubviewModifiersPreprocessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96AEB68A1EE4610F009A3BE0 /* IgnoreSubviewModifiersPreprocessor.swift */; };
@@ -86,7 +85,6 @@
 		96AEB6831EE4610F009A3BE0 /* Nodes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Nodes.swift; sourceTree = "<group>"; };
 		96AEB6841EE4610F009A3BE0 /* Parser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Parser.swift; sourceTree = "<group>"; };
 		96AEB6851EE4610F009A3BE0 /* Regex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Regex.swift; sourceTree = "<group>"; };
-		96AEB6871EE4610F009A3BE0 /* BasePreprocessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasePreprocessor.swift; sourceTree = "<group>"; };
 		96AEB6881EE4610F009A3BE0 /* CascadePreprocessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CascadePreprocessor.swift; sourceTree = "<group>"; };
 		96AEB6891EE4610F009A3BE0 /* DurationPreprocessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DurationPreprocessor.swift; sourceTree = "<group>"; };
 		96AEB68A1EE4610F009A3BE0 /* IgnoreSubviewModifiersPreprocessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IgnoreSubviewModifiersPreprocessor.swift; sourceTree = "<group>"; };
@@ -163,7 +161,6 @@
 			isa = PBXGroup;
 			children = (
 				968989DB1EE65F2B003B8F3D /* MotionPreprocessor.swift */,
-				96AEB6871EE4610F009A3BE0 /* BasePreprocessor.swift */,
 				96AEB6881EE4610F009A3BE0 /* CascadePreprocessor.swift */,
 				96AEB6891EE4610F009A3BE0 /* DurationPreprocessor.swift */,
 				96AEB68A1EE4610F009A3BE0 /* IgnoreSubviewModifiersPreprocessor.swift */,
@@ -335,7 +332,6 @@
 				96AEB69E1EE4610F009A3BE0 /* MotionController.swift in Sources */,
 				96AEB6A11EE4610F009A3BE0 /* MotionTransition.swift in Sources */,
 				96AEB6971EE4610F009A3BE0 /* Motion+CG.swift in Sources */,
-				96AEB6AB1EE4610F009A3BE0 /* BasePreprocessor.swift in Sources */,
 				963150DA1EE51EB4002B0D42 /* MotionAnimationFillMode.swift in Sources */,
 				96AEB6AC1EE4610F009A3BE0 /* CascadePreprocessor.swift in Sources */,
 			);

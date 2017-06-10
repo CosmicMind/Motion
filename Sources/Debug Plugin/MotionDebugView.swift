@@ -31,7 +31,7 @@ import UIKit
 #if os(iOS)
 protocol MotionDebugViewDelegate: class {
   func onProcessSliderChanged(progress: Float)
-  func onPerspectiveChanged(translation: CGPoint, rotation: CGFloat, scale: CGFloat)
+  func onPerspectiveChanged(translation: CGPoint, rotate: CGFloat, scale: CGFloat)
   func on3D(wants3D: Bool)
   func onDisplayArcCurve(wantsCurve: Bool)
   func onDone()
@@ -56,7 +56,7 @@ class MotionDebugView: UIView {
   }
 
   var showOnTop: Bool = false
-  var rotation: CGFloat = .pi / 6
+  var rotate: CGFloat = .pi / 6
   var scale: CGFloat = 0.6
   var translation: CGPoint = .zero
   var progress: Float {
@@ -142,15 +142,15 @@ class MotionDebugView: UIView {
   var startRotation: CGFloat = 0
   @objc public func pan() {
     if panGR.state == .began {
-      startRotation = rotation
+      startRotation = rotate
     }
-    rotation = startRotation + panGR.translation(in: nil).x / 150
-    if rotation > .pi {
-      rotation -= 2 * .pi
-    } else if rotation < -.pi {
-      rotation += 2 * .pi
+    rotate = startRotation + panGR.translation(in: nil).x / 150
+    if rotate > .pi {
+      rotate -= 2 * .pi
+    } else if rotate < -.pi {
+      rotate += 2 * .pi
     }
-    delegate?.onPerspectiveChanged(translation:translation, rotation: rotation, scale:scale)
+    delegate?.onPerspectiveChanged(translation:translation, rotate: rotate, scale:scale)
   }
 
   var startLocation: CGPoint = .zero
@@ -167,7 +167,7 @@ class MotionDebugView: UIView {
       if pinchGR.numberOfTouches >= 2 {
         scale = min(1, max(0.2, startScale * pinchGR.scale))
         translation = startTranslation + pinchGR.location(in: nil) - startLocation
-        delegate?.onPerspectiveChanged(translation:translation, rotation: rotation, scale:scale)
+        delegate?.onPerspectiveChanged(translation:translation, rotate: rotate, scale:scale)
       }
     default:
       break

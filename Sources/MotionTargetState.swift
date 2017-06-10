@@ -93,7 +93,7 @@ public struct MotionTargetState {
   public var timingFunction: CAMediaTimingFunction?
 
   public var arc: CGFloat?
-  public var source: String?
+  public var motionIdentifier: String?
   public var cascade: (TimeInterval, CascadeDirection, Bool)?
 
   public var ignoreSubviewModifiers: Bool?

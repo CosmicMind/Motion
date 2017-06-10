@@ -28,8 +28,11 @@
 
 import UIKit
 
-class IgnoreSubviewModifiersPreprocessor: BasePreprocessor {
-  override func process(fromViews: [UIView], toViews: [UIView]) {
+class IgnoreSubviewModifiersPreprocessor: MotionPreprocessor {
+    /// A reference to a MotionContext.
+    weak var context: MotionContext!
+    
+    func process(fromViews: [UIView], toViews: [UIView]) {
     process(views:fromViews)
     process(views:toViews)
   }

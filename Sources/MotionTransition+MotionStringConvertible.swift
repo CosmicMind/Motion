@@ -38,14 +38,14 @@ extension MotionTransition: MotionStringConvertible {
     case "fade":
       return .fade
     case "opacity":
-      return MotionTransition.opacity(parameters.getFloat(0) ?? 1)
+        return MotionTransition.fade(to: parameters.getFloat(0) ?? 1)
     case "position":
-      return .position(CGPoint(x: parameters.getCGFloat(0) ?? 0, y: parameters.getCGFloat(1) ?? 0))
+        return .position(to: CGPoint(x: parameters.getCGFloat(0) ?? 0, y: parameters.getCGFloat(1) ?? 0))
     case "size":
       return .size(CGSize(width: parameters.getCGFloat(0) ?? 0, height: parameters.getCGFloat(1) ?? 0))
     case "scale":
       if parameters.count == 1 {
-        return .scale(parameters.getCGFloat(0) ?? 1)
+        return .scale(to: parameters.getCGFloat(0) ?? 1)
       } else {
         return .scale(x: parameters.getCGFloat(0) ?? 1,
                           y: parameters.getCGFloat(1) ?? 1,
@@ -73,8 +73,8 @@ extension MotionTransition: MotionStringConvertible {
       if let duration = parameters.getDouble(0) {
         return .duration(duration)
       }
-    case "durationMatchLongest":
-      return .durationMatchLongest
+    case "preferredDurationMatchesLongest":
+      return .preferredDurationMatchesLongest
     case "delay":
       if let delay = parameters.getDouble(0) {
         return .delay(delay)
@@ -100,10 +100,10 @@ extension MotionTransition: MotionStringConvertible {
         let direction = CascadeDirection(directionString) {
         cascadeDirection = direction
       }
-      return .cascade(delta: parameters.getDouble(0) ?? 0.02, direction: cascadeDirection, delayMatchedViews:parameters.getBool(2) ?? false)
+      return .cascade(delta: parameters.getDouble(0) ?? 0.02, direction: cascadeDirection, animationDelayUntilMatchedViews:parameters.getBool(2) ?? false)
     case "source":
       if let motionIdentifier = parameters.get(0)?.name {
-        return .source(motionIdentifier: motionIdentifier)
+        return .motionIdentifier(motionIdentifier)
       }
     case "useGlobalCoordinateSpace":
       return .useGlobalCoordinateSpace

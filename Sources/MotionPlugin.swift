@@ -47,18 +47,18 @@ open class MotionPlugin: NSObject, MotionPreprocessor, MotionAnimator {
 
   /**
    Called before any animation.
-   Override this method when you want to preprocess modifiers for views
+   Override this method when you want to preprocess transitions for views
    - Parameters:
-       - context: object holding all parsed and changed modifiers,
+       - context: object holding all parsed and changed transitions,
        - fromViews: A flattened list of all views from source ViewController
        - toViews: A flattened list of all views from destination ViewController
 
-   To check a view's modifiers:
+   To check a view's transitions:
 
        context[view]
        context[view, "modifierName"]
 
-   To set a view's modifiers:
+   To set a view's transitions:
 
        context[view] = [("modifier1", ["parameter1"]), ("modifier2", [])]
        context[view, "modifier1"] = ["parameter1", "parameter2"]
@@ -69,7 +69,7 @@ open class MotionPlugin: NSObject, MotionPreprocessor, MotionAnimator {
   /**
    - Returns: return true if the plugin can handle animating the view.
    - Parameters:
-       - context: object holding all parsed and changed modifiers,
+       - context: object holding all parsed and changed transitions,
        - view: the view to check whether or not the plugin can handle the animation
        - isAppearing: true if the view is isAppearing(i.e. a view in destination ViewController)
    If return true, Motion won't animate and won't let any other plugins animate this view.
@@ -82,7 +82,7 @@ open class MotionPlugin: NSObject, MotionPreprocessor, MotionAnimator {
 
    Note: views in `fromViews` & `toViews` are hidden already. Unhide then if you need to take snapshots.
    - Parameters:
-       - context: object holding all parsed and changed modifiers,
+       - context: object holding all parsed and changed transitions,
        - fromViews: A flattened list of all views from source ViewController (filtered by `canAnimate`)
        - toViews: A flattened list of all views from destination ViewController (filtered by `canAnimate`)
    - Returns: The duration needed to complete the animation
@@ -121,7 +121,7 @@ open class MotionPlugin: NSObject, MotionPreprocessor, MotionAnimator {
   /**
    For supporting interactive animation only.
 
-   This method is called when user wants to override animation modifiers during an interactive animation
+   This method is called when user wants to override animation transitions during an interactive animation
 
    - Parameters:
        - state: the target state to override

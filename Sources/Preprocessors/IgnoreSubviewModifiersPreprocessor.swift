@@ -28,37 +28,54 @@
 
 import UIKit
 
-class IgnoreSubviewModifiersPreprocessor: MotionPreprocessor {
+class IgnoreSubviewTransitionsPreprocessor: MotionPreprocessor {
     /// A reference to a MotionContext.
     weak var context: MotionContext!
     
+    /**
+     Processes the transitionary views.
+     - Parameter fromViews: An Array of UIViews.
+     - Parameter toViews: An Array of UIViews.
+     */
     func process(fromViews: [UIView], toViews: [UIView]) {
-    process(views:fromViews)
-    process(views:toViews)
-  }
+        process(views:fromViews)
+        process(views:toViews)
+    }
 
-  func process(views: [UIView]) {
-    for view in views {
-      guard let recursive = context[view]?.ignoreSubviewTransitions else { continue }
-      var parentView = view
-      if view is UITableView, let wrapperView = view.subviews.get(0) {
-        parentView = wrapperView
-      }
+    /**
+     Process an Array of views for the cascade animation.
+     - Parameter views: An Array of UIViews.
+     */
+    func process(views: [UIView]) {
+        for v in views {
+            guard let recursive = context[v]?.ignoreSubviewTransitions else {
+                continue
+            }
+            
+            let parentView = v is UITableView ? v.subviews.get(0) ?? v : v
 
-      if recursive {
-        cleanSubviewModifiers(parentView)
-      } else {
-        for subview in parentView.subviews {
-          context[subview] = nil
+            guard recursive else {
+                for subview in parentView.subviews {
+                    context[subview] = nil
+                }
+                
+                continue
+            }
+            
+            cleanSubviewTransitions(for: parentView)
         }
-      }
     }
-  }
+}
 
-  private func cleanSubviewModifiers(_ parentView: UIView) {
-    for view in parentView.subviews {
-      context[view] = nil
-      cleanSubviewModifiers(view)
+extension IgnoreSubviewTransitionsPreprocessor {
+    /**
+     Clears the transition for a given view's subviews.
+     - Parameter for view: A UIView.
+     */
+    fileprivate func cleanSubviewTransitions(for view: UIView) {
+        for v in view.subviews {
+            context[v] = nil
+            cleanSubviewTransitions(for: v)
+        }
     }
-  }
 }

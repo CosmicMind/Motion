@@ -520,7 +520,7 @@ extension MotionTransition {
      that appear differently than the actual view.
      In that case, use .useNormalSnapshot or .useSlowRenderSnapshot to disable the optimization.
      
-     This modifier actually does nothing by itself since .useOptimizedSnapshot is the default.
+     This transition actually does nothing by itself since .useOptimizedSnapshot is the default.
      */
     public static var useOptimizedSnapshot = MotionTransition {
         $0.snapshotType = .optimized

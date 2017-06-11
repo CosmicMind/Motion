@@ -65,7 +65,7 @@ class CascadePreprocessor: MotionPreprocessor {
     weak var context: MotionContext!
     
     /**
-     Processes the from-views and to-views.
+     Processes the transitionary views.
      - Parameter fromViews: An Array of UIViews.
      - Parameter toViews: An Array of UIViews.
      */
@@ -84,8 +84,7 @@ class CascadePreprocessor: MotionPreprocessor {
                 continue
             }
 
-            var parentView = v is UITableView ? v.subviews.get(0) ?? v : v
-
+            let parentView = v is UITableView ? v.subviews.get(0) ?? v : v
             let sortedSubviews = parentView.subviews.sorted(by: direction.comparator)
 
             let initialDelay = context[v]!.delay

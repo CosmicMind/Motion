@@ -188,36 +188,7 @@ class TransitionPreprocessor: MotionPreprocessor {
     }
 
     /**
-     Shifts the transition by a given size. 
-     - Parameter direction: A MotionTransitionType.Direction.
-     - Parameter isAppearing: A boolean indicating whether it is appearing
-     or not. 
-     - Parameter size: An optional CGSize.
-     - Parameter transpose: A boolean indicating to change the `x` point for `y` 
-     and `y` point for `x`.
-     - Returns: A CGPoint.
-     */
-    func shift(direction: MotionTransitionType.Direction, isAppearing: Bool, size: CGSize? = nil, transpose: Bool = false) -> CGPoint {
-        let size = size ?? context.container.bounds.size
-        let point: CGPoint
-        
-        switch direction {
-        case .left, .right:
-            point = CGPoint(x: (.right == direction) == isAppearing ? -size.width : size.width, y: 0)
-    
-        case .up, .down:
-            point = CGPoint(x: 0, y: (.down == direction) == isAppearing ? -size.height : size.height)
-        }
-   
-        if transpose {
-            return CGPoint(x: point.y, y: point.x)
-        }
-        
-        return point
-    }
-
-    /**
-     Implementation for processor.
+     Processes the transitionary views.
      - Parameter fromViews: An Array of UIViews.
      - Parameter toViews: An Array of UIViews.
      */
@@ -375,5 +346,34 @@ class TransitionPreprocessor: MotionPreprocessor {
         default:
             fatalError("Not implemented")
         }
+    }
+    
+    /**
+     Shifts the transition by a given size.
+     - Parameter direction: A MotionTransitionType.Direction.
+     - Parameter isAppearing: A boolean indicating whether it is appearing
+     or not.
+     - Parameter size: An optional CGSize.
+     - Parameter transpose: A boolean indicating to change the `x` point for `y`
+     and `y` point for `x`.
+     - Returns: A CGPoint.
+     */
+    func shift(direction: MotionTransitionType.Direction, isAppearing: Bool, size: CGSize? = nil, transpose: Bool = false) -> CGPoint {
+        let size = size ?? context.container.bounds.size
+        let point: CGPoint
+        
+        switch direction {
+        case .left, .right:
+            point = CGPoint(x: (.right == direction) == isAppearing ? -size.width : size.width, y: 0)
+            
+        case .up, .down:
+            point = CGPoint(x: 0, y: (.down == direction) == isAppearing ? -size.height : size.height)
+        }
+        
+        if transpose {
+            return CGPoint(x: point.y, y: point.x)
+        }
+        
+        return point
     }
 }

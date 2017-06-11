@@ -470,7 +470,7 @@ fileprivate extension MotionController {
     /// Prepares the preprocessors.
     func preparePreprocessors() {
         preprocessors = [
-            IgnoreSubviewModifiersPreprocessor(),
+            IgnoreSubviewTransitionsPreprocessor(),
             MatchPreprocessor(),
             SourcePreprocessor(),
             CascadePreprocessor(),

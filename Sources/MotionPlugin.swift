@@ -56,12 +56,12 @@ open class MotionPlugin: NSObject, MotionPreprocessor, MotionAnimator {
    To check a view's transitions:
 
        context[view]
-       context[view, "modifierName"]
+       context[view, "transitionName"]
 
    To set a view's transitions:
 
-       context[view] = [("modifier1", ["parameter1"]), ("modifier2", [])]
-       context[view, "modifier1"] = ["parameter1", "parameter2"]
+       context[view] = [("transition1", ["parameter1"]), ("transition2", [])]
+       context[view, "transition1"] = ["parameter1", "parameter2"]
 
   */
   open func process(fromViews: [UIView], toViews: [UIView]) {}

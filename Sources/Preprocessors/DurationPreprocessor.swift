@@ -33,7 +33,7 @@ class DurationPreprocessor: MotionPreprocessor {
     weak var context: MotionContext!
     
     /**
-     Implementation for processor.
+     Processes the transitionary views.
      - Parameter fromViews: An Array of UIViews.
      - Parameter toViews: An Array of UIViews.
      */

@@ -29,31 +29,48 @@
 import UIKit
 
 public protocol MotionStringConvertible {
-  static func from(node: ExprNode) -> Self?
+    /**
+     Retrieves an instance of Self from a give ExprNode.
+     - Parameter node: An ExprNode.
+     - Returns: An optional Self.
+     */
+    static func from(node: ExprNode) -> Self?
 }
 
 extension String {
-  func parse<T: MotionStringConvertible>() -> [T]? {
-    let lexer = Lexer(input: self)
-    let parser = Parser(tokens: lexer.tokenize())
-    do {
-      let nodes = try parser.parse()
-      var results = [T]()
-      for node in nodes {
-        if let modifier = T.from(node: node) {
-          results.append(modifier)
-        } else {
-          print("\(node.name) doesn't exist in \(T.self)")
+    /**
+     Parses a string that implements the MotionStringConvertible protocol.
+     - Returns: An optional Array of Elements of type T.
+     */
+    func parse<T: MotionStringConvertible>() -> [T]? {
+        let lexer = Lexer(input: self)
+        let parser = Parser(tokens: lexer.tokenize())
+        
+        do {
+            let nodes = try parser.parse()
+            var results = [T]()
+            
+            for v in nodes {
+                if let modifier = T.from(node: v) {
+                    results.append(modifier)
+                } else {
+                    print("\(v.name) doesn't exist in \(T.self)")
+                }
+            }
+            
+            return results
+        } catch let error {
+            print("failed to parse \"\(self)\", error: \(error)")
         }
-      }
-      return results
-    } catch let error {
-      print("failed to parse \"\(self)\", error: \(error)")
+        
+        return nil
     }
-    return nil
-  }
 
-  func parseOne<T: MotionStringConvertible>() -> T? {
-    return parse()?.last
-  }
+    /**
+     Retrieves a single instance of a token.
+     - Returns: An optional Element ot type T.
+    */
+    func parseOne<T: MotionStringConvertible>() -> T? {
+        return parse()?.last
+    }
 }

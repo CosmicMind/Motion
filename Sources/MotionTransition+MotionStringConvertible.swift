@@ -28,7 +28,7 @@
 
 import UIKit
 
-/// used to construct MotionTransition from motionModifierString
+/// used to construct MotionTransition from motionTransitionsString
 extension MotionTransition: MotionStringConvertible {
   public static func from(node: ExprNode) -> MotionTransition? {
     let name: String = node.name

@@ -45,32 +45,49 @@ class DurationPreprocessor: MotionPreprocessor {
         setDurationForInfiniteDuration(views: toViews, duration: maxDuration)
     }
 
-  func optimizedDurationFor(view: UIView) -> TimeInterval {
-    let targetState = context[view]!
-    return view.optimizedDuration(fromPosition: context.container.convert(view.layer.position, from: view.superview),
-                                  toPosition: targetState.position,
-                                  size: targetState.size,
-                                  transform: targetState.transform)
-  }
-
-  func applyOptimizedDurationIfNoDuration(views: [UIView]) -> TimeInterval {
-    var maxDuration: TimeInterval = 0
-    for view in views where context[view] != nil {
-      if context[view]?.duration == nil {
-        context[view]!.duration = optimizedDurationFor(view: view)
-      }
-      if context[view]!.duration! == .infinity {
-        maxDuration = max(maxDuration, optimizedDurationFor(view: view))
-      } else {
-        maxDuration = max(maxDuration, context[view]!.duration!)
-      }
+    /**
+     Retrieves the optimized duration for a given UIView.
+     - Parameter for view: A UIView.
+     - Returns: A TimeInterval.
+     */
+    func optimizedDuration(for view: UIView) -> TimeInterval {
+        let v = context[view]!
+        
+        return view.optimizedDuration(fromPosition: context.container.convert(view.layer.position, from: view.superview),
+                                        toPosition: v.position,
+                                              size: v.size,
+                                         transform: v.transform)
     }
-    return maxDuration
-  }
 
-  func setDurationForInfiniteDuration(views: [UIView], duration: TimeInterval) {
-    for view in views where context[view]?.duration == .infinity {
-      context[view]!.duration = duration
+    /**
+     Applies the optimized duration for an Array of UIViews.
+     - Parameter views: An Array of UIViews.
+     - Returns: A TimeInterval.
+    */
+    func applyOptimizedDurationIfNoDuration(views: [UIView]) -> TimeInterval {
+        var d: TimeInterval = 0
+        
+        for v in views where nil != context[v] {
+            if nil == context[v]?.duration {
+                context[v]!.duration = optimizedDuration(for: v)
+            }
+            
+            d = .infinity == context[v]!.duration! ?
+                    max(d, optimizedDuration(for: v)) :
+                    max(d, context[v]!.duration!)
+        }
+        
+        return d
     }
-  }
+
+    /**
+     Sets the duration if the duration of a transition is set to `.infinity`.
+     - Parameter views: An Array of UIViews.
+     - Parameter duration: A TimeInterval.
+     */
+    func setDurationForInfiniteDuration(views: [UIView], duration: TimeInterval) {
+        for v in views where .infinity == context[v]?.duration {
+            context[v]!.duration = duration
+        }
+    }
 }

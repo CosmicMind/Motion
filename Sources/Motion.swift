@@ -225,7 +225,7 @@ public extension Motion {
      root-view's motionTransitions during the transition.
      - Parameter animation: A MotionTransitionType.
      */
-    func setDefaultAnimationForNextTransition(_ animation: MotionTransitionType) {
+    func setAnimationForNextTransition(_ animation: MotionTransitionType) {
         defaultAnimation = animation
     }
 

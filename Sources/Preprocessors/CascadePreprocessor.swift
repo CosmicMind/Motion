@@ -1,5 +1,3 @@
-//
-//  CascadeEffect.swift
 /*
  * The MIT License (MIT)
  *

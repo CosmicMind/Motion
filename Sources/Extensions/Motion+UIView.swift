@@ -115,17 +115,6 @@ public extension UIView {
         }
     }
 
-    /// Used for Storyboards, allows a string to be converted into MotionTransitions.
-    @IBInspectable
-    public var motionTransitionsString: String? {
-        get {
-            fatalError("Reverse lookup is not supported")
-        }
-        set(value) {
-            motionTransitions = value?.parse()
-        }
-    }
-    
     /// Computes the rotate of the view.
     var motionRotationAngle: CGFloat {
         get {

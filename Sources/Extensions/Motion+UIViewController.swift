@@ -84,16 +84,6 @@ extension UIViewController {
         }
     }
     
-    @IBInspectable
-    public var motionModalTransitionTypeString: String? {
-        get {
-            return associatedInstance.modalTransitionType.label
-        }
-        set(value) {
-            associatedInstance.modalTransitionType = value?.parseOne() ?? .auto
-        }
-    }
-
     /// used for .overFullScreen presentation
     internal var motionStoredSnapshot: UIView? {
         get {
@@ -178,17 +168,6 @@ extension UINavigationController {
             associatedInstance.navigationTransitionType = value
         }
     }
-    
-    /// A String representation for the motionNavigationTransitionType.
-    @IBInspectable
-    public var motionNavigationTransitionTypeString: String? {
-        get {
-            return associatedInstance.navigationTransitionType.label
-        }
-        set(value) {
-            associatedInstance.navigationTransitionType = value?.parseOne() ?? .auto
-        }
-    }
 }
 
 extension UITabBarController {
@@ -199,16 +178,6 @@ extension UITabBarController {
         }
         set(value) {
             associatedInstance.tabBarTransitionType = value
-        }
-    }
-    
-    /// A String representation for the motionTabBarTransitionTypeString.
-    @IBInspectable
-    public var motionTabBarTransitionTypeString: String? {
-        get {
-            return associatedInstance.tabBarTransitionType.label }
-        set(value) {
-            associatedInstance.tabBarTransitionType = value?.parseOne() ?? .auto
         }
     }
 }

@@ -29,30 +29,25 @@
 import UIKit
 
 public enum MotionTransitionType {
-  public enum Direction: MotionStringConvertible {
-    case left, right, up, down
-    public static func from(node: ExprNode) -> Direction? {
-      switch node.name {
-      case "left": return .left
-      case "right": return .right
-      case "up": return .up
-      case "down": return .down
-      default: return nil
-      }
+    public enum Direction {
+        case left
+        case right
+        case up
+        case down
     }
-  }
-  case auto
-  case push(direction: Direction)
-  case pull(direction: Direction)
-  case cover(direction: Direction)
-  case uncover(direction: Direction)
-  case slide(direction: Direction)
-  case zoomSlide(direction: Direction)
-  case pageIn(direction: Direction)
-  case pageOut(direction: Direction)
-  case fade
-  case zoom
-  case zoomOut
+    
+    case auto
+    case push(direction: Direction)
+    case pull(direction: Direction)
+    case cover(direction: Direction)
+    case uncover(direction: Direction)
+    case slide(direction: Direction)
+    case zoomSlide(direction: Direction)
+    case pageIn(direction: Direction)
+    case pageOut(direction: Direction)
+    case fade
+    case zoom
+    case zoomOut
 
   indirect case selectBy(presenting: MotionTransitionType, dismissing: MotionTransitionType)
 
@@ -149,63 +144,6 @@ public enum MotionTransitionType {
       return ".\(associated.label ?? "")(.\(associated.value))"
     }
     return ".\(self)"
-  }
-}
-
-extension MotionTransitionType: MotionStringConvertible {
-  public static func from(node: ExprNode) -> MotionTransitionType? {
-    let name: String = node.name
-    let parameters: [ExprNode] = (node as? CallNode)?.arguments ?? []
-
-    switch name {
-    case "auto":
-      return .auto
-    case "push":
-      if let node = parameters.get(0), let direction = Direction.from(node: node) {
-        return .push(direction: direction)
-      }
-    case "pull":
-      if let node = parameters.get(0), let direction = Direction.from(node: node) {
-        return .pull(direction: direction)
-      }
-    case "cover":
-      if let node = parameters.get(0), let direction = Direction.from(node: node) {
-        return .cover(direction: direction)
-      }
-    case "uncover":
-      if let node = parameters.get(0), let direction = Direction.from(node: node) {
-        return .uncover(direction: direction)
-      }
-    case "slide":
-      if let node = parameters.get(0), let direction = Direction.from(node: node) {
-        return .slide(direction: direction)
-      }
-    case "zoomSlide":
-      if let node = parameters.get(0), let direction = Direction.from(node: node) {
-        return .zoomSlide(direction: direction)
-      }
-    case "pageIn":
-      if let node = parameters.get(0), let direction = Direction.from(node: node) {
-        return .pageIn(direction: direction)
-      }
-    case "pageOut":
-      if let node = parameters.get(0), let direction = Direction.from(node: node) {
-        return .pageOut(direction: direction)
-      }
-    case "fade": return .fade
-    case "zoom": return .zoom
-    case "zoomOut": return .zoomOut
-    case "selectBy":
-      if let presentingNode = parameters.get(0),
-        let presenting = MotionTransitionType.from(node: presentingNode),
-        let dismissingNode = parameters.get(1),
-        let dismissing = MotionTransitionType.from(node: dismissingNode) {
-        return .selectBy(presenting: presenting, dismissing: dismissing)
-      }
-    case "none": return .none
-    default: break
-    }
-    return nil
   }
 }
 

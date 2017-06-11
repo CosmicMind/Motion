@@ -32,64 +32,90 @@ class SourcePreprocessor: MotionPreprocessor {
     /// A reference to a MotionContext.
     weak var context: MotionContext!
 
-func process(fromViews: [UIView], toViews: [UIView]) {
-    for fv in fromViews {
-      guard let id = context[fv]?.motionIdentifier,
-            let tv = context.destinationView(for: id) else { continue }
-      prepareFor(view: fv, targetView: tv)
-    }
-    for tv in toViews {
-      guard let id = context[tv]?.motionIdentifier,
-            let fv = context.sourceView(for: id) else { continue }
-      prepareFor(view: tv, targetView: fv)
-    }
-  }
-
-  func prepareFor(view: UIView, targetView: UIView) {
-    let targetPos = context.container.convert(targetView.layer.position, from: targetView.superview!)
-
-    var state = context[view]!
-
-    // use global coordinate space since over target position is converted from the global container
-    state.coordinateSpace = .global
-
-    // remove incompatible options
-    state.position = targetPos
-    state.transform = nil
-    state.size = nil
-    state.cornerRadius = nil
-
-    if view.bounds.size != targetView.bounds.size {
-      state.size = targetView.bounds.size
-    }
-    if view.layer.cornerRadius != targetView.layer.cornerRadius {
-      state.cornerRadius = targetView.layer.cornerRadius
-    }
-    if view.layer.transform != targetView.layer.transform {
-      state.transform = targetView.layer.transform
-    }
-    if view.layer.shadowColor != targetView.layer.shadowColor {
-      state.shadowColor = targetView.layer.shadowColor
-    }
-    if view.layer.shadowOpacity != targetView.layer.shadowOpacity {
-      state.shadowOpacity = targetView.layer.shadowOpacity
-    }
-    if view.layer.shadowOffset != targetView.layer.shadowOffset {
-      state.shadowOffset = targetView.layer.shadowOffset
-    }
-    if view.layer.shadowRadius != targetView.layer.shadowRadius {
-      state.shadowRadius = targetView.layer.shadowRadius
-    }
-    if view.layer.shadowPath != targetView.layer.shadowPath {
-      state.shadowPath = targetView.layer.shadowPath
-    }
-    if view.layer.contentsRect != targetView.layer.contentsRect {
-      state.contentsRect = targetView.layer.contentsRect
-    }
-    if view.layer.contentsScale != targetView.layer.contentsScale {
-      state.contentsScale = targetView.layer.contentsScale
+    /**
+     Processes the transitionary views.
+     - Parameter fromViews: An Array of UIViews.
+     - Parameter toViews: An Array of UIViews.
+     */
+    func process(fromViews: [UIView], toViews: [UIView]) {
+        for fv in fromViews {
+            guard let i = context[fv]?.motionIdentifier, let tv = context.destinationView(for: i) else {
+                continue
+            }
+            
+            prepare(view: fv, for: tv)
+        }
+        
+        for tv in toViews {
+            guard let i = context[tv]?.motionIdentifier, let fv = context.sourceView(for: i) else {
+                continue
+            }
+            
+            prepare(view: tv, for: fv)
+        }
     }
 
-    context[view] = state
-  }
+    /**
+     Prepares a given view for a target view.
+     - Parameter view: A UIView.
+     - Parameter for targetView: A UIView.
+     */
+    func prepare(view: UIView, for targetView: UIView) {
+        let targetPos = context.container.convert(targetView.layer.position, from: targetView.superview!)
+        var state = context[view]!
+
+        /**
+         Use global coordinate space since over target position is 
+         converted from the global container
+         */
+        state.coordinateSpace = .global
+
+        // Remove incompatible options.
+        state.position = targetPos
+        state.transform = nil
+        state.size = nil
+        state.cornerRadius = nil
+
+        if view.bounds.size != targetView.bounds.size {
+            state.size = targetView.bounds.size
+        }
+
+        if view.layer.cornerRadius != targetView.layer.cornerRadius {
+            state.cornerRadius = targetView.layer.cornerRadius
+        }
+        
+        if view.layer.transform != targetView.layer.transform {
+            state.transform = targetView.layer.transform
+        }
+        
+        if view.layer.shadowColor != targetView.layer.shadowColor {
+            state.shadowColor = targetView.layer.shadowColor
+        }
+        
+        if view.layer.shadowOpacity != targetView.layer.shadowOpacity {
+            state.shadowOpacity = targetView.layer.shadowOpacity
+        }
+        
+        if view.layer.shadowOffset != targetView.layer.shadowOffset {
+            state.shadowOffset = targetView.layer.shadowOffset
+        }
+        
+        if view.layer.shadowRadius != targetView.layer.shadowRadius {
+            state.shadowRadius = targetView.layer.shadowRadius
+        }
+        
+        if view.layer.shadowPath != targetView.layer.shadowPath {
+            state.shadowPath = targetView.layer.shadowPath
+        }
+        
+        if view.layer.contentsRect != targetView.layer.contentsRect {
+            state.contentsRect = targetView.layer.contentsRect
+        }
+        
+        if view.layer.contentsScale != targetView.layer.contentsScale {
+            state.contentsScale = targetView.layer.contentsScale
+        }
+
+        context[view] = state
+    }
 }

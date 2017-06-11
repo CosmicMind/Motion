@@ -36,6 +36,7 @@ public enum CascadeDirection {
     case radial(center:CGPoint)
     case inverseRadial(center:CGPoint)
   
+    /// Based on the cascade direction a comparator is set.
     var comparator: (UIView, UIView) -> Bool {
         switch self {
         case .topToBottom:
@@ -63,42 +64,52 @@ class CascadePreprocessor: MotionPreprocessor {
     /// A reference to a MotionContext.
     weak var context: MotionContext!
     
+    /**
+     Processes the from-views and to-views.
+     - Parameter fromViews: An Array of UIViews.
+     - Parameter toViews: An Array of UIViews.
+     */
     func process(fromViews: [UIView], toViews: [UIView]) {
-    process(views:fromViews)
-    process(views:toViews)
-  }
-
-  func process(views: [UIView]) {
-    for view in views {
-      guard let (deltaTime, direction, delayMatchedViews) = context[view]?.cascade else { continue }
-
-      var parentView = view
-      if view is UITableView, let wrapperView = view.subviews.get(0) {
-        parentView = wrapperView
-      }
-
-      let sortedSubviews = parentView.subviews.sorted(by: direction.comparator)
-
-      let initialDelay = context[view]!.delay
-      let finalDelay = TimeInterval(sortedSubviews.count) * deltaTime + initialDelay
-
-      for (i, subview) in sortedSubviews.enumerated() {
-        let delay = TimeInterval(i) * deltaTime + initialDelay
-
-        func applyDelay(view: UIView) {
-          if context.transitionPairedView(for: view) == nil {
-            context[view]?.delay = delay
-          } else if delayMatchedViews, let paired = context.transitionPairedView(for: view) {
-            context[view]?.delay = finalDelay
-            context[paired]?.delay = finalDelay
-          }
-          for subview in view.subviews {
-            applyDelay(view: subview)
-          }
-        }
-
-        applyDelay(view: subview)
-      }
+        process(views: fromViews)
+        process(views: toViews)
     }
-  }
+
+    /**
+     Process an Array of views for the cascade animation.
+     - Parameter views: An Array of UIViews.
+     */
+    func process(views: [UIView]) {
+        for v in views {
+            guard let (deltaTime, direction, delayMatchedViews) = context[v]?.cascade else {
+                continue
+            }
+
+            var parentView = v is UITableView ? v.subviews.get(0) ?? v : v
+
+            let sortedSubviews = parentView.subviews.sorted(by: direction.comparator)
+
+            let initialDelay = context[v]!.delay
+            let finalDelay = TimeInterval(sortedSubviews.count) * deltaTime + initialDelay
+
+            for (i, subview) in sortedSubviews.enumerated() {
+                let delay = TimeInterval(i) * deltaTime + initialDelay
+
+                func applyDelay(view: UIView) {
+                    if context.transitionPairedView(for: view) == nil {
+                        context[view]?.delay = delay
+                    
+                    } else if delayMatchedViews, let paired = context.transitionPairedView(for: view) {
+                        context[view]?.delay = finalDelay
+                        context[paired]?.delay = finalDelay
+                    }
+                    
+                    for subview in view.subviews {
+                        applyDelay(view: subview)
+                    }
+                }
+
+                applyDelay(view: subview)
+            }
+        }
+    }
 }

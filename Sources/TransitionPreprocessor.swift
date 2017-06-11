@@ -173,15 +173,15 @@ public enum MotionTransitionType {
 }
 
 class TransitionPreprocessor: MotionPreprocessor {
-    /// A reference to a MotionContext instance.
+    /// A reference to a MotionContext.
     weak var context: MotionContext!
     
-    /// A reference to a Motion instance.
+    /// A reference to a Motion.
     weak var motion: Motion?
 
     /**
      An initializer that accepts a given Motion instance.
-     - Parameter motion: A Motion instance.
+     - Parameter motion: A Motion.
      */
     init(motion: Motion) {
         self.motion = motion

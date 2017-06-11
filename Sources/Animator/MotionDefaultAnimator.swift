@@ -81,7 +81,7 @@ extension MotionDefaultAnimator {
     }
     
     /**
-     Animates the from-views to the to-views.
+     Animates the fromViews to the toViews.
      - Parameter fromViews: An Array of UIViews.
      - Parameter toViews: An Array of UIViews.
      - Returns: A TimeInterval.

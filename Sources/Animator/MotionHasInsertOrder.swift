@@ -27,6 +27,6 @@
  */
 
 internal protocol MotionHasInsertOrder: class {
-    /// A boolean indicating whether to insert the to-view first or not.
+    /// A boolean indicating whether to insert the toView first or not.
     var insertToViewFirst: Bool { get set }
 }

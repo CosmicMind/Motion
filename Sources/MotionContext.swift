@@ -70,7 +70,7 @@ public class MotionContext {
 
 internal extension MotionContext {
     /**
-     Sets the from-views and to-views within the transition context.
+     Sets the fromViews and toViews within the transition context.
      - Parameter fromViews: An Array of UIViews.
      - Parameter toViews: An Array of UIViews.
      */

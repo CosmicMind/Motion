@@ -115,7 +115,7 @@ public class MotionController: NSObject {
     /// An Array of MotionPlugins used during a transition.
     internal var plugins: [MotionPlugin]!
 
-    /// The matching from-views to to-views based on the motionIdentifier value.
+    /// The matching fromViews to toViews based on the motionIdentifier value.
     internal var transitionPairs: [(fromViews: [UIView], toViews: [UIView])]!
 
     /// Plugins that are enabled during the transition.
@@ -320,7 +320,7 @@ internal extension MotionController {
         preparePlugins()
     }
     
-    /// Prepares the transition from-view & to-view pairs.
+    /// Prepares the transition fromView & toView pairs.
     func prepareTransitionPairs() {
         guard isTransitioning else {
             fatalError()

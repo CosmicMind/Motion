@@ -174,7 +174,7 @@ public class Motion: MotionController {
      */
     internal var forceNonInteractive = false
 
-    /// Inserts the to-views first.
+    /// Inserts the toViews first.
     internal var insertToViewFirst = false
     
     /// Indicates whether a UINavigationController is transitioning.
@@ -198,12 +198,12 @@ public class Motion: MotionController {
         return !isContainerController && (.overFullScreen == toViewController!.modalPresentationStyle || .overCurrentContext == toViewController!.modalPresentationStyle)
     }
 
-    /// A reference to the from-view, fromViewController.view.
+    /// A reference to the fromView, fromViewController.view.
     internal var fromView: UIView {
         return fromViewController!.view
     }
     
-    /// A reference to the to-view, toViewController.view.
+    /// A reference to the toView, toViewController.view.
     internal var toView: UIView {
         return toViewController!.view
     }

@@ -190,12 +190,20 @@ public class Motion: MotionController {
     
     /// Indicates whether the from view controller is full screen.
     internal var fromOverFullScreen: Bool {
-        return !isContainerController && (.overFullScreen == fromViewController!.modalPresentationStyle || .overCurrentContext == fromViewController!.modalPresentationStyle)
+        guard let v = fromViewController else {
+            return false
+        }
+        
+        return !isContainerController && (.overFullScreen == v.modalPresentationStyle || .overCurrentContext == v.modalPresentationStyle)
     }
     
     /// Indicates whether the to view controller is full screen.
     internal var toOverFullScreen: Bool {
-        return !isContainerController && (.overFullScreen == toViewController!.modalPresentationStyle || .overCurrentContext == toViewController!.modalPresentationStyle)
+        guard let v = toViewController else {
+            return false
+        }
+        
+        return !isContainerController && (.overFullScreen == v.modalPresentationStyle || .overCurrentContext == v.modalPresentationStyle)
     }
 
     /// A reference to the fromView, fromViewController.view.

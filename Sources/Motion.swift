@@ -207,13 +207,13 @@ public class Motion: MotionController {
     }
 
     /// A reference to the fromView, fromViewController.view.
-    internal var fromView: UIView {
-        return fromViewController!.view
+    internal var fromView: UIView? {
+        return fromViewController?.view
     }
     
     /// A reference to the toView, toViewController.view.
-    internal var toView: UIView {
-        return toViewController!.view
+    internal var toView: UIView? {
+        return toViewController?.view
     }
 
     /// An initializer.
@@ -267,7 +267,11 @@ fileprivate extension Motion {
 
 internal extension Motion {
     override func animate() {
-        context.unhide(view: toView)
+        guard let tv = toView else {
+            return
+        }
+        
+        context.unhide(view: tv)
         
         updateContainerBackgroundColor()
         updateInsertOrder()
@@ -290,27 +294,34 @@ internal extension Motion {
             return
         }
         
+        guard let fv = fromView else {
+            return
+        }
+        
+        guard let tv = toView else {
+            return
+        }
         
         context.clean()
         
         if isFinished && isPresenting && toOverFullScreen {
             // finished presenting a overFullScreen VC
-            context.unhide(rootView: toView)
-            context.removeSnapshots(rootView: toView)
-            context.storeViewAlpha(rootView: fromView)
+            context.unhide(rootView: tv)
+            context.removeSnapshots(rootView: tv)
+            context.storeViewAlpha(rootView: fv)
             
             fromViewController!.motionStoredSnapshot = container
-            fromView.removeFromSuperview()
-            fromView.addSubview(c)
+            fv.removeFromSuperview()
+            fv.addSubview(c)
         } else if !isFinished && !isPresenting && fromOverFullScreen {
             // cancelled dismissing a overFullScreen VC
-            context.unhide(rootView: fromView)
-            context.removeSnapshots(rootView: fromView)
-            context.storeViewAlpha(rootView: toView)
+            context.unhide(rootView: fv)
+            context.removeSnapshots(rootView: fv)
+            context.storeViewAlpha(rootView: tv)
             
             toViewController!.motionStoredSnapshot = container
-            toView.removeFromSuperview()
-            toView.addSubview(c)
+            tv.removeFromSuperview()
+            tv.addSubview(c)
         } else {
             context.unhideAll()
             context.removeAllSnapshots()
@@ -319,15 +330,15 @@ internal extension Motion {
         
         // move fromView & toView back from our container back to the one supplied by UIKit
         if (toOverFullScreen && isFinished) || (fromOverFullScreen && !isFinished) {
-            tc.addSubview(isFinished ? fromView : toView)
+            tc.addSubview(isFinished ? fv : tv)
         }
         
-        tc.addSubview(isFinished ? toView : fromView)
+        tc.addSubview(isFinished ? tv : fv)
         
         if isPresenting != isFinished, !isContainerController {
             // only happens when present a .overFullScreen VC
             // bug: http://openradar.appspot.com/radar?id=5320103646199808
-            UIApplication.shared.keyWindow!.addSubview(isPresenting ? fromView : toView)
+            UIApplication.shared.keyWindow!.addSubview(isPresenting ? fv : tv)
         }
         
         // use temp variables to remember these values
@@ -378,7 +389,7 @@ fileprivate extension Motion {
             return
         }
         
-        fullScreenSnapshot = v.window?.snapshotView(afterScreenUpdates: true) ?? fromView.snapshotView(afterScreenUpdates: true)
+        fullScreenSnapshot = v.window?.snapshotView(afterScreenUpdates: true) ?? fromView?.snapshotView(afterScreenUpdates: true)
         (v.window ?? transitionContainer)?.addSubview(fullScreenSnapshot)
         
         if let v = fromViewController?.motionStoredSnapshot {
@@ -398,23 +409,47 @@ fileprivate extension Motion {
             return
         }
         
-        context.loadViewAlpha(rootView: toView)
-        context.loadViewAlpha(rootView: fromView)
-        v.addSubview(toView)
-        v.addSubview(fromView)
+        guard let fv = fromView else {
+            return
+        }
+        
+        guard let tv = toView else {
+            return
+        }
+        
+        context.loadViewAlpha(rootView: tv)
+        context.loadViewAlpha(rootView: fv)
+        v.addSubview(tv)
+        v.addSubview(fv)
     }
     
     /// Prepares the toView instance.
     func prepareToView() {
-        toView.frame = fromView.frame
-        toView.updateConstraints()
-        toView.setNeedsLayout()
-        toView.layoutIfNeeded()
+        guard let fv = fromView else {
+            return
+        }
+        
+        guard let tv = toView else {
+            return
+        }
+        
+        tv.frame = fv.frame
+        tv.updateConstraints()
+        tv.setNeedsLayout()
+        tv.layoutIfNeeded()
     }
     
     /// Prepares the view hierarchy.
     func prepareViewHierarchy() {
-        context.set(fromViews: fromView.flattenedViewHierarchy, toViews: toView.flattenedViewHierarchy)
+        guard let fv = fromView else {
+            return
+        }
+        
+        guard let tv = toView else {
+            return
+        }
+        
+        context.set(fromViews: fv.flattenedViewHierarchy, toViews: tv.flattenedViewHierarchy)
     }
 }
 
@@ -426,7 +461,12 @@ internal extension Motion {
     
     override func prepareTransitionPairs() {
         super.prepareTransitionPairs()
-        context.hide(view: toView)
+        
+        guard let tv = toView else {
+            return
+        }
+        
+        context.hide(view: tv)
     }
 }
 
@@ -560,7 +600,7 @@ fileprivate extension Motion {
         if let v = containerBackgroundColor {
             container?.backgroundColor = v
         } else if !toOverFullScreen && !fromOverFullScreen {
-            container?.backgroundColor = toView.backgroundColor
+            container?.backgroundColor = toView?.backgroundColor
         }
     }
     

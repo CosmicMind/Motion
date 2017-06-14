@@ -107,16 +107,16 @@ public class MotionController: NSObject {
     internal var isFinished = true
 
     /// An Array of MotionPreprocessors used during a transition.
-    internal var preprocessors: [MotionPreprocessor]!
+    internal var preprocessors: [MotionPreprocessor]?
 
     /// An Array of MotionAnimators used during a transition.
-    internal var animators: [MotionAnimator]!
+    internal var animators: [MotionAnimator]?
 
     /// An Array of MotionPlugins used during a transition.
-    internal var plugins: [MotionPlugin]!
+    internal var plugins: [MotionPlugin]?
 
     /// The matching fromViews to toViews based on the motionIdentifier value.
-    internal var transitionPairs: [(fromViews: [UIView], toViews: [UIView])]!
+    internal var transitionPairs: [(fromViews: [UIView], toViews: [UIView])]?
 
     /// Plugins that are enabled during the transition.
     internal static var enabledPlugins = [MotionPlugin.Type]()
@@ -155,16 +155,22 @@ fileprivate extension MotionController {
     /// Updates the animators.
     func updateAnimators() {
         let v = elapsedTime * totalDuration
-        for a in animators {
-            a.seek(to: v)
+        
+        animators?.forEach {
+            $0.seek(to: v)
         }
     }
     
     /// Updates the plugins.
     func updatePlugins() {
+        guard let p = plugins else {
+            return
+        }
+        
         let v = elapsedTime * totalDuration
-        for p in plugins where p.requirePerFrameCallback {
-            p.seek(to: v)
+        
+        for plugin in p where plugin.requirePerFrameCallback {
+            plugin.seek(to: v)
         }
     }
 }
@@ -240,8 +246,8 @@ public extension MotionController {
         }
         
         var v: TimeInterval = 0
-        for a in animators {
-            v = max(v, a.resume(at: elapsedTime * totalDuration, isReversed: false))
+        animators?.forEach {
+            v = max(v, $0.resume(at: elapsedTime * totalDuration, isReversed: false))
         }
         
         complete(after: v, isFinished: true)
@@ -264,13 +270,16 @@ public extension MotionController {
         }
         
         var v: TimeInterval = 0
-        for a in animators {
-            var t = elapsedTime
+        let et = elapsedTime
+        
+        animators?.forEach {
+            var t = et
+            
             if t < 0 {
                 t = -t
             }
             
-            v = max(v, a.resume(at: t * totalDuration, isReversed: true))
+            v = max(v, $0.resume(at: t * totalDuration, isReversed: true))
         }
         
         complete(after: v, isFinished: false)
@@ -295,8 +304,8 @@ public extension MotionController {
         let s = MotionTransitionState(transitions: transitions)
         let v = context.transitionPairedView(for: view) ?? view
         
-        for a in animators {
-            a.apply(state: s, to: v)
+        animators?.forEach {
+            $0.apply(state: s, to: v)
         }
     }
 }
@@ -328,7 +337,11 @@ internal extension MotionController {
         
         transitionPairs = [([UIView], [UIView])]()
         
-        for a in animators {
+        guard let v = animators else {
+            return
+        }
+        
+        for a in v {
             let fv = context.fromViews.filter { (view: UIView) -> Bool in
                 return a.canAnimate(view: view, isAppearing: false)
             }
@@ -337,7 +350,7 @@ internal extension MotionController {
                 return a.canAnimate(view: view, isAppearing: true)
             }
             
-            transitionPairs.append((fv, tv))
+            transitionPairs?.append((fv, tv))
         }
     }
 }
@@ -349,8 +362,12 @@ internal extension MotionController {
             fatalError()
         }
         
-        for v in preprocessors {
-            v.process(fromViews: context.fromViews, toViews: context.toViews)
+        preprocessors?.forEach { [weak self] in
+            guard let s = self else {
+                return
+            }
+            
+            $0.process(fromViews: s.context.fromViews, toViews: s.context.toViews)
         }
     }
     
@@ -363,26 +380,34 @@ internal extension MotionController {
             fatalError()
         }
         
-        for (fv, tv) in transitionPairs {
-            for view in fv {
-                context.hide(view: view)
+        transitionPairs?.forEach { [weak self] in
+            guard let s = self else {
+                return
             }
             
-            for view in tv {
-                context.hide(view: view)
+            for view in $0.fromViews {
+                s.context.hide(view: view)
+            }
+            
+            for view in $0.toViews {
+                s.context.hide(view: view)
             }
         }
         
         var t: TimeInterval = 0
         var v = false
         
-        for (i, a) in animators.enumerated() {
-            let d = a.animate(fromViews: transitionPairs[i].0, toViews: transitionPairs[i].1)
-            
-            if d == .infinity {
-                v = true
-            } else {
-                t = max(t, d)
+        if let a = animators, let tp = transitionPairs {
+            for (i, x) in a.enumerated() {
+                
+                
+                let d = x.animate(fromViews: tp[i].0, toViews: tp[i].1)
+                
+                if d == .infinity {
+                    v = true
+                } else {
+                    t = max(t, d)
+                }
             }
         }
         
@@ -423,32 +448,33 @@ internal extension MotionController {
      has completed.
     */
     func complete(isFinished: Bool) {
+        defer {
+            
+            animators?.forEach {
+                $0.clean()
+            }
+            
+            transitionContainer?.isUserInteractionEnabled = true
+            
+            transitionPairs = nil
+            transitionObservers = nil
+            transitionContainer = nil
+            completionCallback = nil
+            container = nil
+            preprocessors = nil
+            animators = nil
+            plugins = nil
+            context = nil
+            beginTime = nil
+            elapsedTime = 0
+            totalDuration = 0
+        }
+        
         guard isTransitioning else {
-            fatalError()
+            return
         }
         
-        for a in animators {
-            a.clean()
-        }
-        
-        transitionContainer?.isUserInteractionEnabled = true
-        
-        let completion = completionCallback
-        
-        transitionPairs = nil
-        transitionObservers = nil
-        transitionContainer = nil
-        completionCallback = nil
-        container = nil
-        preprocessors = nil
-        animators = nil
-        plugins = nil
-        context = nil
-        beginTime = nil
-        elapsedTime = 0
-        totalDuration = 0
-        
-        completion?(isFinished)
+        completionCallback?(isFinished)
     }
 }
 
@@ -485,7 +511,7 @@ fileprivate extension MotionController {
             DurationPreprocessor()
         ]
         
-        for v in preprocessors {
+        for v in preprocessors! {
             v.context = context
         }
     }
@@ -497,10 +523,10 @@ fileprivate extension MotionController {
         ]
         
         if #available(iOS 10, tvOS 10, *) {
-            animators.append(MotionDefaultAnimator<MotionViewPropertyViewContext>())
+            animators?.append(MotionDefaultAnimator<MotionViewPropertyViewContext>())
         }
         
-        for v in animators {
+        for v in animators! {
             v.context = context
         }
     }
@@ -511,9 +537,9 @@ fileprivate extension MotionController {
             return $0.init()
         })
         
-        for plugin in plugins {
-            preprocessors.append(plugin)
-            animators.append(plugin)
+        for plugin in plugins! {
+            preprocessors?.append(plugin)
+            animators?.append(plugin)
         }
     }
 }
@@ -553,8 +579,12 @@ internal extension MotionController {
 internal extension MotionController {
     // should call this after `prepareTransitionPairs` & before `processContext`
     func insert<T>(preprocessor: MotionPreprocessor, before: T.Type) {
-        let v = preprocessors.index { $0 is T } ?? preprocessors.count
+        guard var v = preprocessors else {
+            return
+        }
+        
+        let i = v.index { $0 is T } ?? v.count
         preprocessor.context = context
-        preprocessors.insert(preprocessor, at: v)
+        v.insert(preprocessor, at: i)
     }
 }

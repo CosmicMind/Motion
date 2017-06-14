@@ -610,7 +610,11 @@ fileprivate extension Motion {
             insertToViewFirst = true
         }
         
-        for v in animators {
+        guard let a = animators else {
+            return
+        }
+        
+        for v in a {
             (v as? MotionHasInsertOrder)?.insertToViewFirst = insertToViewFirst
         }
     }

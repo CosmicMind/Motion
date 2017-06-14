@@ -107,16 +107,16 @@ public class MotionController: NSObject {
     internal var isFinished = true
 
     /// An Array of MotionPreprocessors used during a transition.
-    internal var preprocessors: [MotionPreprocessor]!
-
+    internal fileprivate(set) lazy var preprocessors = [MotionPreprocessor]()
+    
     /// An Array of MotionAnimators used during a transition.
-    internal var animators: [MotionAnimator]!
-
+    internal fileprivate(set) lazy var animators = [MotionAnimator]()
+    
     /// An Array of MotionPlugins used during a transition.
-    internal var plugins: [MotionPlugin]!
-
+    internal fileprivate(set) lazy var plugins = [MotionPlugin]()
+    
     /// The matching fromViews to toViews based on the motionIdentifier value.
-    internal var transitionPairs: [(fromViews: [UIView], toViews: [UIView])]!
+    internal fileprivate(set) lazy var transitionPairs = [(fromViews: [UIView], toViews: [UIView])]()
 
     /// Plugins that are enabled during the transition.
     internal static var enabledPlugins = [MotionPlugin.Type]()
@@ -328,8 +328,6 @@ internal extension MotionController {
             return
         }
         
-        transitionPairs = [([UIView], [UIView])]()
-        
         for a in animators {
             let fv = context.fromViews.filter { (view: UIView) -> Bool in
                 return a.canAnimate(view: view, isAppearing: false)
@@ -351,8 +349,8 @@ internal extension MotionController {
             return
         }
         
-        for v in preprocessors {
-            v.process(fromViews: context.fromViews, toViews: context.toViews)
+        for x in preprocessors {
+            x.process(fromViews: context.fromViews, toViews: context.toViews)
         }
     }
     
@@ -439,18 +437,18 @@ internal extension MotionController {
         
         let completion = completionCallback
         
-        transitionPairs = nil
         transitionObservers = nil
         transitionContainer = nil
         completionCallback = nil
         container = nil
-        preprocessors = nil
-        animators = nil
-        plugins = nil
         context = nil
         beginTime = nil
         elapsedTime = 0
         totalDuration = 0
+        preprocessors.removeAll()
+        animators.removeAll()
+        plugins.removeAll()
+        transitionPairs.removeAll()
         
         completion?(isFinished)
     }
@@ -481,24 +479,23 @@ fileprivate extension MotionController {
     
     /// Prepares the preprocessors.
     func preparePreprocessors() {
-        preprocessors = [
+        for x in [
             IgnoreSubviewTransitionsPreprocessor(),
             MatchPreprocessor(),
             SourcePreprocessor(),
             CascadePreprocessor(),
-            DurationPreprocessor()
-        ]
+            DurationPreprocessor()] as [MotionPreprocessor] {
+                preprocessors.append(x)
+        }
         
-        for v in preprocessors {
-            v.context = context
+        for x in preprocessors {
+            x.context = context
         }
     }
     
     /// Prepares the animators.
     func prepareAnimators() {
-        animators = [
-            MotionDefaultAnimator<MotionCoreAnimationViewContext>()
-        ]
+        animators.append(MotionDefaultAnimator<MotionCoreAnimationViewContext>())
         
         if #available(iOS 10, tvOS 10, *) {
             animators.append(MotionDefaultAnimator<MotionViewPropertyViewContext>())
@@ -511,9 +508,11 @@ fileprivate extension MotionController {
     
     /// Prepares the plugins.
     func preparePlugins() {
-        plugins = Motion.enabledPlugins.map({
+        for x in Motion.enabledPlugins.map({
             return $0.init()
-        })
+        }) {
+            plugins.append(x)
+        }
         
         for plugin in plugins {
             preprocessors.append(plugin)

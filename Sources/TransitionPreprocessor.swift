@@ -232,7 +232,7 @@ class TransitionPreprocessor: MotionPreprocessor {
         }
 
         if case .auto = defaultAnimation {
-            if animators!.contains(where: { $0.canAnimate(view: tv, isAppearing: true) || $0.canAnimate(view: fv, isAppearing: false) }) {
+            if animators.contains(where: { $0.canAnimate(view: tv, isAppearing: true) || $0.canAnimate(view: fv, isAppearing: false) }) {
                 defaultAnimation = .none
           
             } else if isNavigationController {

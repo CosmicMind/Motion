@@ -154,7 +154,7 @@ public class Motion: MotionController {
   
     /**
      A UIViewControllerContextTransitioning object provided by UIKit, which
-     might be nil when isTransitioning. This happens when calling motion_replaceViewController
+     might be nil when isTransitioning. This happens when calling motionReplaceViewController
      */
     internal weak var transitionContext: UIViewControllerContextTransitioning?
 
@@ -169,7 +169,7 @@ public class Motion: MotionController {
     
     /**
      By default, Motion will always appear to be interactive to UIKit. This forces it to appear non-interactive.
-     Used when doing a motion_replaceViewController within a UINavigationController, to fix a bug with
+     Used when doing a motionReplaceViewController within a UINavigationController, to fix a bug with
      UINavigationController.setViewControllers not able to handle interactive transitions.
      */
     internal var forceNonInteractive = false

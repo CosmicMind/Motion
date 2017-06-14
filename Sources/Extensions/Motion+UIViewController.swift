@@ -189,37 +189,37 @@ extension UIViewController {
      is contained inside a navigationController
      */
     @IBAction
-    public func motion_dismissViewController() {
-        if let navigationController = navigationController, navigationController.viewControllers.first != self {
-            navigationController.popViewController(animated: true)
+    public func motionDismissViewController() {
+        if let v = navigationController, self != v.viewControllers.first {
+            v.popViewController(animated: true)
         } else {
-            dismiss(animated: true, completion: nil)
+            dismiss(animated: true)
         }
     }
     
     /// Unwind to the root view controller using Motion.
     @IBAction
-    public func motion_unwindToRootViewController() {
-        motion_unwindToViewController { $0.presentingViewController == nil }
+    public func motionUnwindToRootViewController() {
+        motionUnwindToViewController { $0.presentingViewController == nil }
     }
     
     /// Unwind to a specific view controller using Motion.
-    public func motion_unwindToViewController(_ toViewController: UIViewController) {
-        motion_unwindToViewController { $0 == toViewController }
+    public func motionUnwindToViewController(_ toViewController: UIViewController) {
+        motionUnwindToViewController { $0 == toViewController }
     }
     
     /// Unwind to a view controller that responds to the given selector using Motion.
-    public func motion_unwindToViewController(withSelector: Selector) {
-        motion_unwindToViewController { $0.responds(to: withSelector) }
+    public func motionUnwindToViewController(withSelector: Selector) {
+        motionUnwindToViewController { $0.responds(to: withSelector) }
     }
     
     /// Unwind to a view controller with given class using Motion
-    public func motion_unwindToViewController(withClass: AnyClass) {
-        motion_unwindToViewController { $0.isKind(of: withClass) }
+    public func motionUnwindToViewController(withClass: AnyClass) {
+        motionUnwindToViewController { $0.isKind(of: withClass) }
     }
     
     /// Unwind to a view controller that the matchBlock returns true on.
-    public func motion_unwindToViewController(withMatchBlock: (UIViewController) -> Bool) {
+    public func motionUnwindToViewController(withMatchBlock: (UIViewController) -> Bool) {
         var target: UIViewController?
         var current: UIViewController? = self
         
@@ -257,7 +257,7 @@ extension UIViewController {
         
         v.navigationController?.popToViewController(v, animated: false)
         
-        let fromVC = self.navigationController ?? self
+        let fromVC = navigationController ?? self
         let toVC = v.navigationController ?? v
         
         if v.presentedViewController != fromVC {
@@ -275,35 +275,35 @@ extension UIViewController {
             toVC.presentedViewController?.view.addSubview(snapshot)
         }
         
-        toVC.dismiss(animated: true, completion: nil)
+        toVC.dismiss(animated: true)
     }
     
     /**
-     Replace the current view controller with another view controller on the 
+     Replace the current view controller with another view controller within the
      navigation/modal stack.
      - Parameter with next: A UIViewController.
      */
-    public func motion_replaceViewController(with next: UIViewController) {
+    public func motionReplaceViewController(with next: UIViewController) {
         guard !Motion.shared.isTransitioning else {
-            print("motion_replaceViewController cancelled because Motion was doing a transition. Use Motion.shared.cancel(animated:false) or Motion.shared.end(animated:false) to stop the transition first before calling motion_replaceViewController.")
+            print("motionReplaceViewController cancelled because Motion was doing a transition. Use Motion.shared.cancel(animated: false) or Motion.shared.end(animated: false) to stop the transition first before calling motionReplaceViewController.")
             return
         }
         
-        if let navigationController = navigationController {
-            var v = navigationController.childViewControllers
+        if let nc = navigationController {
+            var v = nc.childViewControllers
             
             if !v.isEmpty {
                 v.removeLast()
                 v.append(next)
             }
             
-            if navigationController.isMotionEnabled {
+            if nc.isMotionEnabled {
                 Motion.shared.forceNonInteractive = true
             }
             
-            navigationController.setViewControllers(v, animated: true)
+            nc.setViewControllers(v, animated: true)
         } else if let container = view.superview {
-            let parentVC = presentingViewController
+            let presentingVC = presentingViewController
             
             Motion.shared.transition(from: self, to: next, in: container) { [weak self] (isFinished) in
                 guard isFinished else {
@@ -312,13 +312,13 @@ extension UIViewController {
                 
                 UIApplication.shared.keyWindow?.addSubview(next.view)
                 
-                guard let parentVC = parentVC else {
+                guard let pvc = presentingVC else {
                     UIApplication.shared.keyWindow?.rootViewController = next
                     return
                 }
                 
                 self?.dismiss(animated: false) {
-                    parentVC.present(next, animated: false, completion: nil)
+                    pvc.present(next, animated: false)
                 }
             }
         }

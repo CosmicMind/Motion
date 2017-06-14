@@ -269,17 +269,20 @@ public extension MotionController {
             return
         }
         
-        var v: TimeInterval = 0
-        let et = elapsedTime
+        guard let a = animators else {
+            return
+        }
         
-        animators?.forEach {
-            var t = et
+        var v: TimeInterval = 0
+        
+        for x in a {
+            var t = elapsedTime
             
             if t < 0 {
                 t = -t
             }
             
-            v = max(v, $0.resume(at: t * totalDuration, isReversed: true))
+            v = max(v, x.resume(at: t * totalDuration, isReversed: true))
         }
         
         complete(after: v, isFinished: false)

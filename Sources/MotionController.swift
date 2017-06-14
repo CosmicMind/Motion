@@ -276,20 +276,18 @@ public extension MotionController {
             return
         }
         
-        guard let a = animators else {
-            return
-        }
-        
         var v: TimeInterval = 0
         
-        for x in a {
-            var t = elapsedTime
-            
-            if t < 0 {
-                t = -t
+        if let a = animators {
+            for x in a {
+                var t = elapsedTime
+                
+                if t < 0 {
+                    t = -t
+                }
+                
+                v = max(v, x.resume(at: t * totalDuration, isReversed: true))
             }
-            
-            v = max(v, x.resume(at: t * totalDuration, isReversed: true))
         }
         
         complete(after: v, isFinished: false)
@@ -394,24 +392,22 @@ internal extension MotionController {
             return
         }
         
-        guard let tp = transitionPairs else {
-            return
-        }
-        
-        for x in tp {
-            for v in x.fromViews {
-                context.hide(view: v)
-            }
-            
-            for v in x.toViews {
-                context.hide(view: v)
+        if let tp = transitionPairs {
+            for x in tp {
+                for v in x.fromViews {
+                    context.hide(view: v)
+                }
+                
+                for v in x.toViews {
+                    context.hide(view: v)
+                }
             }
         }
         
         var t: TimeInterval = 0
         var b = false
         
-        if let a = animators {
+        if let a = animators, let tp = transitionPairs {
             for (i, x) in a.enumerated() {
                 let d = x.animate(fromViews: tp[i].0, toViews: tp[i].1)
                 
@@ -440,7 +436,7 @@ internal extension MotionController {
      */
     func complete(after: TimeInterval, isFinished: Bool) {
         guard isTransitioning else {
-            fatalError()
+            return
         }
         
         if after <= 0.001 {
@@ -449,9 +445,11 @@ internal extension MotionController {
         }
         
         let v = (isFinished ? elapsedTime : 1 - elapsedTime) * totalDuration
+        
         self.isFinished = isFinished
-        self.currentAnimationDuration = after + v
-        self.beginTime = CACurrentMediaTime() - v
+        
+        currentAnimationDuration = after + v
+        beginTime = CACurrentMediaTime() - v
     }
     
     /**
@@ -461,7 +459,6 @@ internal extension MotionController {
     */
     func complete(isFinished: Bool) {
         defer {
-            
             animators?.forEach {
                 $0.clean()
             }

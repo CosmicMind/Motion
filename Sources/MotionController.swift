@@ -154,10 +154,14 @@ fileprivate extension MotionController {
     
     /// Updates the animators.
     func updateAnimators() {
+        guard let a = animators else {
+            return
+        }
+        
         let v = elapsedTime * totalDuration
         
-        animators?.forEach {
-            $0.seek(to: v)
+        for x in a {
+            x.seek(to: v)
         }
     }
     
@@ -246,8 +250,11 @@ public extension MotionController {
         }
         
         var v: TimeInterval = 0
-        animators?.forEach {
-            v = max(v, $0.resume(at: elapsedTime * totalDuration, isReversed: false))
+        
+        if let a = animators {
+            for x in a {
+                v = max(v, x.resume(at: elapsedTime * totalDuration, isReversed: false))
+            }
         }
         
         complete(after: v, isFinished: true)
@@ -304,11 +311,15 @@ public extension MotionController {
             return
         }
         
+        guard let a = animators else {
+            return
+        }
+        
         let s = MotionTransitionState(transitions: transitions)
         let v = context.transitionPairedView(for: view) ?? view
         
-        animators?.forEach {
-            $0.apply(state: s, to: v)
+        for x in a {
+            x.apply(state: s, to: v)
         }
     }
 }
@@ -362,15 +373,15 @@ internal extension MotionController {
     /// Executes the preprocessors' process function.
     func processContext() {
         guard isTransitioning else {
-            fatalError()
+            return
         }
         
-        preprocessors?.forEach { [weak self] in
-            guard let s = self else {
-                return
-            }
-            
-            $0.process(fromViews: s.context.fromViews, toViews: s.context.toViews)
+        guard let p = preprocessors else {
+            return
+        }
+        
+        for x in p {
+            x.process(fromViews: context.fromViews, toViews: context.toViews)
         }
     }
     
@@ -380,20 +391,20 @@ internal extension MotionController {
      */
     func animate() {
         guard isTransitioning else {
-            fatalError()
+            return
         }
         
-        transitionPairs?.forEach { [weak self] in
-            guard let s = self else {
-                return
+        guard let tp = transitionPairs else {
+            return
+        }
+        
+        for x in tp {
+            for v in x.fromViews {
+                context.hide(view: v)
             }
             
-            for view in $0.fromViews {
-                s.context.hide(view: view)
-            }
-            
-            for view in $0.toViews {
-                s.context.hide(view: view)
+            for v in x.toViews {
+                context.hide(view: v)
             }
         }
         
@@ -402,8 +413,6 @@ internal extension MotionController {
         
         if let a = animators, let tp = transitionPairs {
             for (i, x) in a.enumerated() {
-                
-                
                 let d = x.animate(fromViews: tp[i].0, toViews: tp[i].1)
                 
                 if d == .infinity {

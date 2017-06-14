@@ -333,7 +333,7 @@ internal extension MotionController {
      */
     func prepareTransition() {
         guard isTransitioning else {
-            fatalError()
+            return
         }
         
         prepareTransitionContainer()
@@ -346,22 +346,22 @@ internal extension MotionController {
     /// Prepares the transition fromView & toView pairs.
     func prepareTransitionPairs() {
         guard isTransitioning else {
-            fatalError()
+            return
         }
         
         transitionPairs = [([UIView], [UIView])]()
         
-        guard let v = animators else {
+        guard let a = animators else {
             return
         }
         
-        for a in v {
-            let fv = context.fromViews.filter { (view: UIView) -> Bool in
-                return a.canAnimate(view: view, isAppearing: false)
+        for x in a {
+            let fv = context.fromViews.filter {
+                return x.canAnimate(view: $0, isAppearing: false)
             }
             
-            let tv = context.toViews.filter { (view: UIView) -> Bool in
-                return a.canAnimate(view: view, isAppearing: true)
+            let tv = context.toViews.filter {
+                return x.canAnimate(view: $0, isAppearing: true)
             }
             
             transitionPairs?.append((fv, tv))
@@ -409,14 +409,14 @@ internal extension MotionController {
         }
         
         var t: TimeInterval = 0
-        var v = false
+        var b = false
         
-        if let a = animators, let tp = transitionPairs {
+        if let a = animators {
             for (i, x) in a.enumerated() {
                 let d = x.animate(fromViews: tp[i].0, toViews: tp[i].1)
                 
                 if d == .infinity {
-                    v = true
+                    b = true
                 } else {
                     t = max(t, d)
                 }
@@ -425,7 +425,7 @@ internal extension MotionController {
         
         totalDuration = t
         
-        if v {
+        if b {
             update(elapsedTime: 0)
         } else {
             complete(after: t, isFinished: true)
@@ -591,12 +591,12 @@ internal extension MotionController {
 internal extension MotionController {
     // should call this after `prepareTransitionPairs` & before `processContext`
     func insert<T>(preprocessor: MotionPreprocessor, before: T.Type) {
-        guard var v = preprocessors else {
+        guard var p = preprocessors else {
             return
         }
         
-        let i = v.index { $0 is T } ?? v.count
+        let i = p.index { $0 is T } ?? p.count
         preprocessor.context = context
-        v.insert(preprocessor, at: i)
+        p.insert(preprocessor, at: i)
     }
 }

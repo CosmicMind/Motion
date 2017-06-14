@@ -64,10 +64,10 @@ public class MotionController: NSObject {
      A view container used to hold all the animating views during a 
      transition.
      */
-    public internal(set) var container: UIView!
+    public internal(set) var container: UIView?
 
     /// UIKit's supplied transition container.
-    internal var transitionContainer: UIView!
+    internal var transitionContainer: UIView?
 
     /// An optional completion callback.
     internal var completionCallback: ((Bool) -> Void)?
@@ -259,7 +259,7 @@ public extension MotionController {
         }
         
         guard isAnimated else {
-            complete(isFinished:false)
+            complete(isFinished: false)
             return
         }
         
@@ -455,16 +455,24 @@ internal extension MotionController {
 fileprivate extension MotionController {
     /// Prepares the transition container.
     func prepareTransitionContainer() {
-        transitionContainer.isUserInteractionEnabled = false
+        guard let v = transitionContainer else {
+            return
+        }
+        
+        v.isUserInteractionEnabled = false
         
         // a view to hold all the animating views
-        container = UIView(frame: transitionContainer.bounds)
-        transitionContainer.addSubview(container)
+        container = UIView(frame: v.bounds)
+        v.addSubview(container!)
     }
     
     /// Prepares the context.
     func prepareContext() {
-        context = MotionContext(container:container)
+        guard let v = container else {
+            return
+        }
+        
+        context = MotionContext(container: v)
     }
     
     /// Prepares the preprocessors.

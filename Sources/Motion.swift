@@ -282,6 +282,15 @@ internal extension Motion {
             return
         }
         
+        guard let c = container else {
+            return
+        }
+        
+        guard let tc = transitionContainer else {
+            return
+        }
+        
+        
         context.clean()
         
         if isFinished && isPresenting && toOverFullScreen {
@@ -292,7 +301,7 @@ internal extension Motion {
             
             fromViewController!.motionStoredSnapshot = container
             fromView.removeFromSuperview()
-            fromView.addSubview(container)
+            fromView.addSubview(c)
         } else if !isFinished && !isPresenting && fromOverFullScreen {
             // cancelled dismissing a overFullScreen VC
             context.unhide(rootView: fromView)
@@ -301,19 +310,19 @@ internal extension Motion {
             
             toViewController!.motionStoredSnapshot = container
             toView.removeFromSuperview()
-            toView.addSubview(container)
+            toView.addSubview(c)
         } else {
             context.unhideAll()
             context.removeAllSnapshots()
-            container.removeFromSuperview()
+            c.removeFromSuperview()
         }
         
         // move fromView & toView back from our container back to the one supplied by UIKit
         if (toOverFullScreen && isFinished) || (fromOverFullScreen && !isFinished) {
-            transitionContainer.addSubview(isFinished ? fromView : toView)
+            tc.addSubview(isFinished ? fromView : toView)
         }
         
-        transitionContainer.addSubview(isFinished ? toView : fromView)
+        tc.addSubview(isFinished ? toView : fromView)
         
         if isPresenting != isFinished, !isContainerController {
             // only happens when present a .overFullScreen VC
@@ -365,8 +374,12 @@ fileprivate extension Motion {
     
     /// Prepares the snapshot view, which hides any flashing that may occur.
     func prepareSnapshotView() {
-        fullScreenSnapshot = transitionContainer.window?.snapshotView(afterScreenUpdates: true) ?? fromView.snapshotView(afterScreenUpdates: true)
-        (transitionContainer.window ?? transitionContainer)?.addSubview(fullScreenSnapshot)
+        guard let v = transitionContainer else {
+            return
+        }
+        
+        fullScreenSnapshot = v.window?.snapshotView(afterScreenUpdates: true) ?? fromView.snapshotView(afterScreenUpdates: true)
+        (v.window ?? transitionContainer)?.addSubview(fullScreenSnapshot)
         
         if let v = fromViewController?.motionStoredSnapshot {
             v.removeFromSuperview()
@@ -381,10 +394,14 @@ fileprivate extension Motion {
     
     /// Prepares the MotionContext instance.
     func prepareContext() {
+        guard let v = container else {
+            return
+        }
+        
         context.loadViewAlpha(rootView: toView)
         context.loadViewAlpha(rootView: fromView)
-        container.addSubview(toView)
-        container.addSubview(fromView)
+        v.addSubview(toView)
+        v.addSubview(fromView)
     }
     
     /// Prepares the toView instance.
@@ -541,9 +558,9 @@ fileprivate extension Motion {
     /// Updates the container background color.
     func updateContainerBackgroundColor() {
         if let v = containerBackgroundColor {
-            container.backgroundColor = v
+            container?.backgroundColor = v
         } else if !toOverFullScreen && !fromOverFullScreen {
-            container.backgroundColor = toView.backgroundColor
+            container?.backgroundColor = toView.backgroundColor
         }
     }
     

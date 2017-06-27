@@ -123,8 +123,8 @@ extension CALayer {
      A function that accepts a list of MotionAnimation values and executes them.
      - Parameter animations: A list of MotionAnimation values.
      */
-    public func motion(_ animations: MotionAnimation...) {
-        motion(animations)
+    public func animate(_ animations: MotionAnimation...) {
+        animate(animations)
     }
     
     /**
@@ -132,8 +132,8 @@ extension CALayer {
      - Parameter animations: An Array of MotionAnimation values.
      - Parameter completion: An optional completion block.
      */
-    public func motion(_ animations: [MotionAnimation], completion: (() -> Void)? = nil) {
-        motion(delay: 0, duration: 0.35, timingFunction: .easeInOut, animations: animations, completion: completion)
+    public func animate(_ animations: [MotionAnimation], completion: (() -> Void)? = nil) {
+        animate(delay: 0, duration: 0.35, timingFunction: .easeInOut, animations: animations, completion: completion)
     }
     
     /**
@@ -144,7 +144,7 @@ extension CALayer {
      - Parameter animations: An Array of MotionAnimations.
      - Parameter completion: An optional completion block.
      */
-    fileprivate func motion(delay: TimeInterval, duration: TimeInterval, timingFunction: CAMediaTimingFunctionType, animations: [MotionAnimation], completion: (() -> Void)? = nil) {
+    fileprivate func animate(delay: TimeInterval, duration: TimeInterval, timingFunction: CAMediaTimingFunctionType, animations: [MotionAnimation], completion: (() -> Void)? = nil) {
         var t = delay
         
         for v in animations {

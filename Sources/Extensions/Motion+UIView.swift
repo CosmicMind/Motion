@@ -173,8 +173,8 @@ public extension UIView {
      them on the view's backing layer.
      - Parameter animations: A list of MotionAnimation values.
      */
-    func motion(_ animations: MotionAnimation...) {
-        layer.motion(animations)
+    func animate(_ animations: MotionAnimation...) {
+        layer.animate(animations)
     }
     
     /**
@@ -183,8 +183,8 @@ public extension UIView {
      - Parameter animations: An Array of MotionAnimation values.
      - Parameter completion: An optional completion block.
      */
-    func motion(_ animations: [MotionAnimation], completion: (() -> Void)? = nil) {
-        layer.motion(animations, completion: completion)
+    func animate(_ animations: [MotionAnimation], completion: (() -> Void)? = nil) {
+        layer.animate(animations, completion: completion)
     }
 }
 

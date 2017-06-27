@@ -81,10 +81,10 @@ public enum MotionAnimationKeyPath: String {
     case borderWidth
     case cornerRadius
     case transform
-    case rotate  = "transform.rotate"
-    case rotateX = "transform.rotate.x"
-    case rotateY = "transform.rotate.y"
-    case rotateZ = "transform.rotate.z"
+    case rotate  = "transform.rotation"
+    case rotateX = "transform.rotation.x"
+    case rotateY = "transform.rotation.y"
+    case rotateZ = "transform.rotation.z"
     case scale  = "transform.scale"
     case scaleX = "transform.scale.x"
     case scaleY = "transform.scale.y"

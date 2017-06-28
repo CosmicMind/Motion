@@ -261,37 +261,37 @@ class TransitionPreprocessor: MotionPreprocessor {
         
         switch defaultAnimation {
         case .push(let direction):
-            context[tv]!.append(contentsOf: [.translate(to: shift(direction: direction, isAppearing: true)),
+            context[tv]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: true)),
                                              .shadow(opacity: 0),
                                              .beginWith(transitions: shadowState),
                                              .timingFunction(.deceleration)])
             
-            context[fv]!.append(contentsOf: [.translate(to: shift(direction: direction, isAppearing: false) / 3),
+            context[fv]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: false) / 3),
                                              .overlay(color: .black, opacity: 0.1),
                                              .timingFunction(.deceleration)])
         
         case .pull(let direction):
             m.insertToViewFirst = true
           
-            context[fv]!.append(contentsOf: [.translate(to: shift(direction: direction, isAppearing: false)),
+            context[fv]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: false)),
                                              .shadow(opacity: 0),
                                              .beginWith(transitions: shadowState)])
           
-            context[tv]!.append(contentsOf: [.translate(to: shift(direction: direction, isAppearing: true) / 3),
+            context[tv]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: true) / 3),
                                              .overlay(color: .black, opacity: 0.1)])
         
         case .slide(let direction):
-            context[fv]!.append(contentsOf: [.translate(to: shift(direction: direction, isAppearing: false))])
+            context[fv]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: false))])
         
-            context[tv]!.append(contentsOf: [.translate(to: shift(direction: direction, isAppearing: true))])
+            context[tv]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: true))])
         
         case .zoomSlide(let direction):
-            context[fv]!.append(contentsOf: [.translate(to: shift(direction: direction, isAppearing: false)), .scale(to: 0.8)])
+            context[fv]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: false)), .scale(0.8)])
         
-            context[tv]!.append(contentsOf: [.translate(to: shift(direction: direction, isAppearing: true)), .scale(to: 0.8)])
+            context[tv]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: true)), .scale(0.8)])
         
         case .cover(let direction):
-            context[tv]!.append(contentsOf: [.translate(to: shift(direction: direction, isAppearing: true)),
+            context[tv]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: true)),
                                              .shadow(opacity: 0),
                                              .beginWith(transitions: shadowState),
                                              .timingFunction(.deceleration)])
@@ -302,43 +302,43 @@ class TransitionPreprocessor: MotionPreprocessor {
         case .uncover(let direction):
             m.insertToViewFirst = true
             
-            context[fv]!.append(contentsOf: [.translate(to: shift(direction: direction, isAppearing: false)),
+            context[fv]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: false)),
                                              .shadow(opacity: 0),
                                              .beginWith(transitions: shadowState)])
           
             context[tv]!.append(contentsOf: [.overlay(color: .black, opacity: 0.1)])
             
         case .pageIn(let direction):
-            context[tv]!.append(contentsOf: [.translate(to: shift(direction: direction, isAppearing: true)),
+            context[tv]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: true)),
                                              .shadow(opacity: 0),
                                              .beginWith(transitions: shadowState),
                                              .timingFunction(.deceleration)])
           
-            context[fv]!.append(contentsOf: [.scale(to: 0.7),
+            context[fv]!.append(contentsOf: [.scale(0.7),
                                              .overlay(color: .black, opacity: 0.1),
                                              .timingFunction(.deceleration)])
         
         case .pageOut(let direction):
             m.insertToViewFirst = true
           
-            context[fv]!.append(contentsOf: [.translate(to: shift(direction: direction, isAppearing: false)),
+            context[fv]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: false)),
                                              .shadow(opacity: 0),
                                              .beginWith(transitions: shadowState)])
           
-            context[tv]!.append(contentsOf: [.scale(to: 0.7),
+            context[tv]!.append(contentsOf: [.scale(0.7),
                                              .overlay(color: .black, opacity: 0.1)])
         
         case .fade:
             // TODO: clean up this. overFullScreen logic shouldn't be here
             if !(fromOverFullScreen && !isPresenting) {
-                context[tv] = [.fade]
+                context[tv] = [.fadeOut]
             }
 
             #if os(tvOS)
                 context[fromView] = [.fade]
             #else
                 if (!isPresenting && toOverFullScreen) || !fv.isOpaque || (fv.backgroundColor?.alphaComponent ?? 1) < 1 {
-                    context[fv] = [.fade]
+                    context[fv] = [.fadeOut]
                 }
             #endif
 
@@ -347,12 +347,12 @@ class TransitionPreprocessor: MotionPreprocessor {
         
         case .zoom:
             m.insertToViewFirst = true
-            context[fv]!.append(contentsOf: [.scale(to: 1.3), .fade])
-            context[tv]!.append(contentsOf: [.scale(to: 0.7)])
+            context[fv]!.append(contentsOf: [.scale(1.3), .fadeOut])
+            context[tv]!.append(contentsOf: [.scale(0.7)])
         
         case .zoomOut:
-            context[tv]!.append(contentsOf: [.scale(to: 1.3), .fade])
-            context[fv]!.append(contentsOf: [.scale(to: 0.7)])
+            context[tv]!.append(contentsOf: [.scale(1.3), .fadeOut])
+            context[fv]!.append(contentsOf: [.scale(0.7)])
         
         default:
             fatalError("Not implemented")

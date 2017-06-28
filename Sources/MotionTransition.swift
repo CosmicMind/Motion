@@ -191,11 +191,11 @@ extension MotionTransition {
     
     /**
      Animates the view's current x & y scale to the given scale value.
-     - Parameter to scale: A CGFloat.
+     - Parameter _ xy: A CGFloat.
      - Returns: A MotionTransition.
      */
-    public static func scale(to scale: CGFloat) -> MotionTransition {
-        return .scale(x: scale, y: scale)
+    public static func scale(_ xy: CGFloat) -> MotionTransition {
+        return .scale(x: xy, y: xy)
     }
     
     /**
@@ -215,20 +215,20 @@ extension MotionTransition {
     /**
      Animates the view's current translation to the given
      point value (x & y), and a z value.
-     - Parameter to point: A CGPoint.
+     - Parameter _ point: A CGPoint.
      - Parameter z: A CGFloat, default is 0.
      - Returns: A MotionTransition.
      */
-    public static func translate(to point: CGPoint, z: CGFloat = 0) -> MotionTransition {
+    public static func translate(_ point: CGPoint, z: CGFloat = 0) -> MotionTransition {
         return .translate(x: point.x, y: point.y, z: z)
     }
     
     /**
      Animates the view's current position to the given point.
-     - Parameter to point: A CGPoint.
+     - Parameter _ point: A CGPoint.
      - Returns: A MotionTransition.
      */
-    public static func position(to point: CGPoint) -> MotionTransition {
+    public static func position(_ point: CGPoint) -> MotionTransition {
         return MotionTransition {
             $0.position = point
         }
@@ -239,17 +239,18 @@ extension MotionTransition {
         $0.nonFade = true
     }
     
+    /// Fades the view in during a transition.
+    public static var fadeIn = MotionTransition.fade(1)
+    
     /// Fades the view out during a transition.
-    public static var fade = MotionTransition {
-        $0.opacity = 0
-    }
+    public static var fadeOut = MotionTransition.fade(0)
     
     /**
      Animates the view's current opacity to the given one.
-     - Parameter to opacity: A Float value.
+     - Parameter to opacity: A Double value.
      - Returns: A MotionTransition.
      */
-    public static func fade(to opacity: Float) -> MotionTransition {
+    public static func fade(_ opacity: Double) -> MotionTransition {
         return MotionTransition {
             $0.opacity = opacity
         }

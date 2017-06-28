@@ -155,7 +155,7 @@ fileprivate extension CALayer {
                 return
             }
 
-            var a = [CABasicAnimation]()
+            var anims = [CABasicAnimation]()
             let tf: CAMediaTimingFunction = targetState.timingFunction ?? CAMediaTimingFunction.from(mediaTimingFunctionType: timingFunction)
             let d: TimeInterval = targetState.duration ?? duration
 //
@@ -183,92 +183,68 @@ fileprivate extension CALayer {
 //            }
 //            
             if let v = targetState.backgroundColor {
-                let anim = MotionBasicAnimation.background(color: UIColor(cgColor: v))
-                anim.fromValue = s.backgroundColor
-                a.append(anim)
+                let a = MotionBasicAnimation.background(color: UIColor(cgColor: v))
+                a.fromValue = s.backgroundColor
+                anims.append(a)
             }
             
             if let v = targetState.borderColor {
-                let anim = MotionBasicAnimation.border(color: UIColor(cgColor: v))
-                anim.fromValue = s.borderColor
-                a.append(anim)
+                let a = MotionBasicAnimation.border(color: UIColor(cgColor: v))
+                a.fromValue = s.borderColor
+                anims.append(a)
             }
             
             if let v = targetState.borderWidth {
-                let anim = MotionBasicAnimation.border(width: v)
-                anim.fromValue = NSNumber(floatLiteral: Double(s.borderWidth))
-                a.append(anim)
+                let a = MotionBasicAnimation.border(width: v)
+                a.fromValue = NSNumber(floatLiteral: Double(s.borderWidth))
+                anims.append(a)
             }
             
             if let v = targetState.cornerRadius {
-                let anim = MotionBasicAnimation.corner(radius: v)
-                anim.fromValue = NSNumber(floatLiteral: Double(s.cornerRadius))
-                a.append(anim)
+                let a = MotionBasicAnimation.corner(radius: v)
+                a.fromValue = NSNumber(floatLiteral: Double(s.cornerRadius))
+                anims.append(a)
             }
             
             if let v = targetState.transform {
-                let anim = MotionBasicAnimation.transform(transform: v)
-                anim.fromValue = NSValue(caTransform3D: s.transform)
-                a.append(anim)
+                let a = MotionBasicAnimation.transform(v)
+                a.fromValue = NSValue(caTransform3D: s.transform)
+                anims.append(a)
             }
             
             if let v = targetState.spin {
-                var anim = MotionBasicAnimation.spinX(rotates: v.0)
-                anim.fromValue = 0
-                a.append(anim)
+                var a = MotionBasicAnimation.spinX(v.0)
+                a.fromValue = NSNumber(floatLiteral: 0)
+                anims.append(a)
                 
-                anim = MotionBasicAnimation.spinY(rotates: v.1)
-                anim.fromValue = 0
-                a.append(anim)
+                a = MotionBasicAnimation.spinY(v.1)
+                a.fromValue = NSNumber(floatLiteral: 0)
+                anims.append(a)
                 
-                anim = MotionBasicAnimation.spinZ(rotates: v.2)
-                anim.fromValue = 0
-                a.append(anim)
+                a = MotionBasicAnimation.spinZ(v.2)
+                a.fromValue = NSNumber(floatLiteral: 0)
+                anims.append(a)
             }
             
+            if let v = targetState.position {
+                let a = MotionBasicAnimation.position(v)
+                a.fromValue = NSValue(cgPoint: s.position)
+                anims.append(a)
+            }
             
-//                    
-//                case let .scale(to):
-//                    a.append(MotionBasicAnimation.scale(to: to))
-//                    
-//                case let .scaleX(to):
-//                    a.append(MotionBasicAnimation.scaleX(to: to))
-//                    
-//                case let .scaleY(to):
-//                    a.append(MotionBasicAnimation.scaleY(to: to))
-//                    
-//                case let .scaleZ(to):
-//                    a.append(MotionBasicAnimation.scaleZ(to: to))
-//                    
-//                case let .translate(x, y):
-//                    a.append(MotionBasicAnimation.translate(to: CGPoint(x: x, y: y)))
-//                    
-//                case let .translateX(to):
-//                    a.append(MotionBasicAnimation.translateX(to: to))
-//                    
-//                case let .translateY(to):
-//                    a.append(MotionBasicAnimation.translateY(to: to))
-//                    
-//                case let .translateZ(to):
-//                    a.append(MotionBasicAnimation.translateZ(to: to))
-//                    
-//                case .x(_), .y(_), .point(_, _):
-//                    let position = MotionBasicAnimation.position(to: CGPoint(x: px, y: py))
-//                    a.append(position)
-//                    
-//                case let .position(x, y):
-//                    a.append(MotionBasicAnimation.position(to: CGPoint(x: x, y: y)))
-//                    
-//                case let .fade(opacity):
-//                    let fade = MotionBasicAnimation.fade(to: opacity)
-//                    fade.fromValue = s.value(forKey: MotionAnimationKeyPath.opacity.rawValue) ?? NSNumber(floatLiteral: 1)
-//                    a.append(fade)
-//                    
-//                case let .zPosition(position):
-//                    let zPosition = MotionBasicAnimation.zPosition(position)
-//                    zPosition.fromValue = s.value(forKey: MotionAnimationKeyPath.zPosition.rawValue) ?? NSNumber(value: 0)
-//                    a.append(zPosition)
-//                    
+            if let v = targetState.opacity {
+                let a = MotionBasicAnimation.fade(v)
+                a.fromValue = s.value(forKeyPath: MotionAnimationKeyPath.opacity.rawValue) ?? NSNumber(floatLiteral: 1)
+                anims.append(a)
+            }
+            
+            if let v = targetState.zPosition {
+                let a = MotionBasicAnimation.zPosition(v)
+                a.fromValue = s.value(forKeyPath: MotionAnimationKeyPath.zPosition.rawValue) ?? NSNumber(floatLiteral: 0)
+                anims.append(a)
+            }
+            
+        
 //                case .width(_), .height(_), .size(_, _):
 //                    a.append(MotionBasicAnimation.size(CGSize(width: w, height: h)))
 //                    
@@ -318,7 +294,7 @@ fileprivate extension CALayer {
 //                }
 //            }
 //            
-            let g = Motion.animate(group: a, duration: d)
+            let g = Motion.animate(group: anims, duration: d)
             g.fillMode = MotionAnimationFillModeToValue(mode: .forwards)
             g.isRemovedOnCompletion = false
             g.timingFunction = tf

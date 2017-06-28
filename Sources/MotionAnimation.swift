@@ -200,11 +200,11 @@ extension MotionAnimation {
     
     /**
      Animates the view's current x & y scale to the given scale value.
-     - Parameter to scale: A CGFloat.
+     - Parameter _ xy: A CGFloat.
      - Returns: A MotionAnimation.
      */
-    public static func scale(to scale: CGFloat) -> MotionAnimation {
-        return .scale(x: scale, y: scale)
+    public static func scale(_ xy: CGFloat) -> MotionAnimation {
+        return .scale(x: xy, y: xy)
     }
     
     /**
@@ -224,36 +224,37 @@ extension MotionAnimation {
     /**
      Animates the view's current translation to the given
      point value (x & y), and a z value.
-     - Parameter to point: A CGPoint.
+     - Parameter _ point: A CGPoint.
      - Parameter z: A CGFloat, default is 0.
      - Returns: A MotionAnimation.
      */
-    public static func translate(to point: CGPoint, z: CGFloat = 0) -> MotionAnimation {
+    public static func translate(_ point: CGPoint, z: CGFloat = 0) -> MotionAnimation {
         return .translate(x: point.x, y: point.y, z: z)
     }
     
     /**
      Animates the view's current position to the given point.
-     - Parameter to point: A CGPoint.
+     - Parameter _ point: A CGPoint.
      - Returns: A MotionAnimation.
      */
-    public static func position(to point: CGPoint) -> MotionAnimation {
+    public static func position(_ point: CGPoint) -> MotionAnimation {
         return MotionAnimation {
             $0.position = point
         }
     }
     
-    /// Fades the view out during a transition.
-    public static var fade = MotionAnimation {
-        $0.opacity = 0
-    }
+    /// Fades the view in during an animation.
+    public static var fadeIn = MotionAnimation.fade(1)
+    
+    /// Fades the view out during an animation.
+    public static var fadeOut = MotionAnimation.fade(0)
     
     /**
      Animates the view's current opacity to the given one.
-     - Parameter to opacity: A Float value.
+     - Parameter _ opacity: A Double value.
      - Returns: A MotionAnimation.
      */
-    public static func fade(to opacity: Float) -> MotionAnimation {
+    public static func fade(_ opacity: Double) -> MotionAnimation {
         return MotionAnimation {
             $0.opacity = opacity
         }
@@ -371,7 +372,7 @@ extension MotionAnimation {
     
     /**
      Sets the view's animation duration to the longest
-     running animation within a transition.
+     running animation.
      */
     public static var preferredDurationMatchesLongest = MotionAnimation.duration(.infinity)
     
@@ -488,9 +489,9 @@ public struct MotionBasicAnimation {
      - Returns: A CABasicAnimation.
      */
     public static func background(color: UIColor) -> CABasicAnimation {
-        let animation = CABasicAnimation(keyPath: .backgroundColor)
-        animation.toValue = color.cgColor
-        return animation
+        let a = CABasicAnimation(keyPath: .backgroundColor)
+        a.toValue = color.cgColor
+        return a
     }
     
     /**
@@ -499,9 +500,9 @@ public struct MotionBasicAnimation {
      - Returns: A CABasicAnimation.
      */
     public static func barTint(color: UIColor) -> CABasicAnimation {
-        let animation = CABasicAnimation(keyPath: .barTintColor)
-        animation.toValue = color.cgColor
-        return animation
+        let a = CABasicAnimation(keyPath: .barTintColor)
+        a.toValue = color.cgColor
+        return a
     }
     
     /**
@@ -510,9 +511,9 @@ public struct MotionBasicAnimation {
      - Returns: A CABasicAnimation.
      */
     public static func border(color: UIColor) -> CABasicAnimation {
-        let animation = CABasicAnimation(keyPath: .borderColor)
-        animation.toValue = color.cgColor
-        return animation
+        let a = CABasicAnimation(keyPath: .borderColor)
+        a.toValue = color.cgColor
+        return a
     }
     
     /**
@@ -521,9 +522,9 @@ public struct MotionBasicAnimation {
      - Returns: A CABasicAnimation.
      */
     public static func border(width: CGFloat) -> CABasicAnimation {
-        let animation = CABasicAnimation(keyPath: .borderWidth)
-        animation.toValue = width
-        return animation
+        let a = CABasicAnimation(keyPath: .borderWidth)
+        a.toValue = NSNumber(floatLiteral: Double(width))
+        return a
     }
     
     /**
@@ -532,183 +533,72 @@ public struct MotionBasicAnimation {
      - Returns: A CABasicAnimation.
      */
     public static func corner(radius: CGFloat) -> CABasicAnimation {
-        let animation = CABasicAnimation(keyPath: .cornerRadius)
-        animation.toValue = radius
-        return animation
+        let a = CABasicAnimation(keyPath: .cornerRadius)
+        a.toValue = NSNumber(floatLiteral: Double(radius))
+        return a
     }
     
     /**
      Creates a CABasicAnimation for the transform key path.
-     - Parameter transform: A CATransform3D object.
+     - Parameter _ t: A CATransform3D object.
      - Returns: A CABasicAnimation.
      */
-    public static func transform(transform: CATransform3D) -> CABasicAnimation {
-        let animation = CABasicAnimation(keyPath: .transform)
-        animation.toValue = NSValue(caTransform3D: transform)
-        return animation
-    }
-    
-    /**
-     Creates a CABasicAnimation for the transform.rotate key path.
-     - Parameter rotates: An optional CGFloat.
-     - Returns: A CABasicAnimation.
-     */
-    public static func spin(rotates: CGFloat) -> CABasicAnimation {
-        let animation = CABasicAnimation(keyPath: .rotate)
-        animation.toValue = NSNumber(value: Double(CGFloat(Double.pi) * 2 * rotates))
-        return animation
+    public static func transform(_ t: CATransform3D) -> CABasicAnimation {
+        let a = CABasicAnimation(keyPath: .transform)
+        a.toValue = NSValue(caTransform3D: t)
+        return a
     }
     
     /**
      Creates a CABasicAnimation for the transform.rotate.x key path.
-     - Parameter rotates: An optional CGFloat.
+     - Parameter _ rotations: An optional CGFloat.
      - Returns: A CABasicAnimation.
      */
-    public static func spinX(rotates: CGFloat) -> CABasicAnimation {
-        let animation = CABasicAnimation(keyPath: .rotateX)
-        animation.toValue = NSNumber(value: Double(CGFloat(Double.pi) * 2 * rotates))
-        return animation
+    public static func spinX(_ rotations: CGFloat) -> CABasicAnimation {
+        let a = CABasicAnimation(keyPath: .rotateX)
+        a.toValue = NSNumber(value: Double(CGFloat(Double.pi) * 2 * rotations))
+        return a
     }
     
     /**
      Creates a CABasicAnimation for the transform.rotate.y key path.
-     - Parameter rotates: An optional CGFloat.
+     - Parameter _ rotations: An optional CGFloat.
      - Returns: A CABasicAnimation.
      */
-    public static func spinY(rotates: CGFloat) -> CABasicAnimation {
-        let animation = CABasicAnimation(keyPath: .rotateY)
-        animation.toValue = NSNumber(value: Double(CGFloat(Double.pi) * 2 * rotates))
-        return animation
+    public static func spinY(_ rotations: CGFloat) -> CABasicAnimation {
+        let a = CABasicAnimation(keyPath: .rotateY)
+        a.toValue = NSNumber(value: Double(CGFloat(Double.pi) * 2 * rotations))
+        return a
     }
     
     /**
      Creates a CABasicAnimation for the transform.rotate.z key path.
-     - Parameter rotates: An optional CGFloat.
+     - Parameter _ rotations: An optional CGFloat.
      - Returns: A CABasicAnimation.
      */
-    public static func spinZ(rotates: CGFloat) -> CABasicAnimation {
-        let animation = CABasicAnimation(keyPath: .rotateZ)
-        animation.toValue = NSNumber(value: Double(CGFloat(Double.pi) * 2 * rotates))
-        return animation
-    }
-    
-    /**
-     Creates a CABasicAnimation for the transform.scale key path.
-     - Parameter to scale: A CGFloat.
-     - Returns: A CABasicAnimation.
-     */
-    public static func scale(to scale: CGFloat) -> CABasicAnimation {
-        let animation = CABasicAnimation(keyPath: .scale)
-        animation.toValue = NSNumber(value: Double(scale))
-        return animation
-    }
-    
-    /**
-     Creates a CABasicAnimation for the transform.scale.x key path.
-     - Parameter to scale: A CGFloat.
-     - Returns: A CABasicAnimation.
-     */
-    public static func scaleX(to scale: CGFloat) -> CABasicAnimation {
-        let animation = CABasicAnimation(keyPath: .scaleX)
-        animation.toValue = NSNumber(value: Double(scale))
-        return animation
-    }
-    
-    /**
-     Creates a CABasicAnimation for the transform.scale.y key path.
-     - Parameter to scale: A CGFloat.
-     - Returns: A CABasicAnimation.
-     */
-    public static func scaleY(to scale: CGFloat) -> CABasicAnimation {
-        let animation = CABasicAnimation(keyPath: .scaleY)
-        animation.toValue = NSNumber(value: Double(scale))
-        return animation
-    }
-    
-    /**
-     Creates a CABasicAnimation for the transform.scale.z key path.
-     - Parameter to scale: A CGFloat.
-     - Returns: A CABasicAnimation.
-     */
-    public static func scaleZ(to scale: CGFloat) -> CABasicAnimation {
-        let animation = CABasicAnimation(keyPath: .scaleZ)
-        animation.toValue = NSNumber(value: Double(scale))
-        return animation
-    }
-    
-    /**
-     Creates a CABasicAnimation for the transform.translation key path.
-     - Parameter point: A CGPoint.
-     - Returns: A CABasicAnimation.
-     */
-    public static func translate(to point: CGPoint) -> CABasicAnimation {
-        let animation = CABasicAnimation(keyPath: .translation)
-        animation.toValue = NSValue(cgPoint: point)
-        return animation
-    }
-    
-    /**
-     Creates a CABasicAnimation for the transform.translation.x key path.
-     - Parameter to translation: A CGFloat.
-     - Returns: A CABasicAnimation.
-     */
-    public static func translateX(to translation: CGFloat) -> CABasicAnimation {
-        let animation = CABasicAnimation(keyPath: .translationX)
-        animation.toValue = NSNumber(value: Double(translation))
-        return animation
-    }
-    
-    /**
-     Creates a CABasicAnimation for the transform.translation.y key path.
-     - Parameter to translation: A CGFloat.
-     - Returns: A CABasicAnimation.
-     */
-    public static func translateY(to translation: CGFloat) -> CABasicAnimation {
-        let animation = CABasicAnimation(keyPath: .translationY)
-        animation.toValue = NSNumber(value: Double(translation))
-        return animation
-    }
-    
-    /**
-     Creates a CABasicAnimation for the transform.translation.z key path.
-     - Parameter to translation: A CGFloat.
-     - Returns: A CABasicAnimation.
-     */
-    public static func translateZ(to translation: CGFloat) -> CABasicAnimation {
-        let animation = CABasicAnimation(keyPath: .translationZ)
-        animation.toValue = NSNumber(value: Double(translation))
-        return animation
+    public static func spinZ(_ rotations: CGFloat) -> CABasicAnimation {
+        let a = CABasicAnimation(keyPath: .rotateZ)
+        a.toValue = NSNumber(value: Double(CGFloat(Double.pi) * 2 * rotations))
+        return a
     }
     
     /**
      Creates a CABasicAnimation for the position key path.
-     - Parameter x: A CGFloat.
-     - Parameter y: A CGFloat.
+     - Parameter _ point: A CGPoint.
      - Returns: A CABasicAnimation.
      */
-    public static func position(x: CGFloat, y: CGFloat) -> CABasicAnimation {
-        let animation = CABasicAnimation(keyPath: .position)
-        animation.toValue = NSValue(cgPoint: CGPoint(x: x, y: y))
-        return animation
-    }
-    
-    /**
-     Creates a CABasicAnimation for the position key path.
-     - Parameter to point: A CGPoint.
-     - Returns: A CABasicAnimation.
-     */
-    public static func position(to point: CGPoint) -> CABasicAnimation {
-        let animation = CABasicAnimation(keyPath: .position)
-        animation.toValue = NSValue(cgPoint: point)
-        return animation
+    public static func position(_ point: CGPoint) -> CABasicAnimation {
+        let a = CABasicAnimation(keyPath: .position)
+        a.toValue = NSValue(cgPoint: point)
+        return a
     }
     
     /**
      Creates a CABasicAnimation for the opacity key path.
-     - Parameter to opacity: A Double.
+     - Parameter _ opacity: A Double.
      - Returns: A CABasicAnimation.
      */
-    public static func fade(to opacity: Double) -> CABasicAnimation {
+    public static func fade(_ opacity: Double) -> CABasicAnimation {
         let animation = CABasicAnimation(keyPath: .opacity)
         animation.toValue = NSNumber(floatLiteral: opacity)
         return animation

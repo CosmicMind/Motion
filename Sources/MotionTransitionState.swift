@@ -58,7 +58,7 @@ public struct MotionTransitionState {
     public var transform: CATransform3D?
     
     /// A reference to the opacity.
-    public var opacity: Float?
+    public var opacity: Double?
     
     /// A reference to the cornerRadius.
     public var cornerRadius: CGFloat?
@@ -162,18 +162,18 @@ public struct MotionTransitionState {
 extension MotionTransitionState {
     /**
      Adds a MotionTransition to the current state.
-     - Parameter _ transition: A MotionTransition.
+     - Parameter _ element: A MotionTransition.
      */
-    public mutating func append(_ transition: MotionTransition) {
-        transition.apply(&self)
+    public mutating func append(_ element: MotionTransition) {
+        element.apply(&self)
     }
     
     /**
      Adds an Array of MotionTransitions to the current state.
-     - Parameter contentsOf transitions: An Array of MotionTransitions.
+     - Parameter contentsOf elements: An Array of MotionTransitions.
      */
-    public mutating func append(contentsOf transitions: [MotionTransition]) {
-        for v in transitions {
+    public mutating func append(contentsOf elements: [MotionTransition]) {
+        for v in elements {
             v.apply(&self)
         }
     }

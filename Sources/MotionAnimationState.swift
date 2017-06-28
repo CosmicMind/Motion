@@ -42,7 +42,7 @@ public struct MotionAnimationState {
     public var spin: (CGFloat, CGFloat, CGFloat)?
     
     /// A reference to the opacity.
-    public var opacity: Float?
+    public var opacity: Double?
     
     /// A reference to the cornerRadius.
     public var cornerRadius: CGFloat?
@@ -113,18 +113,18 @@ public struct MotionAnimationState {
 extension MotionAnimationState {
     /**
      Adds a MotionAnimation to the current state.
-     - Parameter _ animation: A MotionAnimation.
+     - Parameter _ element: A MotionAnimation.
      */
-    public mutating func append(_ animation: MotionAnimation) {
-        animation.apply(&self)
+    public mutating func append(_ element: MotionAnimation) {
+        element.apply(&self)
     }
     
     /**
      Adds an Array of MotionAnimations to the current state.
-     - Parameter contentsOf animations: An Array of MotionAnimations.
+     - Parameter contentsOf elements: An Array of MotionAnimations.
      */
-    public mutating func append(contentsOf animations: [MotionAnimation]) {
-        for v in animations {
+    public mutating func append(contentsOf elements: [MotionAnimation]) {
+        for v in elements {
             v.apply(&self)
         }
     }

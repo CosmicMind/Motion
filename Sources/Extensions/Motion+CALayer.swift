@@ -44,13 +44,13 @@ internal extension CALayer {
     }
 }
 
-extension CALayer {
+public extension CALayer {
     /**
      A function that accepts CAAnimation objects and executes them on the
      view's backing layer.
      - Parameter animation: A CAAnimation instance.
      */
-    public func animate(_ animations: CAAnimation...) {
+    func animate(_ animations: CAAnimation...) {
         animate(animations)
     }
     
@@ -59,7 +59,7 @@ extension CALayer {
      view's backing layer.
      - Parameter animation: A CAAnimation instance.
      */
-    public func animate(_ animations: [CAAnimation]) {
+    func animate(_ animations: [CAAnimation]) {
         for animation in animations {
             if nil == animation.delegate {
                 animation.delegate = self
@@ -83,7 +83,7 @@ extension CALayer {
      Executed when an animation has started. 
      - Parameter _ anim: A CAAnimation.
      */
-    public func animationDidStart(_ anim: CAAnimation) {}
+    func animationDidStart(_ anim: CAAnimation) {}
     
     /**
      A delegation function that is executed when the backing layer stops
@@ -93,7 +93,7 @@ extension CALayer {
      because it was completed or interrupted. True if completed, false
      if interrupted.
      */
-    public func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
+    func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
         guard let a = anim as? CAPropertyAnimation else {
             if let a = (anim as? CAAnimationGroup)?.animations {
                 for x in a {
@@ -123,7 +123,7 @@ extension CALayer {
      A function that accepts a list of MotionAnimation values and executes them.
      - Parameter animations: A list of MotionAnimation values.
      */
-    public func animate(_ animations: MotionAnimation...) {
+    func animate(_ animations: MotionAnimation...) {
         animate(animations)
     }
     
@@ -132,10 +132,12 @@ extension CALayer {
      - Parameter animations: An Array of MotionAnimation values.
      - Parameter completion: An optional completion block.
      */
-    public func animate(_ animations: [MotionAnimation], completion: (() -> Void)? = nil) {
+    func animate(_ animations: [MotionAnimation], completion: (() -> Void)? = nil) {
         animate(delay: 0, duration: 0.35, timingFunction: .easeInOut, animations: animations, completion: completion)
     }
-    
+}
+
+fileprivate extension CALayer {
     /**
      A function that executes an Array of MotionAnimation values.
      - Parameter delay: The animation delay TimeInterval.
@@ -144,213 +146,182 @@ extension CALayer {
      - Parameter animations: An Array of MotionAnimations.
      - Parameter completion: An optional completion block.
      */
-    fileprivate func animate(delay: TimeInterval, duration: TimeInterval, timingFunction: CAMediaTimingFunctionType, animations: [MotionAnimation], completion: (() -> Void)? = nil) {
-        var t = delay
+    func animate(delay: TimeInterval, duration: TimeInterval, timingFunction: CAMediaTimingFunctionType, animations: [MotionAnimation], completion: (() -> Void)? = nil) {
         
-        for v in animations {
-            switch v {
-            case let .delay(time):
-                t = time
-                
-            default:break
-            }
-        }
+        let targetState = MotionAnimationState(animations: animations)
         
-        Motion.delay(t) { [weak self] in
+        Motion.delay(targetState.delay) { [weak self] in
             guard let s = self else {
                 return
             }
-            
+
             var a = [CABasicAnimation]()
-            var tf = timingFunction
-            var d = duration
-            
-            var w: CGFloat = s.bounds.width
-            var h: CGFloat = s.bounds.height
-            
-            for v in animations {
-                switch v {
-                case let .width(width):
-                    w = width
-                    
-                case let .height(height):
-                    h = height
-                    
-                case let .size(width, height):
-                    w = width
-                    h = height
-                    
-                default:break
-                }
+            let tf: CAMediaTimingFunction = targetState.timingFunction ?? CAMediaTimingFunction.from(mediaTimingFunctionType: timingFunction)
+            let d: TimeInterval = targetState.duration ?? duration
+//
+//            var w: CGFloat = s.bounds.width
+//            var h: CGFloat = s.bounds.height
+//
+//            
+//            var px: CGFloat = s.position.x
+//            var py: CGFloat = s.position.y
+//
+//            for v in animations {
+//                switch v {
+//                case let .x(x):
+//                    px = x + w / 2
+//                    
+//                case let .y(y):
+//                    py = y + h / 2
+//                    
+//                case let .point(x, y):
+//                    px = x + w / 2
+//                    py = y + h / 2
+//                    
+//                default:break
+//                }
+//            }
+//            
+            if let v = targetState.backgroundColor {
+                let anim = MotionBasicAnimation.background(color: UIColor(cgColor: v))
+                anim.fromValue = s.backgroundColor
+                a.append(anim)
             }
             
-            var px: CGFloat = s.position.x
-            var py: CGFloat = s.position.y
-            
-            for v in animations {
-                switch v {
-                case let .x(x):
-                    px = x + w / 2
-                    
-                case let .y(y):
-                    py = y + h / 2
-                    
-                case let .point(x, y):
-                    px = x + w / 2
-                    py = y + h / 2
-                    
-                default:break
-                }
+            if let v = targetState.borderColor {
+                let anim = MotionBasicAnimation.border(color: UIColor(cgColor: v))
+                anim.fromValue = s.borderColor
+                a.append(anim)
             }
             
-            for v in animations {
-                switch v {
-                case let .timingFunction(timingFunction):
-                    tf = timingFunction
-                    
-                case let .duration(duration):
-                    d = duration
-                    
-                case let .custom(animation):
-                    a.append(animation)
-                    
-                case let .backgroundColor(color):
-                    a.append(MotionBasicAnimation.background(color: color))
-                    
-                case let .barTintColor(color):
-                    a.append(MotionBasicAnimation.barTint(color: color))
-                    
-                case let .borderColor(color):
-                    a.append(MotionBasicAnimation.border(color: color))
-                    
-                case let .borderWidth(width):
-                    a.append(MotionBasicAnimation.border(width: width))
-                    
-                case let .cornerRadius(radius):
-                    a.append(MotionBasicAnimation.corner(radius: radius))
-                    
-                case let .transform(transform):
-                    a.append(MotionBasicAnimation.transform(transform: transform))
-                    
-                case let .rotate(angle):
-                    let rotate = MotionBasicAnimation.rotate(angle: angle)
-                    a.append(rotate)
-                    
-                case let .rotateX(angle):
-                    a.append(MotionBasicAnimation.rotateX(angle: angle))
-                    
-                case let .rotateY(angle):
-                    a.append(MotionBasicAnimation.rotateY(angle: angle))
-                    
-                case let .rotateZ(angle):
-                    a.append(MotionBasicAnimation.rotateZ(angle: angle))
-                    
-                case let .spin(rotates):
-                    a.append(MotionBasicAnimation.spin(rotates: rotates))
-                    
-                case let .spinX(rotates):
-                    a.append(MotionBasicAnimation.spinX(rotates: rotates))
-                    
-                case let .spinY(rotates):
-                    a.append(MotionBasicAnimation.spinY(rotates: rotates))
-                    
-                case let .spinZ(rotates):
-                    a.append(MotionBasicAnimation.spinZ(rotates: rotates))
-                    
-                case let .scale(to):
-                    a.append(MotionBasicAnimation.scale(to: to))
-                    
-                case let .scaleX(to):
-                    a.append(MotionBasicAnimation.scaleX(to: to))
-                    
-                case let .scaleY(to):
-                    a.append(MotionBasicAnimation.scaleY(to: to))
-                    
-                case let .scaleZ(to):
-                    a.append(MotionBasicAnimation.scaleZ(to: to))
-                    
-                case let .translate(x, y):
-                    a.append(MotionBasicAnimation.translate(to: CGPoint(x: x, y: y)))
-                    
-                case let .translateX(to):
-                    a.append(MotionBasicAnimation.translateX(to: to))
-                    
-                case let .translateY(to):
-                    a.append(MotionBasicAnimation.translateY(to: to))
-                    
-                case let .translateZ(to):
-                    a.append(MotionBasicAnimation.translateZ(to: to))
-                    
-                case .x(_), .y(_), .point(_, _):
-                    let position = MotionBasicAnimation.position(to: CGPoint(x: px, y: py))
-                    a.append(position)
-                    
-                case let .position(x, y):
-                    a.append(MotionBasicAnimation.position(to: CGPoint(x: x, y: y)))
-                    
-                case let .fade(opacity):
-                    let fade = MotionBasicAnimation.fade(to: opacity)
-                    fade.fromValue = s.value(forKey: MotionAnimationKeyPath.opacity.rawValue) ?? NSNumber(floatLiteral: 1)
-                    a.append(fade)
-                    
-                case let .zPosition(position):
-                    let zPosition = MotionBasicAnimation.zPosition(position)
-                    zPosition.fromValue = s.value(forKey: MotionAnimationKeyPath.zPosition.rawValue) ?? NSNumber(value: 0)
-                    a.append(zPosition)
-                    
-                case .width(_), .height(_), .size(_, _):
-                    a.append(MotionBasicAnimation.size(CGSize(width: w, height: h)))
-                    
-                case let .shadowPath(path):
-                    let shadowPath = MotionBasicAnimation.shadow(path: path)
-                    shadowPath.fromValue = s.shadowPath
-                    a.append(shadowPath)
-                    
-                case let .shadowColor(color):
-                    a.append(MotionBasicAnimation.shadow(color: color))
-                    
-                case let .shadowOffset(offset):
-                    let shadowOffset = MotionBasicAnimation.shadow(offset: offset)
-                    shadowOffset.fromValue = s.shadowOffset
-                    a.append(shadowOffset)
-                    
-                case let .shadowOpacity(opacity):
-                    let shadowOpacity = MotionBasicAnimation.shadow(opacity: opacity)
-                    shadowOpacity.fromValue = s.shadowOpacity
-                    a.append(shadowOpacity)
-                    
-                case let .shadowRadius(radius):
-                    let shadowRadius = MotionBasicAnimation.shadow(radius: radius)
-                    shadowRadius.fromValue = s.shadowRadius
-                    a.append(shadowRadius)
-                    
-                case let .depth(offset, opacity, radius):
-                    if let path = s.shadowPath {
-                        let shadowPath = MotionBasicAnimation.shadow(path: path)
-                        shadowPath.fromValue = s.shadowPath
-                        a.append(shadowPath)
-                    }
-                    
-                    let shadowOffset = MotionBasicAnimation.shadow(offset: offset)
-                    shadowOffset.fromValue = s.shadowOffset
-                    a.append(shadowOffset)
-                    
-                    let shadowOpacity = MotionBasicAnimation.shadow(opacity: opacity)
-                    shadowOpacity.fromValue = s.shadowOpacity
-                    a.append(shadowOpacity)
-                    
-                    let shadowRadius = MotionBasicAnimation.shadow(radius: radius)
-                    shadowRadius.fromValue = s.shadowRadius
-                    a.append(shadowRadius)
-                    
-                default:break
-                }
+            if let v = targetState.borderWidth {
+                let anim = MotionBasicAnimation.border(width: v)
+                anim.fromValue = NSNumber(floatLiteral: Double(s.borderWidth))
+                a.append(anim)
             }
             
+            if let v = targetState.cornerRadius {
+                let anim = MotionBasicAnimation.corner(radius: v)
+                anim.fromValue = NSNumber(floatLiteral: Double(s.cornerRadius))
+                a.append(anim)
+            }
+            
+            if let v = targetState.transform {
+                let anim = MotionBasicAnimation.transform(transform: v)
+                anim.fromValue = NSValue(caTransform3D: s.transform)
+                a.append(anim)
+            }
+            
+            if let v = targetState.spin {
+                var anim = MotionBasicAnimation.spinX(rotates: v.0)
+                anim.fromValue = 0
+                a.append(anim)
+                
+                anim = MotionBasicAnimation.spinY(rotates: v.1)
+                anim.fromValue = 0
+                a.append(anim)
+                
+                anim = MotionBasicAnimation.spinZ(rotates: v.2)
+                anim.fromValue = 0
+                a.append(anim)
+            }
+            
+            
+//                    
+//                case let .scale(to):
+//                    a.append(MotionBasicAnimation.scale(to: to))
+//                    
+//                case let .scaleX(to):
+//                    a.append(MotionBasicAnimation.scaleX(to: to))
+//                    
+//                case let .scaleY(to):
+//                    a.append(MotionBasicAnimation.scaleY(to: to))
+//                    
+//                case let .scaleZ(to):
+//                    a.append(MotionBasicAnimation.scaleZ(to: to))
+//                    
+//                case let .translate(x, y):
+//                    a.append(MotionBasicAnimation.translate(to: CGPoint(x: x, y: y)))
+//                    
+//                case let .translateX(to):
+//                    a.append(MotionBasicAnimation.translateX(to: to))
+//                    
+//                case let .translateY(to):
+//                    a.append(MotionBasicAnimation.translateY(to: to))
+//                    
+//                case let .translateZ(to):
+//                    a.append(MotionBasicAnimation.translateZ(to: to))
+//                    
+//                case .x(_), .y(_), .point(_, _):
+//                    let position = MotionBasicAnimation.position(to: CGPoint(x: px, y: py))
+//                    a.append(position)
+//                    
+//                case let .position(x, y):
+//                    a.append(MotionBasicAnimation.position(to: CGPoint(x: x, y: y)))
+//                    
+//                case let .fade(opacity):
+//                    let fade = MotionBasicAnimation.fade(to: opacity)
+//                    fade.fromValue = s.value(forKey: MotionAnimationKeyPath.opacity.rawValue) ?? NSNumber(floatLiteral: 1)
+//                    a.append(fade)
+//                    
+//                case let .zPosition(position):
+//                    let zPosition = MotionBasicAnimation.zPosition(position)
+//                    zPosition.fromValue = s.value(forKey: MotionAnimationKeyPath.zPosition.rawValue) ?? NSNumber(value: 0)
+//                    a.append(zPosition)
+//                    
+//                case .width(_), .height(_), .size(_, _):
+//                    a.append(MotionBasicAnimation.size(CGSize(width: w, height: h)))
+//                    
+//                case let .shadowPath(path):
+//                    let shadowPath = MotionBasicAnimation.shadow(path: path)
+//                    shadowPath.fromValue = s.shadowPath
+//                    a.append(shadowPath)
+//                    
+//                case let .shadowColor(color):
+//                    a.append(MotionBasicAnimation.shadow(color: color))
+//                    
+//                case let .shadowOffset(offset):
+//                    let shadowOffset = MotionBasicAnimation.shadow(offset: offset)
+//                    shadowOffset.fromValue = s.shadowOffset
+//                    a.append(shadowOffset)
+//                    
+//                case let .shadowOpacity(opacity):
+//                    let shadowOpacity = MotionBasicAnimation.shadow(opacity: opacity)
+//                    shadowOpacity.fromValue = s.shadowOpacity
+//                    a.append(shadowOpacity)
+//                    
+//                case let .shadowRadius(radius):
+//                    let shadowRadius = MotionBasicAnimation.shadow(radius: radius)
+//                    shadowRadius.fromValue = s.shadowRadius
+//                    a.append(shadowRadius)
+//                    
+//                case let .depth(offset, opacity, radius):
+//                    if let path = s.shadowPath {
+//                        let shadowPath = MotionBasicAnimation.shadow(path: path)
+//                        shadowPath.fromValue = s.shadowPath
+//                        a.append(shadowPath)
+//                    }
+//                    
+//                    let shadowOffset = MotionBasicAnimation.shadow(offset: offset)
+//                    shadowOffset.fromValue = s.shadowOffset
+//                    a.append(shadowOffset)
+//                    
+//                    let shadowOpacity = MotionBasicAnimation.shadow(opacity: opacity)
+//                    shadowOpacity.fromValue = s.shadowOpacity
+//                    a.append(shadowOpacity)
+//                    
+//                    let shadowRadius = MotionBasicAnimation.shadow(radius: radius)
+//                    shadowRadius.fromValue = s.shadowRadius
+//                    a.append(shadowRadius)
+//                    
+//                default:break
+//                }
+//            }
+//            
             let g = Motion.animate(group: a, duration: d)
             g.fillMode = MotionAnimationFillModeToValue(mode: .forwards)
             g.isRemovedOnCompletion = false
-            g.timingFunction = CAMediaTimingFunction.from(mediaTimingFunctionType: tf)
+            g.timingFunction = tf
             
             s.animate(g)
             

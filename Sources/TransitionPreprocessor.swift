@@ -257,27 +257,29 @@ class TransitionPreprocessor: MotionPreprocessor {
                                                .shadow(color: .black),
                                                .shadow(radius: 5),
                                                .shadow(offset: .zero),
-                                           .masksToBounds(false)]
+                                               .masksToBounds(false)]
         
         switch defaultAnimation {
         case .push(let direction):
             context[tv]!.append(contentsOf: [.translate(to: shift(direction: direction, isAppearing: true)),
-                                                 .shadow(opacity: 0),
-                                               .beginWith(transitions: shadowState),
-                                               .timingFunction(.deceleration)])
+                                             .shadow(opacity: 0),
+                                             .beginWith(transitions: shadowState),
+                                             .timingFunction(.deceleration)])
             
             context[fv]!.append(contentsOf: [.translate(to: shift(direction: direction, isAppearing: false) / 3),
-                                                 .overlay(color: .black, opacity: 0.1),
-                                                 .timingFunction(.deceleration)])
+                                             .overlay(color: .black, opacity: 0.1),
+                                             .timingFunction(.deceleration)])
+        
         case .pull(let direction):
             m.insertToViewFirst = true
           
             context[fv]!.append(contentsOf: [.translate(to: shift(direction: direction, isAppearing: false)),
-                                                   .shadow(opacity: 0),
-                                                   .beginWith(transitions: shadowState)])
+                                             .shadow(opacity: 0),
+                                             .beginWith(transitions: shadowState)])
           
             context[tv]!.append(contentsOf: [.translate(to: shift(direction: direction, isAppearing: true) / 3),
-                                                 .overlay(color: .black, opacity: 0.1)])
+                                             .overlay(color: .black, opacity: 0.1)])
+        
         case .slide(let direction):
             context[fv]!.append(contentsOf: [.translate(to: shift(direction: direction, isAppearing: false))])
         
@@ -290,39 +292,42 @@ class TransitionPreprocessor: MotionPreprocessor {
         
         case .cover(let direction):
             context[tv]!.append(contentsOf: [.translate(to: shift(direction: direction, isAppearing: true)),
-                                                 .shadow(opacity: 0),
-                                               .beginWith(transitions: shadowState),
-                                               .timingFunction(.deceleration)])
+                                             .shadow(opacity: 0),
+                                             .beginWith(transitions: shadowState),
+                                             .timingFunction(.deceleration)])
           
             context[fv]!.append(contentsOf: [.overlay(color: .black, opacity: 0.1),
-                                                 .timingFunction(.deceleration)])
+                                             .timingFunction(.deceleration)])
+        
         case .uncover(let direction):
             m.insertToViewFirst = true
             
             context[fv]!.append(contentsOf: [.translate(to: shift(direction: direction, isAppearing: false)),
-                                                   .shadow(opacity: 0),
-                                                   .beginWith(transitions: shadowState)])
+                                             .shadow(opacity: 0),
+                                             .beginWith(transitions: shadowState)])
           
             context[tv]!.append(contentsOf: [.overlay(color: .black, opacity: 0.1)])
             
         case .pageIn(let direction):
             context[tv]!.append(contentsOf: [.translate(to: shift(direction: direction, isAppearing: true)),
-                                                 .shadow(opacity: 0),
-                                                 .beginWith(transitions: shadowState),
-                                                 .timingFunction(.deceleration)])
+                                             .shadow(opacity: 0),
+                                             .beginWith(transitions: shadowState),
+                                             .timingFunction(.deceleration)])
           
             context[fv]!.append(contentsOf: [.scale(to: 0.7),
-                                                   .overlay(color: .black, opacity: 0.1),
-                                                   .timingFunction(.deceleration)])
+                                             .overlay(color: .black, opacity: 0.1),
+                                             .timingFunction(.deceleration)])
+        
         case .pageOut(let direction):
             m.insertToViewFirst = true
           
             context[fv]!.append(contentsOf: [.translate(to: shift(direction: direction, isAppearing: false)),
-                                                   .shadow(opacity: 0),
-                                                   .beginWith(transitions: shadowState)])
+                                             .shadow(opacity: 0),
+                                             .beginWith(transitions: shadowState)])
           
             context[tv]!.append(contentsOf: [.scale(to: 0.7),
-                                                 .overlay(color: .black, opacity: 0.1)])
+                                             .overlay(color: .black, opacity: 0.1)])
+        
         case .fade:
             // TODO: clean up this. overFullScreen logic shouldn't be here
             if !(fromOverFullScreen && !isPresenting) {

@@ -84,16 +84,6 @@ public extension UIView {
         }
     }
     
-    /// The animations to run.
-    var motionAnimations: [MotionAnimation]? {
-        get {
-            return associatedInstance.animations
-        }
-        set(value) {
-            associatedInstance.animations = value
-        }
-    }
-    
     /// The animations to run while in transition.
     var motionTransitions: [MotionTransition]? {
         get {

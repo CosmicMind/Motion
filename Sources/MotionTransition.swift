@@ -235,8 +235,8 @@ extension MotionTransition {
     }
     
     /// Forces the view to not fade during a transition.
-    public static var forceNonFade = MotionTransition { targetState in
-        targetState.nonFade = true
+    public static var forceNonFade = MotionTransition {
+        $0.nonFade = true
     }
     
     /// Fades the view out during a transition.
@@ -447,7 +447,6 @@ extension MotionTransition {
     }
 }
 
-// advance transitions
 extension MotionTransition {
     /**
      Apply transitions directly to the view at the start of the transition.

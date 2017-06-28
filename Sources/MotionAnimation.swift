@@ -1,77 +1,442 @@
 /*
- * Copyright (C) 2015 - 2017, Daniel Dahan and CosmicMind, Inc. <http://cosmicmind.com>.
+ * The MIT License (MIT)
+ *
+ * Copyright (C) 2017, Daniel Dahan and CosmicMind, Inc. <http://cosmicmind.com>.
  * All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
+ * Original Inspiration & Author
+ * Copyright (c) 2016 Luke Zhao <me@lkzhao.com>
  *
- *	*	Redistributions of source code must retain the above copyright notice, this
- *		list of conditions and the following disclaimer.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
  *
- *	*	Redistributions in binary form must reproduce the above copyright notice,
- *		this list of conditions and the following disclaimer in the documentation
- *		and/or other materials provided with the distribution.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
- *	*	Neither the name of CosmicMind nor the names of its
- *		contributors may be used to endorse or promote products derived from
- *		this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
 
 import UIKit
 
-public enum MotionAnimation {
-    case delay(TimeInterval)
-    case timingFunction(CAMediaTimingFunctionType)
-    case duration(TimeInterval)
-    case custom(CABasicAnimation)
-    case backgroundColor(UIColor)
-    case barTintColor(UIColor)
-    case borderColor(UIColor)
-    case borderWidth(CGFloat)
-    case cornerRadius(CGFloat)
-    case transform(CATransform3D)
-    case rotate(CGFloat)
-    case rotateX(CGFloat)
-    case rotateY(CGFloat)
-    case rotateZ(CGFloat)
-    case spin(CGFloat)
-    case spinX(CGFloat)
-    case spinY(CGFloat)
-    case spinZ(CGFloat)
-    case scale(CGFloat)
-    case scaleX(CGFloat)
-    case scaleY(CGFloat)
-    case scaleZ(CGFloat)
-    case translate(x: CGFloat, y: CGFloat)
-    case translateX(CGFloat)
-    case translateY(CGFloat)
-    case translateZ(CGFloat)
-    case x(CGFloat)
-    case y(CGFloat)
-    case point(x: CGFloat, y: CGFloat)
-    case position(x: CGFloat, y: CGFloat)
-    case fade(Double)
-    case zPosition(CGFloat)
-    case width(CGFloat)
-    case height(CGFloat)
-    case size(width: CGFloat, height: CGFloat)
-    case shadowPath(CGPath)
-    case shadowColor(UIColor)
-    case shadowOffset(CGSize)
-    case shadowOpacity(Float)
-    case shadowRadius(CGFloat)
-    case depth(shadowOffset: CGSize, shadowOpacity: Float, shadowRadius: CGFloat)
+public final class MotionAnimation {
+    /// A reference to the callback that applies the MotionAnimationState.
+    internal let apply: (inout MotionAnimationState) -> Void
+    
+    /**
+     An initializer that accepts a given callback.
+     - Parameter applyFunction: A given callback.
+     */
+    public init(applyFunction: @escaping (inout MotionAnimationState) -> Void) {
+        apply = applyFunction
+    }
+}
+
+extension MotionAnimation {
+    /**
+     Animates the view's current background color to the
+     given color.
+     - Parameter color: A UIColor.
+     - Returns: A MotionAnimation.
+     */
+    public static func background(color: UIColor) -> MotionAnimation {
+        return MotionAnimation {
+            $0.backgroundColor = color.cgColor
+        }
+    }
+    
+    /**
+     Animates the view's current border color to the
+     given color.
+     - Parameter color: A UIColor.
+     - Returns: A MotionAnimation.
+     */
+    public static func border(color: UIColor) -> MotionAnimation {
+        return MotionAnimation {
+            $0.borderColor = color.cgColor
+        }
+    }
+    
+    /**
+     Animates the view's current border width to the
+     given width.
+     - Parameter width: A CGFloat.
+     - Returns: A MotionAnimation.
+     */
+    public static func border(width: CGFloat) -> MotionAnimation {
+        return MotionAnimation {
+            $0.borderWidth = width
+        }
+    }
+    
+    /**
+     Animates the view's current corner radius to the
+     given radius.
+     - Parameter radius: A CGFloat.
+     - Returns: A MotionAnimation.
+     */
+    public static func corner(radius: CGFloat) -> MotionAnimation {
+        return MotionAnimation {
+            $0.cornerRadius = radius
+        }
+    }
+    
+    /**
+     Animates the view's current transform (perspective, scale, rotate)
+     to the given one.
+     - Parameter _ transform: A CATransform3D.
+     - Returns: A MotionAnimation.
+     */
+    public static func transform(_ transform: CATransform3D) -> MotionAnimation {
+        return MotionAnimation {
+            $0.transform = transform
+        }
+    }
+    
+    /**
+     Animates the view's current perspective to the gievn one through
+     a CATransform3D object.
+     - Parameter _ perspective: A CGFloat.
+     - Returns: A MotionAnimation.
+     */
+    public static func perspective(_ perspective: CGFloat) -> MotionAnimation {
+        return MotionAnimation {
+            var t = $0.transform ?? CATransform3DIdentity
+            t.m34 = 1 / -perspective
+            $0.transform = t
+        }
+    }
+    
+    /**
+     Animates the view's current rotate to the given x, y,
+     and z values.
+     - Parameter x: A CGFloat.
+     - Parameter y: A CGFloat.
+     - Parameter z: A CGFloat.
+     - Returns: A MotionAnimation.
+     */
+    public static func rotate(x: CGFloat = 0, y: CGFloat = 0, z: CGFloat = 0) -> MotionAnimation {
+        return MotionAnimation {
+            var t = $0.transform ?? CATransform3DIdentity
+            t = CATransform3DRotate(t, CGFloat(Double.pi) * x / 180, 1, 0, 0)
+            t = CATransform3DRotate(t, CGFloat(Double.pi) * y / 180, 0, 1, 0)
+            $0.transform = CATransform3DRotate(t, CGFloat(Double.pi) * z / 180, 0, 0, 1)
+        }
+    }
+    
+    /**
+     Animates the view's current rotate to the given point.
+     - Parameter _ point: A CGPoint.
+     - Parameter z: A CGFloat, default is 0.
+     - Returns: A MotionAnimation.
+     */
+    public static func rotate(_ point: CGPoint, z: CGFloat = 0) -> MotionAnimation {
+        return .rotate(x: point.x, y: point.y, z: z)
+    }
+    
+    /**
+     Rotate 2d.
+     - Parameter _ z: A CGFloat.
+     - Returns: A MotionAnimation.
+     */
+    public static func rotate(_ z: CGFloat) -> MotionAnimation {
+        return .rotate(z: z)
+    }
+    
+    /**
+     Animates the view's current spin to the given x, y,
+     and z values.
+     - Parameter x: A CGFloat.
+     - Parameter y: A CGFloat.
+     - Parameter z: A CGFloat.
+     - Returns: A MotionAnimation.
+     */
+    public static func spin(x: CGFloat = 0, y: CGFloat = 0, z: CGFloat = 0) -> MotionAnimation {
+        return MotionAnimation {
+            $0.spin = (x, y, z)
+        }
+    }
+    
+    /**
+     Animates the view's current spin to the given point.
+     - Parameter _ point: A CGPoint.
+     - Parameter z: A CGFloat, default is 0.
+     - Returns: A MotionAnimation.
+     */
+    public static func spin(_ point: CGPoint, z: CGFloat = 0) -> MotionAnimation {
+        return .spin(x: point.x, y: point.y, z: z)
+    }
+    
+    /**
+     Spin 2d.
+     - Parameter _ z: A CGFloat.
+     - Returns: A MotionAnimation.
+     */
+    public static func spin(_ z: CGFloat) -> MotionAnimation {
+        return .spin(z: z)
+    }
+    
+    /**
+     Animates the view's current scale to the given x, y, z scale values.
+     - Parameter x: A CGFloat.
+     - Parameter y: A CGFloat.
+     - Parameter z: A CGFloat.
+     - Returns: A MotionAnimation.
+     */
+    public static func scale(x: CGFloat = 1, y: CGFloat = 1, z: CGFloat = 1) -> MotionAnimation {
+        return MotionAnimation {
+            $0.transform = CATransform3DScale($0.transform ?? CATransform3DIdentity, x, y, z)
+        }
+    }
+    
+    /**
+     Animates the view's current x & y scale to the given scale value.
+     - Parameter to scale: A CGFloat.
+     - Returns: A MotionAnimation.
+     */
+    public static func scale(to scale: CGFloat) -> MotionAnimation {
+        return .scale(x: scale, y: scale)
+    }
+    
+    /**
+     Animates the view's current translation to the given
+     x, y, and z values.
+     - Parameter x: A CGFloat.
+     - Parameter y: A CGFloat.
+     - Parameter z: A CGFloat.
+     - Returns: A MotionAnimation.
+     */
+    public static func translate(x: CGFloat = 0, y: CGFloat = 0, z: CGFloat = 0) -> MotionAnimation {
+        return MotionAnimation {
+            $0.transform = CATransform3DTranslate($0.transform ?? CATransform3DIdentity, x, y, z)
+        }
+    }
+    
+    /**
+     Animates the view's current translation to the given
+     point value (x & y), and a z value.
+     - Parameter to point: A CGPoint.
+     - Parameter z: A CGFloat, default is 0.
+     - Returns: A MotionAnimation.
+     */
+    public static func translate(to point: CGPoint, z: CGFloat = 0) -> MotionAnimation {
+        return .translate(x: point.x, y: point.y, z: z)
+    }
+    
+    /**
+     Animates the view's current position to the given point.
+     - Parameter to point: A CGPoint.
+     - Returns: A MotionAnimation.
+     */
+    public static func position(to point: CGPoint) -> MotionAnimation {
+        return MotionAnimation {
+            $0.position = point
+        }
+    }
+    
+    /// Fades the view out during a transition.
+    public static var fade = MotionAnimation {
+        $0.opacity = 0
+    }
+    
+    /**
+     Animates the view's current opacity to the given one.
+     - Parameter to opacity: A Float value.
+     - Returns: A MotionAnimation.
+     */
+    public static func fade(to opacity: Float) -> MotionAnimation {
+        return MotionAnimation {
+            $0.opacity = opacity
+        }
+    }
+    
+    /**
+     Animates the view's current zPosition to the given position.
+     - Parameter _ position: An Int.
+     - Returns: A MotionAnimation.
+     */
+    public static func zPosition(_ position: CGFloat) -> MotionAnimation {
+        return MotionAnimation {
+            $0.zPosition = position
+        }
+    }
+    
+    /**
+     Animates the view's current size to the given one.
+     - Parameter _ size: A CGSize.
+     - Returns: A MotionAnimation.
+     */
+    public static func size(_ size: CGSize) -> MotionAnimation {
+        return MotionAnimation {
+            $0.size = size
+        }
+    }
+    
+    /**
+     Animates the view's current shadow path to the given one.
+     - Parameter path: A CGPath.
+     - Returns: A MotionAnimation.
+     */
+    public static func shadow(path: CGPath) -> MotionAnimation {
+        return MotionAnimation {
+            $0.shadowPath = path
+        }
+    }
+    
+    /**
+     Animates the view's current shadow color to the given one.
+     - Parameter color: A UIColor.
+     - Returns: A MotionAnimation.
+     */
+    public static func shadow(color: UIColor) -> MotionAnimation {
+        return MotionAnimation {
+            $0.shadowColor = color.cgColor
+        }
+    }
+    
+    /**
+     Animates the view's current shadow offset to the given one.
+     - Parameter offset: A CGSize.
+     - Returns: A MotionAnimation.
+     */
+    public static func shadow(offset: CGSize) -> MotionAnimation {
+        return MotionAnimation {
+            $0.shadowOffset = offset
+        }
+    }
+    
+    /**
+     Animates the view's current shadow opacity to the given one.
+     - Parameter opacity: A CGFloat.
+     - Returns: A MotionAnimation.
+     */
+    public static func shadow(opacity: CGFloat) -> MotionAnimation {
+        return MotionAnimation {
+            $0.shadowOpacity = Float(opacity)
+        }
+    }
+    
+    /**
+     Animates the view's current shadow radius to the given one.
+     - Parameter radius: A CGFloat.
+     - Returns: A MotionAnimation.
+     */
+    public static func shadow(radius: CGFloat) -> MotionAnimation {
+        return MotionAnimation {
+            $0.shadowRadius = radius
+        }
+    }
+    
+    /**
+     Animates the view's contents rect to the given one.
+     - Parameter rect: A CGRect.
+     - Returns: A MotionAnimation.
+     */
+    public static func contents(rect: CGRect) -> MotionAnimation {
+        return MotionAnimation {
+            $0.contentsRect = rect
+        }
+    }
+    
+    /**
+     Animates the view's contents scale to the given one.
+     - Parameter scale: A CGFloat.
+     - Returns: A MotionAnimation.
+     */
+    public static func contents(scale: CGFloat) -> MotionAnimation {
+        return MotionAnimation {
+            $0.contentsScale = scale
+        }
+    }
+    
+    /**
+     The duration of the view's animation.
+     - Parameter _ duration: A TimeInterval.
+     - Returns: A MotionAnimation.
+     */
+    public static func duration(_ duration: TimeInterval) -> MotionAnimation {
+        return MotionAnimation {
+            $0.duration = duration
+        }
+    }
+    
+    /**
+     Sets the view's animation duration to the longest
+     running animation within a transition.
+     */
+    public static var preferredDurationMatchesLongest = MotionAnimation.duration(.infinity)
+    
+    /**
+     Delays the animation of a given view.
+     - Parameter _ time: TimeInterval.
+     - Returns: A MotionAnimation.
+     */
+    public static func delay(_ time: TimeInterval) -> MotionAnimation {
+        return MotionAnimation {
+            $0.delay = time
+        }
+    }
+    
+    /**
+     Sets the view's timing function for the animation.
+     - Parameter _ timingFunction: A CAMediaTimingFunction.
+     - Returns: A MotionAnimation.
+     */
+    public static func timingFunction(_ timingFunction: CAMediaTimingFunction) -> MotionAnimation {
+        return MotionAnimation {
+            $0.timingFunction = timingFunction
+        }
+    }
+    
+    /**
+     Available in iOS 9+, animates a view using the spring API,
+     given a stiffness and damping.
+     - Parameter stiffness: A CGFlloat.
+     - Parameter damping: A CGFloat.
+     - Returns: A MotionAnimation.
+     */
+    @available(iOS 9, *)
+    public static func spring(stiffness: CGFloat, damping: CGFloat) -> MotionAnimation {
+        return MotionAnimation {
+            $0.spring = (stiffness, damping)
+        }
+    }
+    
+    /**
+     Animates the natural curve of a view. A value of 1 represents
+     a curve in a downward direction, and a value of -1
+     represents a curve in an upward direction.
+     - Parameter intensity: A CGFloat.
+     - Returns: A MotionAnimation.
+     */
+    public static func arc(intensity: CGFloat = 1) -> MotionAnimation {
+        return MotionAnimation {
+            $0.arc = intensity
+        }
+    }
+    
+    /**
+     Animates subviews with an increasing delay between each animation.
+     - Parameter delta: A TimeInterval.
+     - Parameter direction: A CascadeDirection.
+     - Parameter animationDelayUntilMatchedViews: A boolean indicating whether
+     or not to delay the subview animation until all have started.
+     - Returns: A MotionAnimation.
+     */
+    public static func cascade(delta: TimeInterval = 0.02, direction: CascadeDirection = .topToBottom, animationDelayUntilMatchedViews: Bool = false) -> MotionAnimation {
+        return MotionAnimation {
+            $0.cascade = (delta, direction, animationDelayUntilMatchedViews)
+        }
+    }
 }
 
 public enum MotionAnimationKeyPath: String {
@@ -180,50 +545,6 @@ public struct MotionBasicAnimation {
     public static func transform(transform: CATransform3D) -> CABasicAnimation {
         let animation = CABasicAnimation(keyPath: .transform)
         animation.toValue = NSValue(caTransform3D: transform)
-        return animation
-    }
-    
-    /**
-     Creates a CABasicAnimation for the transform.rotate key path.
-     - Parameter angle: An optional CGFloat.
-     - Returns: A CABasicAnimation.
-     */
-    public static func rotate(angle: CGFloat) -> CABasicAnimation {
-        let animation = CABasicAnimation(keyPath: .rotate)
-        animation.toValue = NSNumber(value: Double(CGFloat(Double.pi) * angle / 180))
-        return animation
-    }
-    
-    /**
-     Creates a CABasicAnimation for the transform.rotate.x key path.
-     - Parameter angle: An optional CGFloat.
-     - Returns: A CABasicAnimation.
-     */
-    public static func rotateX(angle: CGFloat) -> CABasicAnimation {
-        let animation = CABasicAnimation(keyPath: .rotateX)
-        animation.toValue = NSNumber(value: Double(CGFloat(Double.pi) * angle / 180))
-        return animation
-    }
-    
-    /**
-     Creates a CABasicAnimation for the transform.rotate.y key path.
-     - Parameter angle: An optional CGFloat.
-     - Returns: A CABasicAnimation.
-     */
-    public static func rotateY(angle: CGFloat) -> CABasicAnimation {
-        let animation = CABasicAnimation(keyPath: .rotateY)
-        animation.toValue = NSNumber(value: Double(CGFloat(Double.pi) * angle / 180))
-        return animation
-    }
-    
-    /**
-     Creates a CABasicAnimation for the transform.rotate.z key path.
-     - Parameter angle: An optional CGFloat.
-     - Returns: A CABasicAnimation.
-     */
-    public static func rotateZ(angle: CGFloat) -> CABasicAnimation {
-        let animation = CABasicAnimation(keyPath: .rotateZ)
-        animation.toValue = NSNumber(value: Double(CGFloat(Double.pi) * angle / 180))
         return animation
     }
     

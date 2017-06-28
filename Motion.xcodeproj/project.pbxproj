@@ -42,6 +42,7 @@
 		96AEB6AF1EE4610F009A3BE0 /* MatchPreprocessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96AEB68B1EE4610F009A3BE0 /* MatchPreprocessor.swift */; };
 		96AEB6B01EE4610F009A3BE0 /* SourcePreprocessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96AEB68C1EE4610F009A3BE0 /* SourcePreprocessor.swift */; };
 		96E49A401EEA08F8006D5A93 /* MotionTransitionObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E49A3F1EEA08F8006D5A93 /* MotionTransitionObserver.swift */; };
+		96F8905B1F045099004BEB1A /* MotionCAAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96F8905A1F045099004BEB1A /* MotionCAAnimation.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -83,6 +84,7 @@
 		96C98DE21E43809D00B22906 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		96C98DED1E438A5700B22906 /* Motion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Motion.h; sourceTree = "<group>"; };
 		96E49A3F1EEA08F8006D5A93 /* MotionTransitionObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionTransitionObserver.swift; sourceTree = "<group>"; };
+		96F8905A1F045099004BEB1A /* MotionCAAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionCAAnimation.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -173,6 +175,7 @@
 				96AEB67B1EE4610F009A3BE0 /* MotionTransition.swift */,
 				96E49A3F1EEA08F8006D5A93 /* MotionTransitionObserver.swift */,
 				96AEB67D1EE4610F009A3BE0 /* MotionPlugin.swift */,
+				96F8905A1F045099004BEB1A /* MotionCAAnimation.swift */,
 				96AEB6641EE4610F009A3BE0 /* Animator */,
 				96AEB66D1EE4610F009A3BE0 /* Extensions */,
 				96AEB6861EE4610F009A3BE0 /* Preprocessors */,
@@ -267,6 +270,7 @@
 				96AEB6931EE4610F009A3BE0 /* TransitionPreprocessor.swift in Sources */,
 				96AEB68F1EE4610F009A3BE0 /* MotionDefaultAnimator.swift in Sources */,
 				96AEB69D1EE4610F009A3BE0 /* Motion.swift in Sources */,
+				96F8905B1F045099004BEB1A /* MotionCAAnimation.swift in Sources */,
 				963150D61EE51C7A002B0D42 /* MotionAnimation.swift in Sources */,
 				968989DE1EE6633E003B8F3D /* MotionAnimator.swift in Sources */,
 				968989B91EE5B34B003B8F3D /* MotionHasInsertOrder.swift in Sources */,

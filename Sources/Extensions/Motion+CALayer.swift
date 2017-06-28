@@ -160,101 +160,107 @@ fileprivate extension CALayer {
             let d: TimeInterval = targetState.duration ?? duration
 
             if let v = targetState.backgroundColor {
-                let a = MotionBasicAnimation.background(color: UIColor(cgColor: v))
+                let a = MotionCAAnimation.background(color: UIColor(cgColor: v))
                 a.fromValue = s.backgroundColor
                 anims.append(a)
             }
             
             if let v = targetState.borderColor {
-                let a = MotionBasicAnimation.border(color: UIColor(cgColor: v))
+                let a = MotionCAAnimation.border(color: UIColor(cgColor: v))
                 a.fromValue = s.borderColor
                 anims.append(a)
             }
             
             if let v = targetState.borderWidth {
-                let a = MotionBasicAnimation.border(width: v)
+                let a = MotionCAAnimation.border(width: v)
                 a.fromValue = NSNumber(floatLiteral: Double(s.borderWidth))
                 anims.append(a)
             }
             
             if let v = targetState.cornerRadius {
-                let a = MotionBasicAnimation.corner(radius: v)
+                let a = MotionCAAnimation.corner(radius: v)
                 a.fromValue = NSNumber(floatLiteral: Double(s.cornerRadius))
                 anims.append(a)
             }
             
             if let v = targetState.transform {
-                let a = MotionBasicAnimation.transform(v)
+                let a = MotionCAAnimation.transform(v)
                 a.fromValue = NSValue(caTransform3D: s.transform)
                 anims.append(a)
             }
             
             if let v = targetState.spin {
-                var a = MotionBasicAnimation.spinX(v.0)
+                var a = MotionCAAnimation.spinX(v.0)
                 a.fromValue = NSNumber(floatLiteral: 0)
                 anims.append(a)
                 
-                a = MotionBasicAnimation.spinY(v.1)
+                a = MotionCAAnimation.spinY(v.1)
                 a.fromValue = NSNumber(floatLiteral: 0)
                 anims.append(a)
                 
-                a = MotionBasicAnimation.spinZ(v.2)
+                a = MotionCAAnimation.spinZ(v.2)
                 a.fromValue = NSNumber(floatLiteral: 0)
                 anims.append(a)
             }
             
             if let v = targetState.position {
-                let a = MotionBasicAnimation.position(v)
+                let a = MotionCAAnimation.position(v)
                 a.fromValue = NSValue(cgPoint: s.position)
                 anims.append(a)
             }
             
             if let v = targetState.opacity {
-                let a = MotionBasicAnimation.fade(v)
+                let a = MotionCAAnimation.fade(v)
                 a.fromValue = s.value(forKeyPath: MotionAnimationKeyPath.opacity.rawValue) ?? NSNumber(floatLiteral: 1)
                 anims.append(a)
             }
             
             if let v = targetState.zPosition {
-                let a = MotionBasicAnimation.zPosition(v)
+                let a = MotionCAAnimation.zPosition(v)
                 a.fromValue = s.value(forKeyPath: MotionAnimationKeyPath.zPosition.rawValue) ?? NSNumber(floatLiteral: 0)
                 anims.append(a)
             }
             
             if let v = targetState.size {
-                let a = MotionBasicAnimation.size(v)
+                let a = MotionCAAnimation.size(v)
                 a.fromValue = NSValue(cgSize: s.bounds.size)
                 anims.append(a)
             }
 
             if let v = targetState.shadowPath {
-                let a = MotionBasicAnimation.shadow(path: v)
+                let a = MotionCAAnimation.shadow(path: v)
                 a.fromValue = s.shadowPath
                 anims.append(a)
             }
             
             if let v = targetState.shadowColor {
-                let a = MotionBasicAnimation.shadow(color: UIColor(cgColor: v))
+                let a = MotionCAAnimation.shadow(color: UIColor(cgColor: v))
                 a.fromValue = s.shadowColor
                 anims.append(a)
             }
             
             if let v = targetState.shadowOffset {
-                let a = MotionBasicAnimation.shadow(offset: v)
+                let a = MotionCAAnimation.shadow(offset: v)
                 a.fromValue = NSValue(cgSize: s.shadowOffset)
                 anims.append(a)
             }
 
             if let v = targetState.shadowOpacity {
-                let a = MotionBasicAnimation.shadow(opacity: v)
+                let a = MotionCAAnimation.shadow(opacity: v)
                 a.fromValue = NSNumber(floatLiteral: Double(s.shadowOpacity))
                 anims.append(a)
             }
             
             if let v = targetState.shadowRadius {
-                let a = MotionBasicAnimation.shadow(radius: v)
+                let a = MotionCAAnimation.shadow(radius: v)
                 a.fromValue = NSNumber(floatLiteral: Double(s.shadowRadius))
                 anims.append(a)
+            }
+            
+            if #available(iOS 9.0, *), let (stiffness, damping) = targetState.spring {
+                for i in 0..<anims.count where "cornerRadius" != anims[i].keyPath {
+                    anims[i] = MotionCAAnimation.convert(basic: anims[i], stiffness: stiffness, damping: damping)
+                }
             }
 
             let g = Motion.animate(group: anims, duration: d)

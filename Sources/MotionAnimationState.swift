@@ -95,9 +95,6 @@ public struct MotionAnimationState {
     /// The arc curve value.
     public var arc: CGFloat?
     
-    /// The cascading animation settings.
-    public var cascade: (TimeInterval, CascadeDirection, Bool)?
-    
     /// Custom target states.
     public var custom: [String: Any]?
     

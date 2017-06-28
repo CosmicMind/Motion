@@ -147,7 +147,6 @@ fileprivate extension CALayer {
      - Parameter completion: An optional completion block.
      */
     func animate(delay: TimeInterval, duration: TimeInterval, timingFunction: CAMediaTimingFunctionType, animations: [MotionAnimation], completion: (() -> Void)? = nil) {
-        
         let targetState = MotionAnimationState(animations: animations)
         
         Motion.delay(targetState.delay) { [weak self] in
@@ -156,32 +155,10 @@ fileprivate extension CALayer {
             }
 
             var anims = [CABasicAnimation]()
+            
             let tf: CAMediaTimingFunction = targetState.timingFunction ?? CAMediaTimingFunction.from(mediaTimingFunctionType: timingFunction)
             let d: TimeInterval = targetState.duration ?? duration
-//
-//            var w: CGFloat = s.bounds.width
-//            var h: CGFloat = s.bounds.height
-//
-//            
-//            var px: CGFloat = s.position.x
-//            var py: CGFloat = s.position.y
-//
-//            for v in animations {
-//                switch v {
-//                case let .x(x):
-//                    px = x + w / 2
-//                    
-//                case let .y(y):
-//                    py = y + h / 2
-//                    
-//                case let .point(x, y):
-//                    px = x + w / 2
-//                    py = y + h / 2
-//                    
-//                default:break
-//                }
-//            }
-//            
+
             if let v = targetState.backgroundColor {
                 let a = MotionBasicAnimation.background(color: UIColor(cgColor: v))
                 a.fromValue = s.backgroundColor
@@ -244,56 +221,42 @@ fileprivate extension CALayer {
                 anims.append(a)
             }
             
-        
-//                case .width(_), .height(_), .size(_, _):
-//                    a.append(MotionBasicAnimation.size(CGSize(width: w, height: h)))
-//                    
-//                case let .shadowPath(path):
-//                    let shadowPath = MotionBasicAnimation.shadow(path: path)
-//                    shadowPath.fromValue = s.shadowPath
-//                    a.append(shadowPath)
-//                    
-//                case let .shadowColor(color):
-//                    a.append(MotionBasicAnimation.shadow(color: color))
-//                    
-//                case let .shadowOffset(offset):
-//                    let shadowOffset = MotionBasicAnimation.shadow(offset: offset)
-//                    shadowOffset.fromValue = s.shadowOffset
-//                    a.append(shadowOffset)
-//                    
-//                case let .shadowOpacity(opacity):
-//                    let shadowOpacity = MotionBasicAnimation.shadow(opacity: opacity)
-//                    shadowOpacity.fromValue = s.shadowOpacity
-//                    a.append(shadowOpacity)
-//                    
-//                case let .shadowRadius(radius):
-//                    let shadowRadius = MotionBasicAnimation.shadow(radius: radius)
-//                    shadowRadius.fromValue = s.shadowRadius
-//                    a.append(shadowRadius)
-//                    
-//                case let .depth(offset, opacity, radius):
-//                    if let path = s.shadowPath {
-//                        let shadowPath = MotionBasicAnimation.shadow(path: path)
-//                        shadowPath.fromValue = s.shadowPath
-//                        a.append(shadowPath)
-//                    }
-//                    
-//                    let shadowOffset = MotionBasicAnimation.shadow(offset: offset)
-//                    shadowOffset.fromValue = s.shadowOffset
-//                    a.append(shadowOffset)
-//                    
-//                    let shadowOpacity = MotionBasicAnimation.shadow(opacity: opacity)
-//                    shadowOpacity.fromValue = s.shadowOpacity
-//                    a.append(shadowOpacity)
-//                    
-//                    let shadowRadius = MotionBasicAnimation.shadow(radius: radius)
-//                    shadowRadius.fromValue = s.shadowRadius
-//                    a.append(shadowRadius)
-//                    
-//                default:break
-//                }
-//            }
-//            
+            if let v = targetState.size {
+                let a = MotionBasicAnimation.size(v)
+                a.fromValue = NSValue(cgSize: s.bounds.size)
+                anims.append(a)
+            }
+
+            if let v = targetState.shadowPath {
+                let a = MotionBasicAnimation.shadow(path: v)
+                a.fromValue = s.shadowPath
+                anims.append(a)
+            }
+            
+            if let v = targetState.shadowColor {
+                let a = MotionBasicAnimation.shadow(color: UIColor(cgColor: v))
+                a.fromValue = s.shadowColor
+                anims.append(a)
+            }
+            
+            if let v = targetState.shadowOffset {
+                let a = MotionBasicAnimation.shadow(offset: v)
+                a.fromValue = NSValue(cgSize: s.shadowOffset)
+                anims.append(a)
+            }
+
+            if let v = targetState.shadowOpacity {
+                let a = MotionBasicAnimation.shadow(opacity: v)
+                a.fromValue = NSNumber(floatLiteral: Double(s.shadowOpacity))
+                anims.append(a)
+            }
+            
+            if let v = targetState.shadowRadius {
+                let a = MotionBasicAnimation.shadow(radius: v)
+                a.fromValue = NSNumber(floatLiteral: Double(s.shadowRadius))
+                anims.append(a)
+            }
+
             let g = Motion.animate(group: anims, duration: d)
             g.fillMode = MotionAnimationFillModeToValue(mode: .forwards)
             g.isRemovedOnCompletion = false

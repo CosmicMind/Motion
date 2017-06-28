@@ -28,7 +28,7 @@
 
 import UIKit
 
-public final class MotionTransition {
+public class MotionTransition {
     /// A reference to the callback that applies the MotionTransitionState.
     internal let apply: (inout MotionTransitionState) -> Void
     
@@ -247,7 +247,7 @@ extension MotionTransition {
     
     /**
      Animates the view's current opacity to the given one.
-     - Parameter to opacity: A Double value.
+     - Parameter to opacity: A Double.
      - Returns: A MotionTransition.
      */
     public static func fade(_ opacity: Double) -> MotionTransition {
@@ -313,12 +313,12 @@ extension MotionTransition {
     
     /**
      Animates the view's current shadow opacity to the given one.
-     - Parameter opacity: A CGFloat.
+     - Parameter opacity: A Float.
      - Returns: A MotionTransition.
      */
-    public static func shadow(opacity: CGFloat) -> MotionTransition {
+    public static func shadow(opacity: Float) -> MotionTransition {
         return MotionTransition {
-            $0.shadowOpacity = Float(opacity)
+            $0.shadowOpacity = opacity
         }
     }
     

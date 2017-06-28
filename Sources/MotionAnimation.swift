@@ -28,7 +28,7 @@
 
 import UIKit
 
-public final class MotionAnimation {
+public class MotionAnimation {
     /// A reference to the callback that applies the MotionAnimationState.
     internal let apply: (inout MotionAnimationState) -> Void
     
@@ -251,7 +251,7 @@ extension MotionAnimation {
     
     /**
      Animates the view's current opacity to the given one.
-     - Parameter _ opacity: A Double value.
+     - Parameter _ opacity: A Double.
      - Returns: A MotionAnimation.
      */
     public static func fade(_ opacity: Double) -> MotionAnimation {
@@ -317,12 +317,12 @@ extension MotionAnimation {
     
     /**
      Animates the view's current shadow opacity to the given one.
-     - Parameter opacity: A CGFloat.
+     - Parameter opacity: A Float.
      - Returns: A MotionAnimation.
      */
-    public static func shadow(opacity: CGFloat) -> MotionAnimation {
+    public static func shadow(opacity: Float) -> MotionAnimation {
         return MotionAnimation {
-            $0.shadowOpacity = Float(opacity)
+            $0.shadowOpacity = opacity
         }
     }
     
@@ -335,6 +335,28 @@ extension MotionAnimation {
         return MotionAnimation {
             $0.shadowRadius = radius
         }
+    }
+    
+    /**
+     Animates the views shadow offset, opacity, and radius. 
+     - Parameter offset: A CGSize. 
+     - Parameter opacity: A Float.
+     - Parameter radius: A CGFloat.
+     */
+    public static func depth(offset: CGSize, opacity: Float, radius: CGFloat) -> MotionAnimation {
+        return MotionAnimation {
+            $0.shadowOffset = offset
+            $0.shadowOpacity = opacity
+            $0.shadowRadius = radius
+        }
+    }
+    
+    /**
+     Animates the views shadow offset, opacity, and radius.
+     - Parameter _ depth: A tuple (CGSize, FLoat, CGFloat).
+     */
+    public static func depth(_ depth: (CGSize, Float, CGFloat)) -> MotionAnimation {
+        return .depth(offset: depth.0, opacity: depth.1, radius: depth.2)
     }
     
     /**
@@ -422,20 +444,6 @@ extension MotionAnimation {
     public static func arc(intensity: CGFloat = 1) -> MotionAnimation {
         return MotionAnimation {
             $0.arc = intensity
-        }
-    }
-    
-    /**
-     Animates subviews with an increasing delay between each animation.
-     - Parameter delta: A TimeInterval.
-     - Parameter direction: A CascadeDirection.
-     - Parameter animationDelayUntilMatchedViews: A boolean indicating whether
-     or not to delay the subview animation until all have started.
-     - Returns: A MotionAnimation.
-     */
-    public static func cascade(delta: TimeInterval = 0.02, direction: CascadeDirection = .topToBottom, animationDelayUntilMatchedViews: Bool = false) -> MotionAnimation {
-        return MotionAnimation {
-            $0.cascade = (delta, direction, animationDelayUntilMatchedViews)
         }
     }
 }
@@ -599,9 +607,9 @@ public struct MotionBasicAnimation {
      - Returns: A CABasicAnimation.
      */
     public static func fade(_ opacity: Double) -> CABasicAnimation {
-        let animation = CABasicAnimation(keyPath: .opacity)
-        animation.toValue = NSNumber(floatLiteral: opacity)
-        return animation
+        let a = CABasicAnimation(keyPath: .opacity)
+        a.toValue = NSNumber(floatLiteral: opacity)
+        return a
     }
     
     /**
@@ -610,9 +618,9 @@ public struct MotionBasicAnimation {
      - Returns: A CABasicAnimation.
      */
     public static func zPosition(_ position: CGFloat) -> CABasicAnimation {
-        let animation = CABasicAnimation(keyPath: .zPosition)
-        animation.toValue = NSNumber(value: Double(position))
-        return animation
+        let a = CABasicAnimation(keyPath: .zPosition)
+        a.toValue = NSNumber(value: Double(position))
+        return a
     }
     
     /**
@@ -621,9 +629,9 @@ public struct MotionBasicAnimation {
      - Returns: A CABasicAnimation.
      */
     public static func width(_ width: CGFloat) -> CABasicAnimation {
-        let animation = CABasicAnimation(keyPath: .width)
-        animation.toValue = NSNumber(floatLiteral: Double(width))
-        return animation
+        let a = CABasicAnimation(keyPath: .width)
+        a.toValue = NSNumber(floatLiteral: Double(width))
+        return a
     }
     
     /**
@@ -632,9 +640,9 @@ public struct MotionBasicAnimation {
      - Returns: A CABasicAnimation.
      */
     public static func height(_ height: CGFloat) -> CABasicAnimation {
-        let animation = CABasicAnimation(keyPath: .height)
-        animation.toValue = NSNumber(floatLiteral: Double(height))
-        return animation
+        let a = CABasicAnimation(keyPath: .height)
+        a.toValue = NSNumber(floatLiteral: Double(height))
+        return a
     }
     
     /**
@@ -643,9 +651,9 @@ public struct MotionBasicAnimation {
      - Returns: A CABasicAnimation.
      */
     public static func size(_ size: CGSize) -> CABasicAnimation {
-        let animation = CABasicAnimation(keyPath: .size)
-        animation.toValue = NSValue(cgSize: size)
-        return animation
+        let a = CABasicAnimation(keyPath: .size)
+        a.toValue = NSValue(cgSize: size)
+        return a
     }
     
     /**
@@ -672,7 +680,7 @@ public struct MotionBasicAnimation {
     
     /**
      Creates a CABasicAnimation for the shadowOffset key path.
-     - Parameter offset: CGSize.
+     - Parameter offset: A CGSize.
      - Returns: A CABasicAnimation.
      */
     public static func shadow(offset: CGSize) -> CABasicAnimation {
@@ -683,7 +691,7 @@ public struct MotionBasicAnimation {
     
     /**
      Creates a CABasicAnimation for the shadowOpacity key path.
-     - Parameter opacity: Float.
+     - Parameter opacity: A Float.
      - Returns: A CABasicAnimation.
      */
     public static func shadow(opacity: Float) -> CABasicAnimation {
@@ -694,7 +702,7 @@ public struct MotionBasicAnimation {
     
     /**
      Creates a CABasicAnimation for the shadowRadius key path.
-     - Parameter radius: CGFloat.
+     - Parameter radius: A CGFloat.
      - Returns: A CABasicAnimation.
      */
     public static func shadow(radius: CGFloat) -> CABasicAnimation {

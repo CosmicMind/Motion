@@ -90,17 +90,16 @@ fileprivate extension MotionCAAnimation {
 internal extension MotionCAAnimation {
     /**
      Converts a CABasicAnimation to a CASpringAnimation.
-     - Parameter basic: A CABasicAnimation.
+     - Parameter animation: A CABasicAnimation.
      - Parameter stiffness: A CGFloat.
      - Parameter damping: A CGFloat.
      */
-    static func convert(basic: CABasicAnimation, stiffness: CGFloat, damping: CGFloat) -> CASpringAnimation {
-        let a = CASpringAnimation(keyPath: basic.keyPath)
-        a.fromValue = basic.fromValue
-        a.toValue = basic.toValue
+    static func convert(animation: CABasicAnimation, stiffness: CGFloat, damping: CGFloat) -> CASpringAnimation {
+        let a = CASpringAnimation(keyPath: animation.keyPath)
+        a.fromValue = animation.fromValue
+        a.toValue = animation.toValue
         a.stiffness = stiffness
         a.damping = damping
-        a.duration = a.settlingDuration * 0.9
         return a
     }
 }

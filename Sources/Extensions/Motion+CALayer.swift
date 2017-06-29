@@ -133,32 +133,30 @@ public extension CALayer {
      - Parameter completion: An optional completion block.
      */
     func animate(_ animations: [MotionAnimation], completion: (() -> Void)? = nil) {
-        animate(delay: 0, duration: 0.35, timingFunction: .easeInOut, animations: animations, completion: completion)
+        animate(animations: animations, completion: completion)
     }
 }
 
 fileprivate extension CALayer {
     /**
      A function that executes an Array of MotionAnimation values.
-     - Parameter delay: The animation delay TimeInterval.
-     - Parameter duration: The animation duration TimeInterval.
-     - Parameter timingFunction: The animation CAMediaTimingFunctionType.
      - Parameter animations: An Array of MotionAnimations.
      - Parameter completion: An optional completion block.
      */
-    func animate(delay: TimeInterval, duration: TimeInterval, timingFunction: CAMediaTimingFunctionType, animations: [MotionAnimation], completion: (() -> Void)? = nil) {
+    func animate(animations: [MotionAnimation], completion: (() -> Void)? = nil) {
         let targetState = MotionAnimationState(animations: animations)
         
-        Motion.delay(targetState.delay) { [weak self] in
+        Motion.delay(targetState.delay) { [weak self,
+            targetState = targetState,
+            completion = completion] in
+            
             guard let s = self else {
                 return
             }
 
             var anims = [CABasicAnimation]()
+            var d = targetState.duration
             
-            let tf: CAMediaTimingFunction = targetState.timingFunction ?? CAMediaTimingFunction.from(mediaTimingFunctionType: timingFunction)
-            let d: TimeInterval = targetState.duration ?? duration
-
             if let v = targetState.backgroundColor {
                 let a = MotionCAAnimation.background(color: UIColor(cgColor: v))
                 a.fromValue = s.backgroundColor
@@ -258,23 +256,33 @@ fileprivate extension CALayer {
             }
             
             if #available(iOS 9.0, *), let (stiffness, damping) = targetState.spring {
-                for i in 0..<anims.count where "cornerRadius" != anims[i].keyPath {
-                    anims[i] = MotionCAAnimation.convert(basic: anims[i], stiffness: stiffness, damping: damping)
+                for i in 0..<anims.count {
+                    let v = anims[i]
+                    
+                    guard "cornerRadius" != v.keyPath else {
+                        continue
+                    }
+                    
+                    let a = MotionCAAnimation.convert(animation: v, stiffness: stiffness, damping: damping)
+                    anims[i] = a
+                    d = a.settlingDuration * 0.9
                 }
             }
 
             let g = Motion.animate(group: anims, duration: d)
             g.fillMode = MotionAnimationFillModeToValue(mode: .forwards)
             g.isRemovedOnCompletion = false
-            g.timingFunction = tf
+            g.timingFunction = targetState.timingFunction
             
             s.animate(g)
             
-            guard let execute = completion else {
-                return
+            if let v = targetState.completion {
+                Motion.delay(d, execute: v)
             }
             
-            Motion.delay(d, execute: execute)
+            if let v = completion {
+                Motion.delay(d, execute: v)
+            }
         }
     }
 }

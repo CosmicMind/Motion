@@ -36,19 +36,19 @@ public class MotionAnimation {
      An initializer that accepts a given callback.
      - Parameter applyFunction: A given callback.
      */
-    public init(applyFunction: @escaping (inout MotionAnimationState) -> Void) {
+    init(applyFunction: @escaping (inout MotionAnimationState) -> Void) {
         apply = applyFunction
     }
 }
 
-extension MotionAnimation {
+public extension MotionAnimation {
     /**
      Animates the view's current background color to the
      given color.
      - Parameter color: A UIColor.
      - Returns: A MotionAnimation.
      */
-    public static func background(color: UIColor) -> MotionAnimation {
+    static func background(color: UIColor) -> MotionAnimation {
         return MotionAnimation {
             $0.backgroundColor = color.cgColor
         }
@@ -60,7 +60,7 @@ extension MotionAnimation {
      - Parameter color: A UIColor.
      - Returns: A MotionAnimation.
      */
-    public static func border(color: UIColor) -> MotionAnimation {
+    static func border(color: UIColor) -> MotionAnimation {
         return MotionAnimation {
             $0.borderColor = color.cgColor
         }
@@ -72,7 +72,7 @@ extension MotionAnimation {
      - Parameter width: A CGFloat.
      - Returns: A MotionAnimation.
      */
-    public static func border(width: CGFloat) -> MotionAnimation {
+    static func border(width: CGFloat) -> MotionAnimation {
         return MotionAnimation {
             $0.borderWidth = width
         }
@@ -84,7 +84,7 @@ extension MotionAnimation {
      - Parameter radius: A CGFloat.
      - Returns: A MotionAnimation.
      */
-    public static func corner(radius: CGFloat) -> MotionAnimation {
+    static func corner(radius: CGFloat) -> MotionAnimation {
         return MotionAnimation {
             $0.cornerRadius = radius
         }
@@ -96,7 +96,7 @@ extension MotionAnimation {
      - Parameter _ transform: A CATransform3D.
      - Returns: A MotionAnimation.
      */
-    public static func transform(_ transform: CATransform3D) -> MotionAnimation {
+    static func transform(_ transform: CATransform3D) -> MotionAnimation {
         return MotionAnimation {
             $0.transform = transform
         }
@@ -108,7 +108,7 @@ extension MotionAnimation {
      - Parameter _ perspective: A CGFloat.
      - Returns: A MotionAnimation.
      */
-    public static func perspective(_ perspective: CGFloat) -> MotionAnimation {
+    static func perspective(_ perspective: CGFloat) -> MotionAnimation {
         return MotionAnimation {
             var t = $0.transform ?? CATransform3DIdentity
             t.m34 = 1 / -perspective
@@ -124,7 +124,7 @@ extension MotionAnimation {
      - Parameter z: A CGFloat.
      - Returns: A MotionAnimation.
      */
-    public static func rotate(x: CGFloat = 0, y: CGFloat = 0, z: CGFloat = 0) -> MotionAnimation {
+    static func rotate(x: CGFloat = 0, y: CGFloat = 0, z: CGFloat = 0) -> MotionAnimation {
         return MotionAnimation {
             var t = $0.transform ?? CATransform3DIdentity
             t = CATransform3DRotate(t, CGFloat(Double.pi) * x / 180, 1, 0, 0)
@@ -139,7 +139,7 @@ extension MotionAnimation {
      - Parameter z: A CGFloat, default is 0.
      - Returns: A MotionAnimation.
      */
-    public static func rotate(_ point: CGPoint, z: CGFloat = 0) -> MotionAnimation {
+    static func rotate(_ point: CGPoint, z: CGFloat = 0) -> MotionAnimation {
         return .rotate(x: point.x, y: point.y, z: z)
     }
     
@@ -148,7 +148,7 @@ extension MotionAnimation {
      - Parameter _ z: A CGFloat.
      - Returns: A MotionAnimation.
      */
-    public static func rotate(_ z: CGFloat) -> MotionAnimation {
+    static func rotate(_ z: CGFloat) -> MotionAnimation {
         return .rotate(z: z)
     }
     
@@ -160,7 +160,7 @@ extension MotionAnimation {
      - Parameter z: A CGFloat.
      - Returns: A MotionAnimation.
      */
-    public static func spin(x: CGFloat = 0, y: CGFloat = 0, z: CGFloat = 0) -> MotionAnimation {
+    static func spin(x: CGFloat = 0, y: CGFloat = 0, z: CGFloat = 0) -> MotionAnimation {
         return MotionAnimation {
             $0.spin = (x, y, z)
         }
@@ -172,7 +172,7 @@ extension MotionAnimation {
      - Parameter z: A CGFloat, default is 0.
      - Returns: A MotionAnimation.
      */
-    public static func spin(_ point: CGPoint, z: CGFloat = 0) -> MotionAnimation {
+    static func spin(_ point: CGPoint, z: CGFloat = 0) -> MotionAnimation {
         return .spin(x: point.x, y: point.y, z: z)
     }
     
@@ -181,7 +181,7 @@ extension MotionAnimation {
      - Parameter _ z: A CGFloat.
      - Returns: A MotionAnimation.
      */
-    public static func spin(_ z: CGFloat) -> MotionAnimation {
+    static func spin(_ z: CGFloat) -> MotionAnimation {
         return .spin(z: z)
     }
     
@@ -192,7 +192,7 @@ extension MotionAnimation {
      - Parameter z: A CGFloat.
      - Returns: A MotionAnimation.
      */
-    public static func scale(x: CGFloat = 1, y: CGFloat = 1, z: CGFloat = 1) -> MotionAnimation {
+    static func scale(x: CGFloat = 1, y: CGFloat = 1, z: CGFloat = 1) -> MotionAnimation {
         return MotionAnimation {
             $0.transform = CATransform3DScale($0.transform ?? CATransform3DIdentity, x, y, z)
         }
@@ -203,7 +203,7 @@ extension MotionAnimation {
      - Parameter _ xy: A CGFloat.
      - Returns: A MotionAnimation.
      */
-    public static func scale(_ xy: CGFloat) -> MotionAnimation {
+    static func scale(_ xy: CGFloat) -> MotionAnimation {
         return .scale(x: xy, y: xy)
     }
     
@@ -215,7 +215,7 @@ extension MotionAnimation {
      - Parameter z: A CGFloat.
      - Returns: A MotionAnimation.
      */
-    public static func translate(x: CGFloat = 0, y: CGFloat = 0, z: CGFloat = 0) -> MotionAnimation {
+    static func translate(x: CGFloat = 0, y: CGFloat = 0, z: CGFloat = 0) -> MotionAnimation {
         return MotionAnimation {
             $0.transform = CATransform3DTranslate($0.transform ?? CATransform3DIdentity, x, y, z)
         }
@@ -228,7 +228,7 @@ extension MotionAnimation {
      - Parameter z: A CGFloat, default is 0.
      - Returns: A MotionAnimation.
      */
-    public static func translate(_ point: CGPoint, z: CGFloat = 0) -> MotionAnimation {
+    static func translate(_ point: CGPoint, z: CGFloat = 0) -> MotionAnimation {
         return .translate(x: point.x, y: point.y, z: z)
     }
     
@@ -237,24 +237,24 @@ extension MotionAnimation {
      - Parameter _ point: A CGPoint.
      - Returns: A MotionAnimation.
      */
-    public static func position(_ point: CGPoint) -> MotionAnimation {
+    static func position(_ point: CGPoint) -> MotionAnimation {
         return MotionAnimation {
             $0.position = point
         }
     }
     
     /// Fades the view in during an animation.
-    public static var fadeIn = MotionAnimation.fade(1)
+    static var fadeIn = MotionAnimation.fade(1)
     
     /// Fades the view out during an animation.
-    public static var fadeOut = MotionAnimation.fade(0)
+    static var fadeOut = MotionAnimation.fade(0)
     
     /**
      Animates the view's current opacity to the given one.
      - Parameter _ opacity: A Double.
      - Returns: A MotionAnimation.
      */
-    public static func fade(_ opacity: Double) -> MotionAnimation {
+    static func fade(_ opacity: Double) -> MotionAnimation {
         return MotionAnimation {
             $0.opacity = opacity
         }
@@ -265,7 +265,7 @@ extension MotionAnimation {
      - Parameter _ position: An Int.
      - Returns: A MotionAnimation.
      */
-    public static func zPosition(_ position: CGFloat) -> MotionAnimation {
+    static func zPosition(_ position: CGFloat) -> MotionAnimation {
         return MotionAnimation {
             $0.zPosition = position
         }
@@ -276,7 +276,7 @@ extension MotionAnimation {
      - Parameter _ size: A CGSize.
      - Returns: A MotionAnimation.
      */
-    public static func size(_ size: CGSize) -> MotionAnimation {
+    static func size(_ size: CGSize) -> MotionAnimation {
         return MotionAnimation {
             $0.size = size
         }
@@ -287,7 +287,7 @@ extension MotionAnimation {
      - Parameter path: A CGPath.
      - Returns: A MotionAnimation.
      */
-    public static func shadow(path: CGPath) -> MotionAnimation {
+    static func shadow(path: CGPath) -> MotionAnimation {
         return MotionAnimation {
             $0.shadowPath = path
         }
@@ -298,7 +298,7 @@ extension MotionAnimation {
      - Parameter color: A UIColor.
      - Returns: A MotionAnimation.
      */
-    public static func shadow(color: UIColor) -> MotionAnimation {
+    static func shadow(color: UIColor) -> MotionAnimation {
         return MotionAnimation {
             $0.shadowColor = color.cgColor
         }
@@ -309,7 +309,7 @@ extension MotionAnimation {
      - Parameter offset: A CGSize.
      - Returns: A MotionAnimation.
      */
-    public static func shadow(offset: CGSize) -> MotionAnimation {
+    static func shadow(offset: CGSize) -> MotionAnimation {
         return MotionAnimation {
             $0.shadowOffset = offset
         }
@@ -320,7 +320,7 @@ extension MotionAnimation {
      - Parameter opacity: A Float.
      - Returns: A MotionAnimation.
      */
-    public static func shadow(opacity: Float) -> MotionAnimation {
+    static func shadow(opacity: Float) -> MotionAnimation {
         return MotionAnimation {
             $0.shadowOpacity = opacity
         }
@@ -331,7 +331,7 @@ extension MotionAnimation {
      - Parameter radius: A CGFloat.
      - Returns: A MotionAnimation.
      */
-    public static func shadow(radius: CGFloat) -> MotionAnimation {
+    static func shadow(radius: CGFloat) -> MotionAnimation {
         return MotionAnimation {
             $0.shadowRadius = radius
         }
@@ -343,7 +343,7 @@ extension MotionAnimation {
      - Parameter opacity: A Float.
      - Parameter radius: A CGFloat.
      */
-    public static func depth(offset: CGSize, opacity: Float, radius: CGFloat) -> MotionAnimation {
+    static func depth(offset: CGSize, opacity: Float, radius: CGFloat) -> MotionAnimation {
         return MotionAnimation {
             $0.shadowOffset = offset
             $0.shadowOpacity = opacity
@@ -355,7 +355,7 @@ extension MotionAnimation {
      Animates the views shadow offset, opacity, and radius.
      - Parameter _ depth: A tuple (CGSize, FLoat, CGFloat).
      */
-    public static func depth(_ depth: (CGSize, Float, CGFloat)) -> MotionAnimation {
+    static func depth(_ depth: (CGSize, Float, CGFloat)) -> MotionAnimation {
         return .depth(offset: depth.0, opacity: depth.1, radius: depth.2)
     }
     
@@ -364,7 +364,7 @@ extension MotionAnimation {
      - Parameter rect: A CGRect.
      - Returns: A MotionAnimation.
      */
-    public static func contents(rect: CGRect) -> MotionAnimation {
+    static func contents(rect: CGRect) -> MotionAnimation {
         return MotionAnimation {
             $0.contentsRect = rect
         }
@@ -375,7 +375,7 @@ extension MotionAnimation {
      - Parameter scale: A CGFloat.
      - Returns: A MotionAnimation.
      */
-    public static func contents(scale: CGFloat) -> MotionAnimation {
+    static func contents(scale: CGFloat) -> MotionAnimation {
         return MotionAnimation {
             $0.contentsScale = scale
         }
@@ -386,24 +386,18 @@ extension MotionAnimation {
      - Parameter _ duration: A TimeInterval.
      - Returns: A MotionAnimation.
      */
-    public static func duration(_ duration: TimeInterval) -> MotionAnimation {
+    static func duration(_ duration: TimeInterval) -> MotionAnimation {
         return MotionAnimation {
             $0.duration = duration
         }
     }
     
     /**
-     Sets the view's animation duration to the longest
-     running animation.
-     */
-    public static var preferredDurationMatchesLongest = MotionAnimation.duration(.infinity)
-    
-    /**
      Delays the animation of a given view.
      - Parameter _ time: TimeInterval.
      - Returns: A MotionAnimation.
      */
-    public static func delay(_ time: TimeInterval) -> MotionAnimation {
+    static func delay(_ time: TimeInterval) -> MotionAnimation {
         return MotionAnimation {
             $0.delay = time
         }
@@ -414,10 +408,19 @@ extension MotionAnimation {
      - Parameter _ timingFunction: A CAMediaTimingFunction.
      - Returns: A MotionAnimation.
      */
-    public static func timingFunction(_ timingFunction: CAMediaTimingFunction) -> MotionAnimation {
+    static func timingFunction(_ timingFunction: CAMediaTimingFunction) -> MotionAnimation {
         return MotionAnimation {
             $0.timingFunction = timingFunction
         }
+    }
+    
+    /**
+     Sets the view's timing function for the animation.
+     - Parameter type: A CAMediaTimingFunctionType.
+     - Returns: A MotionAnimation.
+     */
+    static func timingFunction(type: CAMediaTimingFunctionType) -> MotionAnimation {
+        return .timingFunction(CAMediaTimingFunction.from(mediaTimingFunctionType: type))
     }
     
     /**
@@ -428,22 +431,20 @@ extension MotionAnimation {
      - Returns: A MotionAnimation.
      */
     @available(iOS 9, *)
-    public static func spring(stiffness: CGFloat, damping: CGFloat) -> MotionAnimation {
+    static func spring(stiffness: CGFloat, damping: CGFloat) -> MotionAnimation {
         return MotionAnimation {
             $0.spring = (stiffness, damping)
         }
     }
     
     /**
-     Animates the natural curve of a view. A value of 1 represents
-     a curve in a downward direction, and a value of -1
-     represents a curve in an upward direction.
-     - Parameter intensity: A CGFloat.
-     - Returns: A MotionAnimation.
+     Creates a completion block handler that executed once tha animation
+     is done.
+     - Parameter _ execute: A callback to execute once completed.
      */
-    public static func arc(intensity: CGFloat = 1) -> MotionAnimation {
+    static func completion(_ execute: @escaping () -> Void) -> MotionAnimation {
         return MotionAnimation {
-            $0.arc = intensity
+            $0.completion = execute
         }
     }
 }

@@ -87,16 +87,16 @@ public struct MotionAnimationState {
     public var delay: TimeInterval = 0
     
     /// The duration of the animation.
-    public var duration: TimeInterval?
+    public var duration: TimeInterval = 0.35
     
     /// The timing function value of the animation.
-    public var timingFunction: CAMediaTimingFunction?
-    
-    /// The arc curve value.
-    public var arc: CGFloat?
+    public var timingFunction = CAMediaTimingFunction.from(mediaTimingFunctionType: .easeInOut)
     
     /// Custom target states.
     public var custom: [String: Any]?
+    
+    /// Completion block.
+    public var completion: (() -> Void)?
     
     /**
      An initializer that accepts an Array of MotionAnimations.

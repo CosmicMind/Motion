@@ -37,7 +37,6 @@ Motion offers a clean API to add animations to your views and layers. Simply pas
 	  </tr>
   </thead>
   <tbody>
-    
     <tr style="background-color: #fff">
       <td width="40%">
 	      <img src="http://www.cosmicmind.com/motion/background_color.gif" />
@@ -48,7 +47,6 @@ Motion offers a clean API to add animations to your views and layers. Simply pas
 	      ```
 			  </td>
     </tr>
-    
     <tr style="background-color: #fff">
       <td width="40%">
       <img src="http://www.cosmicmind.com/motion/border_color.gif" />
@@ -59,7 +57,6 @@ Motion offers a clean API to add animations to your views and layers. Simply pas
       ```
       </td>
     </tr>
-  
   </tbody>
 </table>
 

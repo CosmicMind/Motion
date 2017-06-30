@@ -28,13 +28,21 @@ Motion is a growing project and will encounter changes throughout its developmen
 
 Motion offers a clean API to add animations to your views and layers. Simply pass in animation structs with configurable parameters. Take a look at some examples below: 
 
-### Background Color
-
-![Motion Background Color](http://www.cosmicmind.com/motion/background_color.gif)
-
-### Border Color
-
-![Motion Border Color](http://www.cosmicmind.com/motion/border_color.gif)
+<table>
+  <thead><tr><th>Animation</th><th>Property</th><th>Swift</th></tr></thead>
+  <tbody>
+    <tr>
+      <td align="center"><img src="http://www.cosmicmind.com/motion/background_color.gif" /></td>
+      <td>Border Color</td>
+      <td><pre><code class="language-swift">view.animate(.background(color: .cyan))</code></pre></td>
+    </tr>
+    <tr>
+      <td align="center"><img src="http://www.cosmicmind.com/motion/border_color.gif" /></td>
+      <td>Border Color & Border Width</td>
+      <td><pre><code class="language-swift">view.animate(.border(color: .cyan), .border(width: 20))</code></pre></td>
+    </tr>
+  </tbody>
+</table>
 
 ## License
 

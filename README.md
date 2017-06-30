@@ -29,18 +29,37 @@ Motion is a growing project and will encounter changes throughout its developmen
 Motion offers a clean API to add animations to your views and layers. Simply pass in animation structs with configurable parameters. Take a look at some examples below: 
 
 <table>
-  <thead><tr><th>Animation</th><th>Property</th><th>Swift</th></tr></thead>
+  <thead>
+	  <tr>
+		  <th>Animation</th>
+		  <th>Property</th>
+		  <th>Swift</th>
+	  </tr>
+  </thead>
   <tbody>
-    <tr>
-      <td width="40%"><img src="http://www.cosmicmind.com/motion/background_color.gif" /></td>
-      <td width="30%">Border Color</td>
-      <td width="30%">```swift view.animate(.background(color: .cyan)) ```</td>
+    
+    <tr style="background-color: #fff">
+      <td width="40%">
+	      <img src="http://www.cosmicmind.com/motion/background_color.gif" />
+	      </td>
+	      <td width="30%">Border Color</td>
+	      <td width="30%">```swift
+	      view.animate(.background(color: .cyan))
+	      ```
+			  </td>
     </tr>
-    <tr>
-      <td width="40%"><img src="http://www.cosmicmind.com/motion/border_color.gif" /></td>
+    
+    <tr style="background-color: #fff">
+      <td width="40%">
+      <img src="http://www.cosmicmind.com/motion/border_color.gif" />
+      </td>
       <td width="30%">Border Color & Border Width</td>
-      <td width="30%">```swift view.animate(.border(color: .cyan), .border(width: 20)) ```</td>
+      <td width="30%">```swift
+      view.animate(.border(color: .cyan), .border(width: 20))
+      ```
+      </td>
     </tr>
+  
   </tbody>
 </table>
 

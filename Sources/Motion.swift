@@ -780,12 +780,12 @@ extension Motion {
      the animations have completed.
      */
     @discardableResult
-    public class func delay(_ time: TimeInterval, execute block: @escaping () -> Void) -> MotionDelayCancelBlock? {
+    public class func delay(_ time: TimeInterval, execute: @escaping () -> Void) -> MotionDelayCancelBlock? {
         var cancelable: MotionDelayCancelBlock?
         
         let delayed: MotionDelayCancelBlock = {
             if !$0 {
-                DispatchQueue.main.async(execute: block)
+                DispatchQueue.main.async(execute: execute)
             }
             
             cancelable = nil

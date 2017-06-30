@@ -152,7 +152,7 @@ fileprivate extension CALayer {
             }
 
             var anims = [CABasicAnimation]()
-            var d = targetState.duration
+            var duration = targetState.duration
             
             if let v = targetState.backgroundColor {
                 let a = MotionCAAnimation.background(color: UIColor(cgColor: v))
@@ -262,11 +262,11 @@ fileprivate extension CALayer {
                     
                     let a = MotionCAAnimation.convert(animation: v, stiffness: stiffness, damping: damping)
                     anims[i] = a
-                    d = a.settlingDuration * 0.9
+                    duration = a.settlingDuration
                 }
             }
 
-            let g = Motion.animate(group: anims, duration: d)
+            let g = Motion.animate(group: anims, duration: duration)
             g.fillMode = MotionAnimationFillModeToValue(mode: .forwards)
             g.isRemovedOnCompletion = false
             g.timingFunction = targetState.timingFunction
@@ -274,11 +274,12 @@ fileprivate extension CALayer {
             s.animate(g)
             
             if let v = targetState.completion {
-                Motion.delay(d, execute: v)
+                print(duration)
+                Motion.delay(duration, execute: v)
             }
             
             if let v = completion {
-                Motion.delay(d, execute: v)
+                Motion.delay(duration, execute: v)
             }
         }
     }

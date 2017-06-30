@@ -1,4 +1,4 @@
-**Motion** is a library used to create beautiful animations and transitions for views and view controllers.
+**Motion** is a library used to create beautiful animations and transitions for views, layers, and view controllers.
  
 ## Requirements
 
@@ -30,11 +30,11 @@ Motion offers a clean API to add animations to your views and layers. Simply pas
 
 ### Background Color
 
-[Motion Background Color](http://www.cosmicmind.com/motion/background_color.gif)
+![Motion Background Color](http://www.cosmicmind.com/motion/background_color.gif)
 
 ### Border Color
 
-[Motion Border Color](http://www.cosmicmind.com/motion/background_color.gif)
+![Motion Border Color](http://www.cosmicmind.com/motion/border_color.gif)
 
 ## License
 

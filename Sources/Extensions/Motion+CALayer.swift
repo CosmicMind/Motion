@@ -130,17 +130,17 @@ public extension CALayer {
      - Parameter completion: An optional completion block.
      */
     func animate(_ animations: [MotionAnimation], completion: (() -> Void)? = nil) {
-        animate(animations: animations, completion: completion)
+        startAnimations(animations, completion: completion)
     }
 }
 
 fileprivate extension CALayer {
     /**
      A function that executes an Array of MotionAnimation values.
-     - Parameter animations: An Array of MotionAnimations.
+     - Parameter _ animations: An Array of MotionAnimations.
      - Parameter completion: An optional completion block.
      */
-    func animate(animations: [MotionAnimation], completion: (() -> Void)? = nil) {
+    func startAnimations(_ animations: [MotionAnimation], completion: (() -> Void)? = nil) {
         let targetState = MotionAnimationState(animations: animations)
         
         Motion.delay(targetState.delay) { [weak self,
@@ -274,7 +274,6 @@ fileprivate extension CALayer {
             s.animate(g)
             
             if let v = targetState.completion {
-                print(duration)
                 Motion.delay(duration, execute: v)
             }
             

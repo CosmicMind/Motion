@@ -28,131 +28,15 @@ Motion is a growing project and will encounter changes throughout its developmen
 
 Motion offers a clean API to add animations to your views and layers. Simply pass in animation structs with configurable parameters. Take a look at some examples below: 
 
-| | Property  | Swift |
+| Animation | Property  | Swift |
 | --- | --- | --- |
-| ![BackgroundColor](http://www.cosmicmind.com/motion/background_color.gif)  | Background Color  | ```swift view.animate(.background(color: .cyan)) ``` |
-| ![Border Color & Border Width](http://www.cosmicmind.com/motion/border_color.gif)  | Border Color & Border Width  | ```swift view.animate(.border(color: .cyan), .border(width: 20)) ``` |
+| ![BackgroundColor](http://www.cosmicmind.com/motion/background_color.gif)  | Background Color  | ```swift
+view.animate(.background(color: .cyan))
+``` |
+| ![Border Color & Border Width](http://www.cosmicmind.com/motion/border_color.gif)  | Border Color & Border Width  | ```swift
+view.animate(.border(color: .cyan), .border(width: 20))
+``` |
 
-
-<table>
-  <thead>
-	  <tr>
-		  <th>Animation</th>
-		  <th>Property</th>
-		  <th>Swift</th>
-	  </tr>
-  </thead>
-  <tbody>
-    <tr>
-	      <td>
-		      <img src="http://www.cosmicmind.com/motion/background_color.gif" />
-		    </td>
-	      <td>Border Color</td>
-	      <td>
-		        view.animate(.background(color: .cyan))
-			  </td>
-    </tr>
-    <tr>
-	      <td>
-		      <img src="http://www.cosmicmind.com/motion/border_color.gif" />
-	      </td>
-	      <td>Border Color & Border Width</td>
-	      <td>
-		       view.animate(.border(color: .cyan), .border(width: 20))
-		    </td>
-    </tr>
-    <tr>
-	      <td>
-		      <img src="http://www.cosmicmind.com/motion/corner_radius.gif" />
-	      </td>
-	      <td>Border Color & Border Width</td>
-	      <td>
-		       view.animate(.corner(radius: 50))
-		    </td>
-    </tr>
-    <tr>
-	      <td>
-		      <img src="http://www.cosmicmind.com/motion/depth.gif" />
-	      </td>
-	      <td>Depth</td>
-	      <td>
-		       view.animate(.depth(.depth5))
-		    </td>
-    </tr>
-    <tr>
-	      <td>
-		      <img src="http://www.cosmicmind.com/motion/fade.gif" />
-	      </td>
-	      <td>Border Color & Border Width</td>
-	      <td>
-		       view.animate(.border(color: .cyan), .border(width: 20))
-		    </td>
-    </tr>
-    <tr>
-	      <td>
-		      <img src="http://www.cosmicmind.com/motion/position.gif" />
-	      </td>
-	      <td>Border Color & Border Width</td>
-	      <td>
-		       view.animate(.border(color: .cyan), .border(width: 20))
-		    </td>
-    </tr>
-    <tr>
-	      <td>
-		      <img src="http://www.cosmicmind.com/motion/rotate.gif" />
-	      </td>
-	      <td>Border Color & Border Width</td>
-	      <td>
-		       view.animate(.border(color: .cyan), .border(width: 20))
-		    </td>
-    </tr>
-    <tr>
-	      <td>
-		      <img src="http://www.cosmicmind.com/motion/scale.gif" />
-	      </td>
-	      <td>Border Color & Border Width</td>
-	      <td>
-		       view.animate(.border(color: .cyan), .border(width: 20))
-		    </td>
-    </tr>
-    <tr>
-	      <td>
-		      <img src="http://www.cosmicmind.com/motion/size.gif" />
-	      </td>
-	      <td>Border Color & Border Width</td>
-	      <td>
-		       view.animate(.border(color: .cyan), .border(width: 20))
-		    </td>
-    </tr>
-    <tr>
-	      <td>
-		      <img src="http://www.cosmicmind.com/motion/spin.gif" />
-	      </td>
-	      <td>Border Color & Border Width</td>
-	      <td>
-		       view.animate(.border(color: .cyan), .border(width: 20))
-		    </td>
-    </tr>
-    <tr>
-	      <td>
-		      <img src="http://www.cosmicmind.com/motion/spring.gif" />
-	      </td>
-	      <td>Border Color & Border Width</td>
-	      <td>
-		       view.animate(.border(color: .cyan), .border(width: 20))
-		    </td>
-    </tr>
-    <tr>
-	      <td>
-		      <img src="http://www.cosmicmind.com/motion/translate.gif" />
-	      </td>
-	      <td>Border Color & Border Width</td>
-	      <td>
-		       view.animate(.border(color: .cyan), .border(width: 20))
-		    </td>
-    </tr>
-  </tbody>
-</table>
 
 ## License
 

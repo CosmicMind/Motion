@@ -30,8 +30,18 @@ Motion offers a clean API to add animations to your views and layers. Simply pas
 
 | Animation | Property  | Swift |
 | --- | --- | --- |
-| ![BackgroundColor](http://www.cosmicmind.com/motion/background_color.gif)  | #### Background Color  | ###### view.animate(.background(color: .cyan)) |
-| ![Border Color & Border Width](http://www.cosmicmind.com/motion/border_color.gif)  | #### Border Color & Border Width  | ###### view.animate(.border(color: .cyan), .border(width: 20)) |
+| ![BackgroundColor](http://www.cosmicmind.com/motion/background_color.gif)  | Background Color  | view.animate(.background(color: .cyan)) |
+| ![Border Color & Border Width](http://www.cosmicmind.com/motion/border_color.gif)  | Border Color & Border Width  | view.animate(.border(color: .cyan), .border(width: 20)) |
+| ![Corner Radius](http://www.cosmicmind.com/motion/corner_radius.gif)  | Corner Radius  | view.animate(.corner(radius: 50)) |
+| ![Depth](http://www.cosmicmind.com/motion/depth.gif)  | Depth  | view.animate(.depth(offset: CGSize(width: 10, height: 10), opacity: 0.5, radius: 3)) |
+| ![Fade](http://www.cosmicmind.com/motion/fade.gif)  | Fade  | view.animate(.fadeOut) |
+| ![Position](http://www.cosmicmind.com/motion/position.gif)  | Position  | view.animate(.position(CGPoint(x: 200, y: 200))) |
+| ![Rotate](http://www.cosmicmind.com/motion/rotate.gif)  | Rotate  | view.animate(.rotate(180)) |
+| ![Scale](http://www.cosmicmind.com/motion/scale.gif)  | Scale  | view.animate(.scale(3)) |
+| ![Size](http://www.cosmicmind.com/motion/size.gif)  | Size  | view.animate(.size(CGSize(width: 200, height: 200))) |
+| ![Spin](http://www.cosmicmind.com/motion/spin.gif)  | Spin  | view.animate(.spin(x: 1, y: 1, z: 1)) |
+| ![Spring](http://www.cosmicmind.com/motion/spring.gif)  | Spring  | view.animate(.spring(stiffness: 15, damping: 2)) |
+| ![Translate](http://www.cosmicmind.com/motion/translate.gif)  | Translate  | view.animate(.translate(x: 50, y: 100)) |
 
 
 ## License

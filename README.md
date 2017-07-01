@@ -31,33 +31,29 @@ Motion offers a clean API to add animations to your views and layers. Simply pas
 <table>
   <thead>
 	  <tr>
-		  <th width="30%">Example</th>
-		  <th width="30%">Property</th>
-		  <th width="40%">Swift</th>
+		  <th>Example</th>
+		  <th>Property</th>
+		  <th>Swift</th>
 	  </tr>
   </thead>
   <tbody>
     <tr>
-      <td width="30%">
-	      <img src="http://www.cosmicmind.com/motion/background_color.gif" />
-	      </td>
-	      <td width="30%">Border Color</td>
-	      <td width="40%">
-		      <pre><code>
-			      view.animate(.background(color: .cyan))
-		      </code></pre>
+	      <td>
+		      <img src="http://www.cosmicmind.com/motion/background_color.gif" />
+		    </td>
+	      <td>Border Color</td>
+	      <td>
+		        view.animate(.background(color: .cyan))
 			  </td>
     </tr>
     <tr>
-      <td width="30%">
-      <img src="http://www.cosmicmind.com/motion/border_color.gif" />
-      </td>
-      <td width="30%">Border Color & Border Width</td>
-      <td width="40%">
-	      <pre><code>
-		      view.animate(.border(color: .cyan), .border(width: 20))
-	      </code></pre>
-		  </td>
+	      <td>
+		      <img src="http://www.cosmicmind.com/motion/border_color.gif" />
+	      </td>
+	      <td>Border Color & Border Width</td>
+	      <td>
+		       view.animate(.border(color: .cyan), .border(width: 20))
+		    </td>
     </tr>
   </tbody>
 </table>

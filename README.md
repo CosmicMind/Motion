@@ -55,6 +55,96 @@ Motion offers a clean API to add animations to your views and layers. Simply pas
 		       view.animate(.border(color: .cyan), .border(width: 20))
 		    </td>
     </tr>
+    <tr>
+	      <td>
+		      <img src="http://www.cosmicmind.com/motion/corner_radius.gif" />
+	      </td>
+	      <td>Border Color & Border Width</td>
+	      <td>
+		       view.animate(.border(color: .cyan), .border(width: 20))
+		    </td>
+    </tr>
+    <tr>
+	      <td>
+		      <img src="http://www.cosmicmind.com/motion/depth.gif" />
+	      </td>
+	      <td>Border Color & Border Width</td>
+	      <td>
+		       view.animate(.border(color: .cyan), .border(width: 20))
+		    </td>
+    </tr>
+    <tr>
+	      <td>
+		      <img src="http://www.cosmicmind.com/motion/fade.gif" />
+	      </td>
+	      <td>Border Color & Border Width</td>
+	      <td>
+		       view.animate(.border(color: .cyan), .border(width: 20))
+		    </td>
+    </tr>
+    <tr>
+	      <td>
+		      <img src="http://www.cosmicmind.com/motion/position.gif" />
+	      </td>
+	      <td>Border Color & Border Width</td>
+	      <td>
+		       view.animate(.border(color: .cyan), .border(width: 20))
+		    </td>
+    </tr>
+    <tr>
+	      <td>
+		      <img src="http://www.cosmicmind.com/motion/rotate.gif" />
+	      </td>
+	      <td>Border Color & Border Width</td>
+	      <td>
+		       view.animate(.border(color: .cyan), .border(width: 20))
+		    </td>
+    </tr>
+    <tr>
+	      <td>
+		      <img src="http://www.cosmicmind.com/motion/scale.gif" />
+	      </td>
+	      <td>Border Color & Border Width</td>
+	      <td>
+		       view.animate(.border(color: .cyan), .border(width: 20))
+		    </td>
+    </tr>
+    <tr>
+	      <td>
+		      <img src="http://www.cosmicmind.com/motion/size.gif" />
+	      </td>
+	      <td>Border Color & Border Width</td>
+	      <td>
+		       view.animate(.border(color: .cyan), .border(width: 20))
+		    </td>
+    </tr>
+    <tr>
+	      <td>
+		      <img src="http://www.cosmicmind.com/motion/spin.gif" />
+	      </td>
+	      <td>Border Color & Border Width</td>
+	      <td>
+		       view.animate(.border(color: .cyan), .border(width: 20))
+		    </td>
+    </tr>
+    <tr>
+	      <td>
+		      <img src="http://www.cosmicmind.com/motion/spring.gif" />
+	      </td>
+	      <td>Border Color & Border Width</td>
+	      <td>
+		       view.animate(.border(color: .cyan), .border(width: 20))
+		    </td>
+    </tr>
+    <tr>
+	      <td>
+		      <img src="http://www.cosmicmind.com/motion/translate.gif" />
+	      </td>
+	      <td>Border Color & Border Width</td>
+	      <td>
+		       view.animate(.border(color: .cyan), .border(width: 20))
+		    </td>
+    </tr>
   </tbody>
 </table>
 

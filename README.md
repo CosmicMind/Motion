@@ -29,7 +29,7 @@ Motion is a growing project and will encounter changes throughout its developmen
 Motion offers a clean API to add animations to your views and layers. Simply pass in animation structs with configurable parameters. Take a look at some examples below: 
 
 | Animation | Property  | Swift |
-| --- | --- | --- |
+| --- |:--- |:--- |
 | ![BackgroundColor](http://www.cosmicmind.com/motion/background_color.gif)  | Background Color  | view.animate(.background(color: .cyan)) |
 | ![Border Color & Border Width](http://www.cosmicmind.com/motion/border_color.gif)  | Border Color & Border Width  | view.animate(.border(color: .cyan), .border(width: 20)) |
 | ![Corner Radius](http://www.cosmicmind.com/motion/corner_radius.gif)  | Corner Radius  | view.animate(.corner(radius: 50)) |
@@ -39,8 +39,8 @@ Motion offers a clean API to add animations to your views and layers. Simply pas
 | ![Rotate](http://www.cosmicmind.com/motion/rotate.gif)  | Rotate  | view.animate(.rotate(180)) |
 | ![Scale](http://www.cosmicmind.com/motion/scale.gif)  | Scale  | view.animate(.scale(3)) |
 | ![Size](http://www.cosmicmind.com/motion/size.gif)  | Size  | view.animate(.size(CGSize(width: 200, height: 200))) |
-| ![Spin](http://www.cosmicmind.com/motion/spin.gif)  | Spin  |  - .spin(x:CGFloat, y:CGFloat, z:CGFloat)
-- .spin(_ point:CGPoint, z:CGFloat) |
+| ![Spin](http://www.cosmicmind.com/motion/spin.gif)  | Spin  | .spin(x:CGFloat, y:CGFloat, z:CGFloat) |
+| | | .spin(_ point:CGPoint, z:CGFloat) |
 | ![Spring](http://www.cosmicmind.com/motion/spring.gif)  | Spring  | view.animate(.spring(stiffness: 15, damping: 2)) |
 | ![Translate](http://www.cosmicmind.com/motion/translate.gif)  | Translate  | view.animate(.translate(x: 50, y: 100)) |
 

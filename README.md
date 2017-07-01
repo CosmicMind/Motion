@@ -1,5 +1,24 @@
 **Motion** is a library used to create beautiful animations and transitions for views, layers, and view controllers.
  
+## Animations
+
+Motion offers a clean API to add animations to your views and layers. Simply pass in animation structs with configurable parameters. Take a look at some examples below: 
+
+| Animation | Property  | Swift |
+| --- |:--- |:--- |
+| ![BackgroundColor](http://www.cosmicmind.com/motion/background_color.gif)  | Background Color  | background(color: UIColor) |
+| ![Border Color & Border Width](http://www.cosmicmind.com/motion/border_color.gif)  | Border Color & Border Width  | border(color: UIColor), border(width: CGFloat) |
+| ![Corner Radius](http://www.cosmicmind.com/motion/corner_radius.gif)  | Corner Radius  | corner(radius: CGFloat) |
+| ![Depth](http://www.cosmicmind.com/motion/depth.gif)  | Depth  | depth(offset: CGSize, opacity: Float, radius: CGFloat) |
+| ![Fade](http://www.cosmicmind.com/motion/fade.gif)  | Fade  | fade(_ opacity: Double) |
+| ![Position](http://www.cosmicmind.com/motion/position.gif)  | Position  | position(_ point: CGPoint) |
+| ![Rotate](http://www.cosmicmind.com/motion/rotate.gif)  | Rotate  | rotate(x: CGFloat, y: CGFloat, z: CGFloat) |
+| ![Scale](http://www.cosmicmind.com/motion/scale.gif)  | Scale  | scale(x: CGFloat, y: CGFloat, z: CGFloat) |
+| ![Size](http://www.cosmicmind.com/motion/size.gif)  | Size  | size(_ size: CGSize) |
+| ![Spin](http://www.cosmicmind.com/motion/spin.gif)  | Spin  | spin(x: CGFloat, y: CGFloat, z: CGFloat) |
+| ![Spring](http://www.cosmicmind.com/motion/spring.gif)  | Spring  | spring(stiffness: CGFloat, damping: CGFloat) |
+| ![Translate](http://www.cosmicmind.com/motion/translate.gif)  | Translate  | translate(x: CGFloat, y: CGFloat, z: CGFloat) |
+
 ## Requirements
 
 * iOS 8.0+
@@ -23,26 +42,6 @@ Visit the [Installation](https://github.com/CosmicMind/Motion/wiki/Installation)
 ## Changelog
 
 Motion is a growing project and will encounter changes throughout its development. It is recommended that the [Changelog](https://github.com/CosmicMind/Motion/wiki/Changelog) be reviewed prior to updating versions.
-
-## Animations
-
-Motion offers a clean API to add animations to your views and layers. Simply pass in animation structs with configurable parameters. Take a look at some examples below: 
-
-| Animation | Property  | Swift |
-| --- |:--- |:--- |
-| ![BackgroundColor](http://www.cosmicmind.com/motion/background_color.gif)  | Background Color  | background(color: UIColor) |
-| ![Border Color & Border Width](http://www.cosmicmind.com/motion/border_color.gif)  | Border Color & Border Width  | border(color: UIColor), border(width: CGFloat) |
-| ![Corner Radius](http://www.cosmicmind.com/motion/corner_radius.gif)  | Corner Radius  | corner(radius: CGFloat) |
-| ![Depth](http://www.cosmicmind.com/motion/depth.gif)  | Depth  | depth(offset: CGSize, opacity: Float, radius: CGFloat) |
-| ![Fade](http://www.cosmicmind.com/motion/fade.gif)  | Fade  | fade(_ opacity: Double) |
-| ![Position](http://www.cosmicmind.com/motion/position.gif)  | Position  | position(_ point: CGPoint) |
-| ![Rotate](http://www.cosmicmind.com/motion/rotate.gif)  | Rotate  | rotate(x: CGFloat, y: CGFloat, z: CGFloat) |
-| ![Scale](http://www.cosmicmind.com/motion/scale.gif)  | Scale  | scale(x: CGFloat, y: CGFloat, z: CGFloat) |
-| ![Size](http://www.cosmicmind.com/motion/size.gif)  | Size  | size(_ size: CGSize) |
-| ![Spin](http://www.cosmicmind.com/motion/spin.gif)  | Spin  | spin(x: CGFloat, y: CGFloat, z: CGFloat) |
-| ![Spring](http://www.cosmicmind.com/motion/spring.gif)  | Spring  | spring(stiffness: CGFloat, damping: CGFloat) |
-| ![Translate](http://www.cosmicmind.com/motion/translate.gif)  | Translate  | translate(x: CGFloat, y: CGFloat, z: CGFloat) |
-
 
 ## License
 

@@ -30,12 +30,8 @@ Motion offers a clean API to add animations to your views and layers. Simply pas
 
 | Animation | Property  | Swift |
 | --- | --- | --- |
-| ![BackgroundColor](http://www.cosmicmind.com/motion/background_color.gif)  | Background Color  | ```swift
-view.animate(.background(color: .cyan))
-``` |
-| ![Border Color & Border Width](http://www.cosmicmind.com/motion/border_color.gif)  | Border Color & Border Width  | ```swift
-view.animate(.border(color: .cyan), .border(width: 20))
-``` |
+| ![BackgroundColor](http://www.cosmicmind.com/motion/background_color.gif)  | Background Color  | view.animate(.background(color: .cyan)) |
+| ![Border Color & Border Width](http://www.cosmicmind.com/motion/border_color.gif)  | Border Color & Border Width  | view.animate(.border(color: .cyan), .border(width: 20)) |
 
 
 ## License

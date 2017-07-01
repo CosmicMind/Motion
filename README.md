@@ -49,7 +49,7 @@ Motion offers a clean API to add animations to your views and layers. Simply pas
 			  </td>
     </tr>
     <tr>
-      <td width="30%" style="background-color: #ffffff">
+      <td width="30%">
       <img src="http://www.cosmicmind.com/motion/border_color.gif" />
       </td>
       <td width="30%">Border Color & Border Width</td>
@@ -58,66 +58,6 @@ Motion offers a clean API to add animations to your views and layers. Simply pas
 		      view.animate(.border(color: .cyan), .border(width: 20))
 	      </code></pre>
 		  </td>
-    </tr>
-    <tr style="background-color: #fff">
-      <td width="30%">
-      <img src="http://www.cosmicmind.com/motion/corner_radius.gif" />
-      </td>
-      <td width="30%">Border Color & Border Width</td>
-      <td width="40%">```swift
-      view.animate(.border(color: .cyan), .border(width: 20))
-      ```
-      </td>
-    </tr>
-    <tr style="background-color: #fff">
-      <td width="30%">
-      <img src="http://www.cosmicmind.com/motion/depth.gif" />
-      </td>
-      <td width="30%">Border Color & Border Width</td>
-      <td width="40%">```swift
-      view.animate(.border(color: .cyan), .border(width: 20))
-      ```
-      </td>
-    </tr>
-    <tr style="background-color: #fff">
-      <td width="30%">
-      <img src="http://www.cosmicmind.com/motion/fade.gif" />
-      </td>
-      <td width="30%">Border Color & Border Width</td>
-      <td width="40%">```swift
-      view.animate(.border(color: .cyan), .border(width: 20))
-      ```
-      </td>
-    </tr>
-    <tr style="background-color: #fff">
-      <td width="30%">
-      <img src="http://www.cosmicmind.com/motion/position.gif" />
-      </td>
-      <td width="30%">Border Color & Border Width</td>
-      <td width="40%">```swift
-      view.animate(.border(color: .cyan), .border(width: 20))
-      ```
-      </td>
-    </tr>
-    <tr style="background-color: #fff">
-      <td width="30%">
-      <img src="http://www.cosmicmind.com/motion/rotate.gif" />
-      </td>
-      <td width="30%">Border Color & Border Width</td>
-      <td width="40%">```swift
-      view.animate(.border(color: .cyan), .border(width: 20))
-      ```
-      </td>
-    </tr>
-    <tr style="background-color: #fff">
-      <td width="30%">
-      <img src="http://www.cosmicmind.com/motion/scale.gif" />
-      </td>
-      <td width="30%">Border Color & Border Width</td>
-      <td width="40%">```swift
-      view.animate(.border(color: .cyan), .border(width: 20))
-      ```
-      </td>
     </tr>
   </tbody>
 </table>

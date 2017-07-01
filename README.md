@@ -31,9 +31,9 @@ Motion offers a clean API to add animations to your views and layers. Simply pas
 <table>
   <thead>
 	  <tr>
-		  <th>Example</th>
-		  <th>Property</th>
-		  <th>Swift</th>
+		  <th width="30%">Example</th>
+		  <th width="30%">Property</th>
+		  <th width="40%">Swift</th>
 	  </tr>
   </thead>
   <tbody>

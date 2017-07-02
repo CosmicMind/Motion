@@ -1,5 +1,15 @@
 **Motion** is a library used to create beautiful animations and transitions for views, layers, and view controllers.
  
+## Transitions
+
+Motion offers a clean API to add animations to your views and layers. Simply pass in animation structs with configurable parameters. Take a look at some examples below: 
+
+[Download Sample Transitions Project](https://github.com/CosmicMind/Samples/tree/development/Projects/Programmatic/Transitions)
+
+| Zoom | Zoom | Zoom | Zoom | Zoom | Zoom | Zoom | Zoom | Zoom | Zoom | Zoom | Zoom |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| ![Zoom](http://www.cosmicmind.com/motion/zoom.gif)  | ![Zoom](http://www.cosmicmind.com/motion/zoom.gif)| ![Zoom](http://www.cosmicmind.com/motion/zoom.gif) | ![Zoom](http://www.cosmicmind.com/motion/zoom.gif)  | ![Zoom](http://www.cosmicmind.com/motion/zoom.gif)| ![Zoom](http://www.cosmicmind.com/motion/zoom.gif) | ![Zoom](http://www.cosmicmind.com/motion/zoom.gif)  | ![Zoom](http://www.cosmicmind.com/motion/zoom.gif)| ![Zoom](http://www.cosmicmind.com/motion/zoom.gif) | ![Zoom](http://www.cosmicmind.com/motion/zoom.gif)  | ![Zoom](http://www.cosmicmind.com/motion/zoom.gif)| ![Zoom](http://www.cosmicmind.com/motion/zoom.gif) |
+ 
 ## Animations
 
 Motion offers a clean API to add animations to your views and layers. Simply pass in animation structs with configurable parameters. Take a look at some examples below: 
@@ -20,16 +30,6 @@ Motion offers a clean API to add animations to your views and layers. Simply pas
 | ![Spin](http://www.cosmicmind.com/motion/spin.gif)  | Spin  | spin(x: CGFloat, y: CGFloat, z: CGFloat) |
 | ![Spring](http://www.cosmicmind.com/motion/spring.gif)  | Spring  | spring(stiffness: CGFloat, damping: CGFloat) |
 | ![Translate](http://www.cosmicmind.com/motion/translate.gif)  | Translate  | translate(x: CGFloat, y: CGFloat, z: CGFloat) |
-
-## Transitions
-
-Motion offers a clean API to add animations to your views and layers. Simply pass in animation structs with configurable parameters. Take a look at some examples below: 
-
-[Download Sample Transitions Project](https://github.com/CosmicMind/Samples/tree/development/Projects/Programmatic/Transitions)
-
-| Zoom | Zoom | Zoom | Zoom | Zoom | Zoom | Zoom | Zoom | Zoom | Zoom | Zoom | Zoom |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| ![Zoom](http://www.cosmicmind.com/motion/zoom.gif)  | ![Zoom](http://www.cosmicmind.com/motion/zoom.gif)| ![Zoom](http://www.cosmicmind.com/motion/zoom.gif) | ![Zoom](http://www.cosmicmind.com/motion/zoom.gif)  | ![Zoom](http://www.cosmicmind.com/motion/zoom.gif)| ![Zoom](http://www.cosmicmind.com/motion/zoom.gif) | ![Zoom](http://www.cosmicmind.com/motion/zoom.gif)  | ![Zoom](http://www.cosmicmind.com/motion/zoom.gif)| ![Zoom](http://www.cosmicmind.com/motion/zoom.gif) | ![Zoom](http://www.cosmicmind.com/motion/zoom.gif)  | ![Zoom](http://www.cosmicmind.com/motion/zoom.gif)| ![Zoom](http://www.cosmicmind.com/motion/zoom.gif) |
 
 ## Requirements
 

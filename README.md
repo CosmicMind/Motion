@@ -4,6 +4,8 @@
 
 Motion offers a clean API to add animations to your views and layers. Simply pass in animation structs with configurable parameters. Take a look at some examples below: 
 
+[Download Sample Animations Project](https://github.com/CosmicMind/Samples/tree/development/Projects/Programmatic/Animations)
+
 | Animation | Property  | Swift |
 | --- |:--- |:--- |
 | ![BackgroundColor](http://www.cosmicmind.com/motion/background_color.gif)  | Background Color  | background(color: UIColor) |
@@ -18,6 +20,17 @@ Motion offers a clean API to add animations to your views and layers. Simply pas
 | ![Spin](http://www.cosmicmind.com/motion/spin.gif)  | Spin  | spin(x: CGFloat, y: CGFloat, z: CGFloat) |
 | ![Spring](http://www.cosmicmind.com/motion/spring.gif)  | Spring  | spring(stiffness: CGFloat, damping: CGFloat) |
 | ![Translate](http://www.cosmicmind.com/motion/translate.gif)  | Translate  | translate(x: CGFloat, y: CGFloat, z: CGFloat) |
+
+## Transitions
+
+Motion offers a clean API to add animations to your views and layers. Simply pass in animation structs with configurable parameters. Take a look at some examples below: 
+
+[Download Sample Transitions Project](https://github.com/CosmicMind/Samples/tree/development/Projects/Programmatic/Transitions)
+
+| Transition | Type  | Swift |
+| --- |:--- |:--- |
+| ![Zoom Out](http://www.cosmicmind.com/motion/zoom.gif)  | Zoom   Out| .zoomOut |
+
 
 ## Requirements
 

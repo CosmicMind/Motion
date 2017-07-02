@@ -111,7 +111,7 @@ public extension MotionAnimation {
     static func perspective(_ perspective: CGFloat) -> MotionAnimation {
         return MotionAnimation {
             var t = $0.transform ?? CATransform3DIdentity
-            t.m34 = 1 / -perspective
+            t.m34 = 1.0 / -perspective
             $0.transform = t
         }
     }

@@ -176,6 +176,22 @@ public extension UIView {
     func animate(_ animations: [MotionAnimation], completion: (() -> Void)? = nil) {
         layer.animate(animations, completion: completion)
     }
+    
+    /**
+     A function that accepts a list of MotionTransition values.
+     - Parameter transitions: A list of MotionTransition values.
+     */
+    func transition(_ transitions: MotionTransition...) {
+        transition(transitions)
+    }
+    
+    /**
+     A function that accepts an Array of MotionTransition values.
+     - Parameter transitions: An Array of MotionTransition values.
+     */
+    func transition(_ transitions: [MotionTransition]) {
+        motionTransitions = transitions
+    }
 }
 
 internal extension UIView {

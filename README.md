@@ -27,14 +27,9 @@ Motion offers a clean API to add animations to your views and layers. Simply pas
 
 [Download Sample Transitions Project](https://github.com/CosmicMind/Samples/tree/development/Projects/Programmatic/Transitions)
 
-| Transition | Type  | Swift |
-| --- |:--- |:--- |
-| ![Zoom Out](http://www.cosmicmind.com/motion/zoom.gif)  | Zoom   Out| .zoomOut |
-| ![Zoom Out](http://www.cosmicmind.com/motion/zoom.gif)  | Zoom   Out| .zoomOut |
-| ![Zoom Out](http://www.cosmicmind.com/motion/zoom.gif)  | Zoom   Out| .zoomOut |
-| ![Zoom Out](http://www.cosmicmind.com/motion/zoom.gif)  | Zoom   Out| .zoomOut |
-| ![Zoom Out](http://www.cosmicmind.com/motion/zoom.gif)  | Zoom   Out| .zoomOut |
-
+| Zoom | Zoom | Zoom | Zoom | Zoom | Zoom | Zoom | Zoom | Zoom | Zoom | Zoom | Zoom |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| ![Zoom](http://www.cosmicmind.com/motion/zoom.gif)  | ![Zoom](http://www.cosmicmind.com/motion/zoom.gif)| ![Zoom](http://www.cosmicmind.com/motion/zoom.gif) | ![Zoom](http://www.cosmicmind.com/motion/zoom.gif)  | ![Zoom](http://www.cosmicmind.com/motion/zoom.gif)| ![Zoom](http://www.cosmicmind.com/motion/zoom.gif) | ![Zoom](http://www.cosmicmind.com/motion/zoom.gif)  | ![Zoom](http://www.cosmicmind.com/motion/zoom.gif)| ![Zoom](http://www.cosmicmind.com/motion/zoom.gif) | ![Zoom](http://www.cosmicmind.com/motion/zoom.gif)  | ![Zoom](http://www.cosmicmind.com/motion/zoom.gif)| ![Zoom](http://www.cosmicmind.com/motion/zoom.gif) |
 
 ## Requirements
 

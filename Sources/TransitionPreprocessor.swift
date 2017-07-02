@@ -51,7 +51,7 @@ public enum MotionTransitionType {
     case zoomOut
 
     indirect case selectBy(presenting: MotionTransitionType, dismissing: MotionTransitionType)
-
+    
     /**
      Sets the presenting and dismissing transitions.
      - Parameter presenting: A MotionTransitionType.

@@ -30,6 +30,10 @@ Motion offers a clean API to add animations to your views and layers. Simply pas
 | Transition | Type  | Swift |
 | --- |:--- |:--- |
 | ![Zoom Out](http://www.cosmicmind.com/motion/zoom.gif)  | Zoom   Out| .zoomOut |
+| ![Zoom Out](http://www.cosmicmind.com/motion/zoom.gif)  | Zoom   Out| .zoomOut |
+| ![Zoom Out](http://www.cosmicmind.com/motion/zoom.gif)  | Zoom   Out| .zoomOut |
+| ![Zoom Out](http://www.cosmicmind.com/motion/zoom.gif)  | Zoom   Out| .zoomOut |
+| ![Zoom Out](http://www.cosmicmind.com/motion/zoom.gif)  | Zoom   Out| .zoomOut |
 
 
 ## Requirements

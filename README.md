@@ -6,7 +6,7 @@ Motion offers a clean API to add animations to your views and layers. Simply pas
 
 [Download Sample Transitions Project](https://github.com/CosmicMind/Samples/tree/development/Projects/Programmatic/Transitions)
 
-| Cover | Fade | Page In | Page Out | Pull | Push | Slide | Uncover | Zoom | Zoom Out | Zoom Slide |
+| Cover | Fade | PageIn | PageOut | Pull | Push | Slide | Uncover | Zoom | ZoomOut | ZoomSlide |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | ![Cover](http://www.cosmicmind.com/motion/cover.gif)  | ![Fade](http://www.cosmicmind.com/motion/fade.gif)| ![Page In](http://www.cosmicmind.com/motion/page_in.gif) | ![Page Out](http://www.cosmicmind.com/motion/page_out.gif)  | ![Pull](http://www.cosmicmind.com/motion/pull.gif)| ![Push](http://www.cosmicmind.com/motion/push.gif) | ![Slide](http://www.cosmicmind.com/motion/slide.gif)  | ![Uncover](http://www.cosmicmind.com/motion/uncover.gif)| ![Zoom](http://www.cosmicmind.com/motion/zoom.gif) | ![Zoom Out](http://www.cosmicmind.com/motion/zoom_out.gif)  | ![Zoom Slide](http://www.cosmicmind.com/motion/zoom_slide.gif)|
  

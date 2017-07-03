@@ -16,20 +16,10 @@ Motion offers a clean API to add animations to your views and layers. Simply pas
 
 [Download Sample Animations Project](https://github.com/CosmicMind/Samples/tree/development/Projects/Programmatic/Animations)
 
-| Animation | Property  | Swift |
-| --- |:--- |:--- |
-| ![BackgroundColor](http://www.cosmicmind.com/motion/animations/background_color.gif)  | Background Color  | background(color: UIColor) |
-| ![Border Color & Border Width](http://www.cosmicmind.com/motion/animations/border_color.gif)  | Border Color & Border Width  | border(color: UIColor), border(width: CGFloat) |
-| ![Corner Radius](http://www.cosmicmind.com/motion/animations/corner_radius.gif)  | Corner Radius  | corner(radius: CGFloat) |
-| ![Depth](http://www.cosmicmind.com/motion/animations/depth.gif)  | Depth  | depth(offset: CGSize, opacity: Float, radius: CGFloat) |
-| ![Fade](http://www.cosmicmind.com/motion/animations/fade.gif)  | Fade  | fade(_ opacity: Double) |
-| ![Position](http://www.cosmicmind.com/motion/animations/position.gif)  | Position  | position(_ point: CGPoint) |
-| ![Rotate](http://www.cosmicmind.com/motion/animations/rotate.gif)  | Rotate  | rotate(x: CGFloat, y: CGFloat, z: CGFloat) |
-| ![Scale](http://www.cosmicmind.com/motion/animations/scale.gif)  | Scale  | scale(x: CGFloat, y: CGFloat, z: CGFloat) |
-| ![Size](http://www.cosmicmind.com/motion/animations/size.gif)  | Size  | size(_ size: CGSize) |
-| ![Spin](http://www.cosmicmind.com/motion/animations/spin.gif)  | Spin  | spin(x: CGFloat, y: CGFloat, z: CGFloat) |
-| ![Spring](http://www.cosmicmind.com/motion/animations/spring.gif)  | Spring  | spring(stiffness: CGFloat, damping: CGFloat) |
-| ![Translate](http://www.cosmicmind.com/motion/animations/translate.gif)  | Translate  | translate(x: CGFloat, y: CGFloat, z: CGFloat) |
+| Animation | Property  | Swift | Animation | Property  | Swift |
+| --- | --- | --- | --- | --- | --- |
+| ![BackgroundColor](http://www.cosmicmind.com/motion/animations/background_color.gif) | ![Corner Radius](http://www.cosmicmind.com/motion/animations/corner_radius.gif) | ![Fade](http://www.cosmicmind.com/motion/animations/fade.gif) | ![Rotate](http://www.cosmicmind.com/motion/animations/rotate.gif) | ![Size](http://www.cosmicmind.com/motion/animations/size.gif) | ![Spring](http://www.cosmicmind.com/motion/animations/spring.gif) |
+|![Border Color & Border Width](http://www.cosmicmind.com/motion/animations/border_color.gif) | ![Depth](http://www.cosmicmind.com/motion/animations/depth.gif) | ![Position](http://www.cosmicmind.com/motion/animations/position.gif) | ![Scale](http://www.cosmicmind.com/motion/animations/scale.gif) | ![Spin](http://www.cosmicmind.com/motion/animations/spin.gif) | ![Translate](http://www.cosmicmind.com/motion/animations/translate.gif) |
 
 ## Requirements
 

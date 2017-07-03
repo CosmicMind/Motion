@@ -16,9 +16,12 @@ Motion offers a clean API to add animations to your views and layers. Simply pas
 
 [Download Sample Animations Project](https://github.com/CosmicMind/Samples/tree/development/Projects/Programmatic/Animations)
 
-| Animation | Property  | Swift | Animation | Property  | Swift |
+| Background Color | Corder Radius | Fade | Rotate | Size | Spring |
 | --- | --- | --- | --- | --- | --- |
 | ![BackgroundColor](http://www.cosmicmind.com/motion/animations/background_color.gif) | ![Corner Radius](http://www.cosmicmind.com/motion/animations/corner_radius.gif) | ![Fade](http://www.cosmicmind.com/motion/animations/fade.gif) | ![Rotate](http://www.cosmicmind.com/motion/animations/rotate.gif) | ![Size](http://www.cosmicmind.com/motion/animations/size.gif) | ![Spring](http://www.cosmicmind.com/motion/animations/spring.gif) |
+
+| Border Color & Border Width | Depth | Position | Scale | Spin | Translate |
+| --- | --- | --- | --- | --- | --- |
 |![Border Color & Border Width](http://www.cosmicmind.com/motion/animations/border_color.gif) | ![Depth](http://www.cosmicmind.com/motion/animations/depth.gif) | ![Position](http://www.cosmicmind.com/motion/animations/position.gif) | ![Scale](http://www.cosmicmind.com/motion/animations/scale.gif) | ![Spin](http://www.cosmicmind.com/motion/animations/spin.gif) | ![Translate](http://www.cosmicmind.com/motion/animations/translate.gif) |
 
 ## Requirements

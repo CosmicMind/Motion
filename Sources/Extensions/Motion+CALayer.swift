@@ -141,10 +141,10 @@ fileprivate extension CALayer {
      - Parameter completion: An optional completion block.
      */
     func startAnimations(_ animations: [MotionAnimation], completion: (() -> Void)? = nil) {
-        let targetState = MotionAnimationState(animations: animations)
+        let ts = MotionAnimationState(animations: animations)
         
-        Motion.delay(targetState.delay) { [weak self,
-            targetState = targetState,
+        Motion.delay(ts.delay) { [weak self,
+            ts = ts,
             completion = completion] in
             
             guard let s = self else {
@@ -152,108 +152,108 @@ fileprivate extension CALayer {
             }
 
             var anims = [CABasicAnimation]()
-            var duration = targetState.duration
+            var duration = 0 == ts.duration ? 0.01 : ts.duration
             
-            if let v = targetState.backgroundColor {
+            if let v = ts.backgroundColor {
                 let a = MotionCAAnimation.background(color: UIColor(cgColor: v))
                 a.fromValue = s.backgroundColor
                 anims.append(a)
             }
             
-            if let v = targetState.borderColor {
+            if let v = ts.borderColor {
                 let a = MotionCAAnimation.border(color: UIColor(cgColor: v))
                 a.fromValue = s.borderColor
                 anims.append(a)
             }
             
-            if let v = targetState.borderWidth {
+            if let v = ts.borderWidth {
                 let a = MotionCAAnimation.border(width: v)
                 a.fromValue = NSNumber(floatLiteral: Double(s.borderWidth))
                 anims.append(a)
             }
             
-            if let v = targetState.cornerRadius {
+            if let v = ts.cornerRadius {
                 let a = MotionCAAnimation.corner(radius: v)
                 a.fromValue = NSNumber(floatLiteral: Double(s.cornerRadius))
                 anims.append(a)
             }
             
-            if let v = targetState.transform {
+            if let v = ts.transform {
                 let a = MotionCAAnimation.transform(v)
                 a.fromValue = NSValue(caTransform3D: s.transform)
                 anims.append(a)
             }
             
-            if let v = targetState.spin {
-                var a = MotionCAAnimation.spinX(v.0)
+            if let v = ts.spin {
+                var a = MotionCAAnimation.spin(x: v.x)
                 a.fromValue = NSNumber(floatLiteral: 0)
                 anims.append(a)
                 
-                a = MotionCAAnimation.spinY(v.1)
+                a = MotionCAAnimation.spin(y: v.y)
                 a.fromValue = NSNumber(floatLiteral: 0)
                 anims.append(a)
                 
-                a = MotionCAAnimation.spinZ(v.2)
+                a = MotionCAAnimation.spin(z: v.z)
                 a.fromValue = NSNumber(floatLiteral: 0)
                 anims.append(a)
             }
             
-            if let v = targetState.position {
+            if let v = ts.position {
                 let a = MotionCAAnimation.position(v)
                 a.fromValue = NSValue(cgPoint: s.position)
                 anims.append(a)
             }
             
-            if let v = targetState.opacity {
+            if let v = ts.opacity {
                 let a = MotionCAAnimation.fade(v)
                 a.fromValue = s.value(forKeyPath: MotionAnimationKeyPath.opacity.rawValue) ?? NSNumber(floatLiteral: 1)
                 anims.append(a)
             }
             
-            if let v = targetState.zPosition {
+            if let v = ts.zPosition {
                 let a = MotionCAAnimation.zPosition(v)
                 a.fromValue = s.value(forKeyPath: MotionAnimationKeyPath.zPosition.rawValue) ?? NSNumber(floatLiteral: 0)
                 anims.append(a)
             }
             
-            if let v = targetState.size {
+            if let v = ts.size {
                 let a = MotionCAAnimation.size(v)
                 a.fromValue = NSValue(cgSize: s.bounds.size)
                 anims.append(a)
             }
 
-            if let v = targetState.shadowPath {
+            if let v = ts.shadowPath {
                 let a = MotionCAAnimation.shadow(path: v)
                 a.fromValue = s.shadowPath
                 anims.append(a)
             }
             
-            if let v = targetState.shadowColor {
+            if let v = ts.shadowColor {
                 let a = MotionCAAnimation.shadow(color: UIColor(cgColor: v))
                 a.fromValue = s.shadowColor
                 anims.append(a)
             }
             
-            if let v = targetState.shadowOffset {
+            if let v = ts.shadowOffset {
                 let a = MotionCAAnimation.shadow(offset: v)
                 a.fromValue = NSValue(cgSize: s.shadowOffset)
                 anims.append(a)
             }
 
-            if let v = targetState.shadowOpacity {
+            if let v = ts.shadowOpacity {
                 let a = MotionCAAnimation.shadow(opacity: v)
                 a.fromValue = NSNumber(floatLiteral: Double(s.shadowOpacity))
                 anims.append(a)
             }
             
-            if let v = targetState.shadowRadius {
+            if let v = ts.shadowRadius {
                 let a = MotionCAAnimation.shadow(radius: v)
                 a.fromValue = NSNumber(floatLiteral: Double(s.shadowRadius))
                 anims.append(a)
             }
             
-            if #available(iOS 9.0, *), let (stiffness, damping) = targetState.spring {
-                for i in 0..<anims.count {
+            if #available(iOS 9.0, *), let (stiffness, damping) = ts.spring {
+                for i in 0..<anims.count where nil != anims[i].keyPath {
                     let v = anims[i]
                     
                     guard "cornerRadius" != v.keyPath else {
@@ -262,18 +262,21 @@ fileprivate extension CALayer {
                     
                     let a = MotionCAAnimation.convert(animation: v, stiffness: stiffness, damping: damping)
                     anims[i] = a
-                    duration = a.settlingDuration
+                    
+                    if a.settlingDuration > duration {
+                        duration = a.settlingDuration
+                    }
                 }
             }
 
             let g = Motion.animate(group: anims, duration: duration)
-            g.fillMode = MotionAnimationFillModeToValue(mode: .forwards)
+            g.fillMode = MotionAnimationFillModeToValue(mode: .both)
             g.isRemovedOnCompletion = false
-            g.timingFunction = targetState.timingFunction
+            g.timingFunction = ts.timingFunction
             
             s.animate(g)
             
-            if let v = targetState.completion {
+            if let v = ts.completion {
                 Motion.delay(duration, execute: v)
             }
             

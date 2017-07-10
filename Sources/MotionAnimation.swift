@@ -43,7 +43,7 @@ public class MotionAnimation {
 
 public extension MotionAnimation {
     /**
-     Animates the view's current background color to the
+     Animates a view's current background color to the
      given color.
      - Parameter color: A UIColor.
      - Returns: A MotionAnimation.
@@ -55,7 +55,7 @@ public extension MotionAnimation {
     }
     
     /**
-     Animates the view's current border color to the
+     Animates a view's current border color to the
      given color.
      - Parameter color: A UIColor.
      - Returns: A MotionAnimation.
@@ -67,7 +67,7 @@ public extension MotionAnimation {
     }
     
     /**
-     Animates the view's current border width to the
+     Animates a view's current border width to the
      given width.
      - Parameter width: A CGFloat.
      - Returns: A MotionAnimation.
@@ -79,7 +79,7 @@ public extension MotionAnimation {
     }
     
     /**
-     Animates the view's current corner radius to the
+     Animates a view's current corner radius to the
      given radius.
      - Parameter radius: A CGFloat.
      - Returns: A MotionAnimation.
@@ -91,7 +91,7 @@ public extension MotionAnimation {
     }
     
     /**
-     Animates the view's current transform (perspective, scale, rotate)
+     Animates a view's current transform (perspective, scale, rotate)
      to the given one.
      - Parameter _ transform: A CATransform3D.
      - Returns: A MotionAnimation.
@@ -103,21 +103,7 @@ public extension MotionAnimation {
     }
     
     /**
-     Animates the view's current perspective to the gievn one through
-     a CATransform3D object.
-     - Parameter _ perspective: A CGFloat.
-     - Returns: A MotionAnimation.
-     */
-    static func perspective(_ perspective: CGFloat) -> MotionAnimation {
-        return MotionAnimation {
-            var t = $0.transform ?? CATransform3DIdentity
-            t.m34 = 1.0 / -perspective
-            $0.transform = t
-        }
-    }
-    
-    /**
-     Animates the view's current rotate to the given x, y,
+     Animates a view's current rotate to the given x, y,
      and z values.
      - Parameter x: A CGFloat.
      - Parameter y: A CGFloat.
@@ -134,7 +120,7 @@ public extension MotionAnimation {
     }
     
     /**
-     Animates the view's current rotate to the given point.
+     Animates a view's current rotate to the given point.
      - Parameter _ point: A CGPoint.
      - Parameter z: A CGFloat, default is 0.
      - Returns: A MotionAnimation.
@@ -153,7 +139,7 @@ public extension MotionAnimation {
     }
     
     /**
-     Animates the view's current spin to the given x, y,
+     Animates a view's current spin to the given x, y,
      and z values.
      - Parameter x: A CGFloat.
      - Parameter y: A CGFloat.
@@ -167,7 +153,7 @@ public extension MotionAnimation {
     }
     
     /**
-     Animates the view's current spin to the given point.
+     Animates a view's current spin to the given point.
      - Parameter _ point: A CGPoint.
      - Parameter z: A CGFloat, default is 0.
      - Returns: A MotionAnimation.
@@ -208,7 +194,7 @@ public extension MotionAnimation {
     }
     
     /**
-     Animates the view's current translation to the given
+     Animates a view's current translation to the given
      x, y, and z values.
      - Parameter x: A CGFloat.
      - Parameter y: A CGFloat.
@@ -222,7 +208,7 @@ public extension MotionAnimation {
     }
     
     /**
-     Animates the view's current translation to the given
+     Animates a view's current translation to the given
      point value (x & y), and a z value.
      - Parameter _ point: A CGPoint.
      - Parameter z: A CGFloat, default is 0.
@@ -233,7 +219,7 @@ public extension MotionAnimation {
     }
     
     /**
-     Animates the view's current position to the given point.
+     Animates a view's current position to the given point.
      - Parameter _ point: A CGPoint.
      - Returns: A MotionAnimation.
      */
@@ -250,7 +236,7 @@ public extension MotionAnimation {
     static var fadeOut = MotionAnimation.fade(0)
     
     /**
-     Animates the view's current opacity to the given one.
+     Animates a view's current opacity to the given one.
      - Parameter _ opacity: A Double.
      - Returns: A MotionAnimation.
      */
@@ -261,7 +247,7 @@ public extension MotionAnimation {
     }
     
     /**
-     Animates the view's current zPosition to the given position.
+     Animates a view's current zPosition to the given position.
      - Parameter _ position: An Int.
      - Returns: A MotionAnimation.
      */
@@ -272,7 +258,7 @@ public extension MotionAnimation {
     }
     
     /**
-     Animates the view's current size to the given one.
+     Animates a view's current size to the given one.
      - Parameter _ size: A CGSize.
      - Returns: A MotionAnimation.
      */
@@ -283,7 +269,7 @@ public extension MotionAnimation {
     }
     
     /**
-     Animates the view's current shadow path to the given one.
+     Animates a view's current shadow path to the given one.
      - Parameter path: A CGPath.
      - Returns: A MotionAnimation.
      */
@@ -294,7 +280,7 @@ public extension MotionAnimation {
     }
     
     /**
-     Animates the view's current shadow color to the given one.
+     Animates a view's current shadow color to the given one.
      - Parameter color: A UIColor.
      - Returns: A MotionAnimation.
      */
@@ -305,7 +291,7 @@ public extension MotionAnimation {
     }
     
     /**
-     Animates the view's current shadow offset to the given one.
+     Animates a view's current shadow offset to the given one.
      - Parameter offset: A CGSize.
      - Returns: A MotionAnimation.
      */
@@ -316,7 +302,7 @@ public extension MotionAnimation {
     }
     
     /**
-     Animates the view's current shadow opacity to the given one.
+     Animates a view's current shadow opacity to the given one.
      - Parameter opacity: A Float.
      - Returns: A MotionAnimation.
      */
@@ -327,7 +313,7 @@ public extension MotionAnimation {
     }
     
     /**
-     Animates the view's current shadow radius to the given one.
+     Animates a view's current shadow radius to the given one.
      - Parameter radius: A CGFloat.
      - Returns: A MotionAnimation.
      */
@@ -360,29 +346,8 @@ public extension MotionAnimation {
     }
     
     /**
-     Animates the view's contents rect to the given one.
-     - Parameter rect: A CGRect.
-     - Returns: A MotionAnimation.
-     */
-    static func contents(rect: CGRect) -> MotionAnimation {
-        return MotionAnimation {
-            $0.contentsRect = rect
-        }
-    }
-    
-    /**
-     Animates the view's contents scale to the given one.
-     - Parameter scale: A CGFloat.
-     - Returns: A MotionAnimation.
-     */
-    static func contents(scale: CGFloat) -> MotionAnimation {
-        return MotionAnimation {
-            $0.contentsScale = scale
-        }
-    }
-    
-    /**
-     The duration of the view's animation.
+     The duration of the view's animation. If a duration of 0 is used,
+     the value will be converted to 0.01, to give a close to zero value.
      - Parameter _ duration: A TimeInterval.
      - Returns: A MotionAnimation.
      */

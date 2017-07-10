@@ -12,13 +12,13 @@ Motion offers a clean API to add animations to your views and layers. Simply pas
  
 ## Animations
 
-Motion offers a clean API to add animations to your views and layers. Simply pass in animation structs with configurable parameters. Take a look at some examples below: 
+Animations are not only beautiful to look at, they also tell the story of your application. Motion aims to give the building blocks necessary to create stunning animations without much effort. Motion's animation API will make maintenance a breeze and changes even easier. Simply pass in animation structs with configurable parameters. Take a look at some examples below: 
 
 [Download Sample Animations Project](https://github.com/CosmicMind/Samples/tree/development/Projects/Programmatic/Animations)
 
 | Background Color | Corder Radius | Fade | Rotate | Size | Spring |
 | --- | --- | --- | --- | --- | --- |
-| ![BackgroundColor](http://www.cosmicmind.com/motion/animations/background_color.gif) | ![Corner Radius](http://www.cosmicmind.com/motion/animations/corner_radius.gif) | ![Fade](http://www.cosmicmind.com/motion/animations/fade.gif) | ![Rotate](http://www.cosmicmind.com/motion/animations/rotate.gif) | ![Size](http://www.cosmicmind.com/motion/animations/size.gif) | ![Spring](http://www.cosmicmind.com/motion/animations/spring.gif) |
+| ![Background Color](http://www.cosmicmind.com/motion/animations/background_color.gif) | ![Corner Radius](http://www.cosmicmind.com/motion/animations/corner_radius.gif) | ![Fade](http://www.cosmicmind.com/motion/animations/fade.gif) | ![Rotate](http://www.cosmicmind.com/motion/animations/rotate.gif) | ![Size](http://www.cosmicmind.com/motion/animations/size.gif) | ![Spring](http://www.cosmicmind.com/motion/animations/spring.gif) |
 
 | Border Color & Border Width | Depth | Position | Scale | Spin | Translate |
 | --- | --- | --- | --- | --- | --- |

@@ -39,7 +39,7 @@ public struct MotionAnimationState {
     public var transform: CATransform3D?
     
     /// A reference to the spin tuple.
-    public var spin: (CGFloat, CGFloat, CGFloat)?
+    public var spin: (x: CGFloat, y: CGFloat, z: CGFloat)?
     
     /// A reference to the opacity.
     public var opacity: Double?
@@ -52,12 +52,6 @@ public struct MotionAnimationState {
     
     /// A reference to the zPosition.
     public var zPosition: CGFloat?
-    
-    /// A reference to the contentsRect.
-    public var contentsRect: CGRect?
-    
-    /// A reference to the contentsScale.
-    public var contentsScale: CGFloat?
     
     /// A reference to the borderWidth.
     public var borderWidth: CGFloat?

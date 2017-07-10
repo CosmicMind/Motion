@@ -147,29 +147,73 @@ public extension MotionCAAnimation {
     
     /**
      Creates a CABasicAnimation for the transform.rotate.x key path.
-     - Parameter _ rotations: An optional CGFloat.
+     - Parameter x: An optional CGFloat.
      - Returns: A CABasicAnimation.
      */
-    static func spinX(_ rotations: CGFloat) -> CABasicAnimation {
-        return MotionCAAnimation.createAnimation(keyPath: .rotateX, toValue: NSNumber(value: Double(CGFloat(Double.pi) * 2 * rotations)))
+    static func spin(x: CGFloat) -> CABasicAnimation {
+        return MotionCAAnimation.createAnimation(keyPath: .rotateX, toValue: NSNumber(value: Double(CGFloat(Double.pi) * 2 * x)))
     }
     
     /**
      Creates a CABasicAnimation for the transform.rotate.y key path.
-     - Parameter _ rotations: An optional CGFloat.
+     - Parameter y: An optional CGFloat.
      - Returns: A CABasicAnimation.
      */
-    static func spinY(_ rotations: CGFloat) -> CABasicAnimation {
-        return MotionCAAnimation.createAnimation(keyPath: .rotateY, toValue: NSNumber(value: Double(CGFloat(Double.pi) * 2 * rotations)))
+    static func spin(y: CGFloat) -> CABasicAnimation {
+        return MotionCAAnimation.createAnimation(keyPath: .rotateY, toValue: NSNumber(value: Double(CGFloat(Double.pi) * 2 * y)))
     }
     
     /**
      Creates a CABasicAnimation for the transform.rotate.z key path.
-     - Parameter _ rotations: An optional CGFloat.
+     - Parameter z: An optional CGFloat.
      - Returns: A CABasicAnimation.
      */
-    static func spinZ(_ rotations: CGFloat) -> CABasicAnimation {
-        return MotionCAAnimation.createAnimation(keyPath: .rotateZ, toValue: NSNumber(value: Double(CGFloat(Double.pi) * 2 * rotations)))
+    static func spin(z: CGFloat) -> CABasicAnimation {
+        return MotionCAAnimation.createAnimation(keyPath: .rotateZ, toValue: NSNumber(value: Double(CGFloat(Double.pi) * 2 * z)))
+    }
+    
+    /**
+     Creates a CABasicAnimation for the transform.scale key path.
+     - Parameter xyz: A CGFloat.
+     - Returns: A CABasicAnimation.
+     */
+    public static func scale(_ xyz: CGFloat) -> CABasicAnimation {
+        let a = CABasicAnimation(keyPath: .scale)
+        a.toValue = NSNumber(value: Double(xyz))
+        return a
+    }
+    
+    /**
+     Creates a CABasicAnimation for the transform.scale.x key path.
+     - Parameter x: A CGFloat.
+     - Returns: A CABasicAnimation.
+     */
+    public static func scale(x: CGFloat) -> CABasicAnimation {
+        let a = CABasicAnimation(keyPath: .scaleX)
+        a.toValue = NSNumber(value: Double(x))
+        return a
+    }
+    
+    /**
+     Creates a CABasicAnimation for the transform.scale.y key path.
+     - Parameter y: A CGFloat.
+     - Returns: A CABasicAnimation.
+     */
+    public static func scale(y: CGFloat) -> CABasicAnimation {
+        let a = CABasicAnimation(keyPath: .scaleY)
+        a.toValue = NSNumber(value: Double(y))
+        return a
+    }
+    
+    /**
+     Creates a CABasicAnimation for the transform.scale.z key path.
+     - Parameter z: A CGFloat.
+     - Returns: A CABasicAnimation.
+     */
+    public static func scale(z: CGFloat) -> CABasicAnimation {
+        let a = CABasicAnimation(keyPath: .scaleZ)
+        a.toValue = NSNumber(value: Double(z))
+        return a
     }
     
     /**

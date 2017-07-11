@@ -33,7 +33,7 @@ internal class MotionCoreAnimationViewContext: MotionAnimatorViewContext {
     fileprivate var transitionStates = [String: (Any?, Any?)]()
     
     /// A reference to the animation timing function.
-    fileprivate var timingFunction = CAMediaTimingFunction.from(mediaTimingFunctionType: .standard)
+    fileprivate var timingFunction = CAMediaTimingFunction.standard
 
     /// Layer which holds the content.
     fileprivate var contentLayer: CALayer? {

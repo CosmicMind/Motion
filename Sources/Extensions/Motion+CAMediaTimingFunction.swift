@@ -28,18 +28,6 @@
  
 import UIKit
  
-public enum CAMediaTimingFunctionType {
-    case linear
-    case easeIn
-    case easeOut
-    case easeInOut
-    case standard
-    case deceleration
-    case acceleration
-    case sharp
-    case easeOutBack
-}
-
 public extension CAMediaTimingFunction {
     //  default
     static let linear = CAMediaTimingFunction(name: kCAMediaTimingFunctionLinear)
@@ -55,33 +43,4 @@ public extension CAMediaTimingFunction {
     
     // easing.net
     static let easeOutBack = CAMediaTimingFunction(controlPoints: 0.175, 0.885, 0.32, 1.75)
-}
-
-public extension CAMediaTimingFunction {
-    /**
-     Converts a CAMediaTimingFunctionType to a CAMediaTimingFunction value.
-     - Parameter mediaTimingFunctionType: A CAMediaTimingFunctionType.
-     */
-    static func from(mediaTimingFunctionType: CAMediaTimingFunctionType) -> CAMediaTimingFunction {
-        switch mediaTimingFunctionType {
-        case .linear:
-            return .linear
-        case .easeIn:
-            return .easeIn
-        case .easeOut:
-            return .easeOut
-        case .easeInOut:
-            return  .easeInOut
-        case .standard:
-            return .standard
-        case .deceleration:
-            return  .deceleration
-        case .acceleration:
-            return .acceleration
-        case .sharp:
-            return .sharp
-        case .easeOutBack:
-            return .easeOutBack
-        }
-    }
 }

@@ -84,7 +84,7 @@ public struct MotionAnimationState {
     public var duration: TimeInterval = 0.35
     
     /// The timing function value of the animation.
-    public var timingFunction = CAMediaTimingFunction.from(mediaTimingFunctionType: .easeInOut)
+    public var timingFunction = CAMediaTimingFunction.easeInOut
     
     /// Custom target states.
     public var custom: [String: Any]?

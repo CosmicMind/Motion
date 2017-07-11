@@ -820,15 +820,15 @@ extension Motion {
      Runs an animation with a specified duration.
      - Parameter duration: An animation duration time.
      - Parameter animations: An animation block.
-     - Parameter mediaTimingFunctionType: An CAMediaTimingFunctionType value.
+     - Parameter timingFunction: A CAMediaTimingFunction.
      - Parameter completion: A completion block that is executed once
      the animations have completed.
      */
-    public class func animate(duration: CFTimeInterval, mediaTimingFunctionType: CAMediaTimingFunctionType = .easeInOut, animations: (() -> Void), completion: (() -> Void)? = nil) {
+    public class func animate(duration: CFTimeInterval, timingFunction: CAMediaTimingFunction = .easeInOut, animations: (() -> Void), completion: (() -> Void)? = nil) {
         CATransaction.begin()
         CATransaction.setAnimationDuration(duration)
         CATransaction.setCompletionBlock(completion)
-        CATransaction.setAnimationTimingFunction(CAMediaTimingFunction.from(mediaTimingFunctionType: mediaTimingFunctionType))
+        CATransaction.setAnimationTimingFunction(timingFunction)
         animations()
         CATransaction.commit()
     }
@@ -836,17 +836,17 @@ extension Motion {
     /**
      Creates a CAAnimationGroup.
      - Parameter animations: An Array of CAAnimation objects.
-     - Parameter mediaTimingFunctionType: An CAMediaTimingFunctionType value.
+     - Parameter timingFunction: A CAMediaTimingFunction.
      - Parameter duration: An animation duration time for the group.
      - Returns: A CAAnimationGroup.
      */
-    public class func animate(group animations: [CAAnimation], mediaTimingFunctionType: CAMediaTimingFunctionType = .easeInOut, duration: CFTimeInterval = 0.5) -> CAAnimationGroup {
+    public class func animate(group animations: [CAAnimation], timingFunction: CAMediaTimingFunction = .easeInOut, duration: CFTimeInterval = 0.5) -> CAAnimationGroup {
         let group = CAAnimationGroup()
         group.fillMode = MotionAnimationFillModeToValue(mode: .both)
         group.isRemovedOnCompletion = false
         group.animations = animations
         group.duration = duration
-        group.timingFunction = CAMediaTimingFunction.from(mediaTimingFunctionType: mediaTimingFunctionType)
+        group.timingFunction = timingFunction
         return group
     }
 }

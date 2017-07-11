@@ -395,15 +395,6 @@ public extension MotionTransition {
     }
     
     /**
-     Sets the view's timing function for the transition.
-     - Parameter type: A CAMediaTimingFunctionType.
-     - Returns: A MotionAnimation.
-     */
-    static func timingFunction(type: CAMediaTimingFunctionType) -> MotionTransition {
-        return .timingFunction(CAMediaTimingFunction.from(mediaTimingFunctionType: type))
-    }
-    
-    /**
      Available in iOS 9+, animates a view using the spring API,
      given a stiffness and damping.
      - Parameter stiffness: A CGFlloat.

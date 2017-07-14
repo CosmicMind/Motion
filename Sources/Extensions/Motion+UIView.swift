@@ -84,62 +84,6 @@ public extension UIView {
         }
     }
     
-    /// The animations to run while in transition.
-    var motionTransitions: [MotionTransition]? {
-        get {
-            return associatedInstance.transitions
-        }
-        set(value) {
-            associatedInstance.transitions = value
-        }
-    }
-    
-    /// The animations to run while in transition.
-    @IBInspectable
-    var motionAlpha: CGFloat? {
-        get {
-            return associatedInstance.alpha
-        }
-        set(value) {
-            associatedInstance.alpha = value
-        }
-    }
-
-    /// Computes the rotate of the view.
-    var motionRotationAngle: CGFloat {
-        get {
-            return CGFloat(atan2f(Float(transform.b), Float(transform.a))) * 180 / CGFloat(Double.pi)
-        }
-        set(value) {
-            transform = CGAffineTransform(rotationAngle: CGFloat(Double.pi) * value / 180)
-        }
-    }
-    
-    /// The global position of a view.
-    var motionPosition: CGPoint {
-        return superview?.convert(layer.position, to: nil) ?? layer.position
-    }
-    
-    /// The layer.transform of a view.
-    var motionTransform: CATransform3D {
-        get {
-            return layer.transform
-        }
-        set(value) {
-            layer.transform = value
-        }
-    }
-    
-    /// Computes the scale X axis value of the view.
-    var motionScaleX: CGFloat {
-        return transform.a
-    }
-    
-    /// Computes the scale Y axis value of the view.
-    var motionScaleY: CGFloat {
-        return transform.b
-    }
-    
     /**
      A function that accepts CAAnimation objects and executes them on the
      view's backing layer.
@@ -191,6 +135,63 @@ public extension UIView {
      */
     func transition(_ transitions: [MotionTransition]) {
         motionTransitions = transitions
+    }
+}
+
+internal extension UIView {
+    /// The animations to run while in transition.
+    var motionTransitions: [MotionTransition]? {
+        get {
+            return associatedInstance.transitions
+        }
+        set(value) {
+            associatedInstance.transitions = value
+        }
+    }
+    
+    /// The animations to run while in transition.
+    var motionAlpha: CGFloat? {
+        get {
+            return associatedInstance.alpha
+        }
+        set(value) {
+            associatedInstance.alpha = value
+        }
+    }
+
+    /// Computes the rotate of the view.
+    var motionRotationAngle: CGFloat {
+        get {
+            return CGFloat(atan2f(Float(transform.b), Float(transform.a))) * 180 / CGFloat(Double.pi)
+        }
+        set(value) {
+            transform = CGAffineTransform(rotationAngle: CGFloat(Double.pi) * value / 180)
+        }
+    }
+    
+    /// The global position of a view.
+    var motionPosition: CGPoint {
+        return superview?.convert(layer.position, to: nil) ?? layer.position
+    }
+    
+    /// The layer.transform of a view.
+    var motionTransform: CATransform3D {
+        get {
+            return layer.transform
+        }
+        set(value) {
+            layer.transform = value
+        }
+    }
+    
+    /// Computes the scale X axis value of the view.
+    var motionScaleX: CGFloat {
+        return transform.a
+    }
+    
+    /// Computes the scale Y axis value of the view.
+    var motionScaleY: CGFloat {
+        return transform.b
     }
 }
 

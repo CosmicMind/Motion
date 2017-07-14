@@ -103,7 +103,7 @@ public extension MotionAnimation {
     }
     
     /**
-     Animates a view's current rotate to the given x, y,
+     Animates a view's current rotation to the given x, y,
      and z values.
      - Parameter x: A CGFloat.
      - Parameter y: A CGFloat.
@@ -120,9 +120,9 @@ public extension MotionAnimation {
     }
     
     /**
-     Animates a view's current rotate to the given point.
+     Animates a view's current rotation to the given point.
      - Parameter _ point: A CGPoint.
-     - Parameter z: A CGFloat, default is 0.
+     - Parameter z: A CGFloat.
      - Returns: A MotionAnimation.
      */
     static func rotate(_ point: CGPoint, z: CGFloat = 0) -> MotionAnimation {
@@ -155,7 +155,7 @@ public extension MotionAnimation {
     /**
      Animates a view's current spin to the given point.
      - Parameter _ point: A CGPoint.
-     - Parameter z: A CGFloat, default is 0.
+     - Parameter z: A CGFloat.
      - Returns: A MotionAnimation.
      */
     static func spin(_ point: CGPoint, z: CGFloat = 0) -> MotionAnimation {
@@ -172,7 +172,7 @@ public extension MotionAnimation {
     }
     
     /**
-     Animates the view's current scale to the given x, y, z scale values.
+     Animates the view's current scale to the given x, y, and z scale values.
      - Parameter x: A CGFloat.
      - Parameter y: A CGFloat.
      - Parameter z: A CGFloat.
@@ -194,8 +194,7 @@ public extension MotionAnimation {
     }
     
     /**
-     Animates a view's current translation to the given
-     x, y, and z values.
+     Animates a view equal to the distance given by the x, y, and z values.
      - Parameter x: A CGFloat.
      - Parameter y: A CGFloat.
      - Parameter z: A CGFloat.
@@ -208,10 +207,9 @@ public extension MotionAnimation {
     }
     
     /**
-     Animates a view's current translation to the given
-     point value (x & y), and a z value.
+     Animates a view equal to the distance given by a point and z value.
      - Parameter _ point: A CGPoint.
-     - Parameter z: A CGFloat, default is 0.
+     - Parameter z: A CGFloat.
      - Returns: A MotionAnimation.
      */
     static func translate(_ point: CGPoint, z: CGFloat = 0) -> MotionAnimation {
@@ -346,6 +344,20 @@ public extension MotionAnimation {
     }
     
     /**
+     Available in iOS 9+, animates a view using the spring API,
+     given a stiffness and damping.
+     - Parameter stiffness: A CGFlloat.
+     - Parameter damping: A CGFloat.
+     - Returns: A MotionAnimation.
+     */
+    @available(iOS 9, *)
+    static func spring(stiffness: CGFloat, damping: CGFloat) -> MotionAnimation {
+        return MotionAnimation {
+            $0.spring = (stiffness, damping)
+        }
+    }
+    
+    /**
      The duration of the view's animation. If a duration of 0 is used,
      the value will be converted to 0.01, to give a close to zero value.
      - Parameter _ duration: A TimeInterval.
@@ -380,21 +392,7 @@ public extension MotionAnimation {
     }
     
     /**
-     Available in iOS 9+, animates a view using the spring API,
-     given a stiffness and damping.
-     - Parameter stiffness: A CGFlloat.
-     - Parameter damping: A CGFloat.
-     - Returns: A MotionAnimation.
-     */
-    @available(iOS 9, *)
-    static func spring(stiffness: CGFloat, damping: CGFloat) -> MotionAnimation {
-        return MotionAnimation {
-            $0.spring = (stiffness, damping)
-        }
-    }
-    
-    /**
-     Creates a completion block handler that executed once tha animation
+     Creates a completion block handler that is executed once the animation
      is done.
      - Parameter _ execute: A callback to execute once completed.
      */

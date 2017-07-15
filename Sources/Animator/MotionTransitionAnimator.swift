@@ -28,7 +28,7 @@
 
 import UIKit
 
-internal class MotionDefaultAnimator<T: MotionAnimatorViewContext>: MotionAnimator, MotionHasInsertOrder {
+internal class MotionTransitionAnimator<T: MotionAnimatorViewContext>: MotionAnimator, MotionHasInsertOrder {
     /// A reference to a MotionContext.
     weak public var context: MotionContext!
   
@@ -38,7 +38,7 @@ internal class MotionDefaultAnimator<T: MotionAnimatorViewContext>: MotionAnimat
     var insertToViewFirst = false
 }
 
-extension MotionDefaultAnimator {
+extension MotionTransitionAnimator {
     /**
      Animates a given view.
      - Parameter view: A UIView.
@@ -55,7 +55,7 @@ extension MotionDefaultAnimator {
     }
 }
 
-extension MotionDefaultAnimator {
+extension MotionTransitionAnimator {
     /// Cleans the contexts.
     func clean() {
         for v in viewToContexts.values {

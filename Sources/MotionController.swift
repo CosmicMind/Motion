@@ -495,10 +495,10 @@ fileprivate extension MotionController {
     
     /// Prepares the animators.
     func prepareAnimators() {
-        animators.append(MotionDefaultAnimator<MotionCoreAnimationViewContext>())
+        animators.append(MotionTransitionAnimator<MotionCoreAnimationViewContext>())
         
         if #available(iOS 10, tvOS 10, *) {
-            animators.append(MotionDefaultAnimator<MotionViewPropertyViewContext>())
+            animators.append(MotionTransitionAnimator<MotionViewPropertyViewContext>())
         }
         
         for v in animators {

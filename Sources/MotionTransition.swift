@@ -127,7 +127,7 @@ public extension MotionTransition {
     }
     
     /**
-     Animates the view's current perspective to the gievn one through
+     Animates the view's current perspective to the given one through
      a CATransform3D object.
      - Parameter _ perspective: A CGFloat.
      - Returns: A MotionTransition.

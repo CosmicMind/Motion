@@ -151,9 +151,9 @@ public extension MotionTransition {
     static func rotate(x: CGFloat = 0, y: CGFloat = 0, z: CGFloat = 0) -> MotionTransition {
         return MotionTransition {
             var t = $0.transform ?? CATransform3DIdentity
-            t = CATransform3DRotate(t, x, 1, 0, 0)
-            t = CATransform3DRotate(t, y, 0, 1, 0)
-            $0.transform = CATransform3DRotate(t, z, 0, 0, 1)
+            t = CATransform3DRotate(t, CGFloat(Double.pi) * x / 180, 1, 0, 0)
+            t = CATransform3DRotate(t, CGFloat(Double.pi) * y / 180, 0, 1, 0)
+            $0.transform = CATransform3DRotate(t, CGFloat(Double.pi) * z / 180, 0, 0, 1)
         }
     }
     

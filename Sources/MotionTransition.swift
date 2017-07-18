@@ -425,13 +425,13 @@ public extension MotionTransition {
      Animates subviews with an increasing delay between each animation.
      - Parameter delta: A TimeInterval.
      - Parameter direction: A CascadeDirection.
-     - Parameter animationDelayUntilMatchedViews: A boolean indicating whether
+     - Parameter animationDelayedUntilMatchedViews: A boolean indicating whether
      or not to delay the subview animation until all have started.
      - Returns: A MotionTransition.
      */
-    static func cascade(delta: TimeInterval = 0.02, direction: CascadeDirection = .topToBottom, animationDelayUntilMatchedViews: Bool = false) -> MotionTransition {
+    static func cascade(delta: TimeInterval = 0.02, direction: CascadeDirection = .topToBottom, animationDelayedUntilMatchedViews: Bool = false) -> MotionTransition {
         return MotionTransition {
-            $0.cascade = (delta, direction, animationDelayUntilMatchedViews)
+            $0.cascade = (delta, direction, animationDelayedUntilMatchedViews)
         }
     }
     

@@ -1,3 +1,5 @@
+![Motion Logo](http://www.cosmicmind.com/motion/logo/motion_logo.png)
+
 # Motion
 
 Welcome to **Motion,** a library used to create beautiful animations and transitions for views, layers, and view controllers.

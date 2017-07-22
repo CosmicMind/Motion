@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name = 'Motion'
-  s.version = '1.1.0'
+  s.version = '1.1.1'
   s.license = 'MIT'
   s.summary = 'A library used to create beautiful animations and transitions for views, layers, and view controllers.'
   s.homepage = 'http://cosmicmind.com'

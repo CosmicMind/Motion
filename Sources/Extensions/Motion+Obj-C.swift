@@ -23,7 +23,7 @@
  * THE SOFTWARE.
  */
 
-internal struct AssociatedObject {
+public struct AssociatedObject {
     /**
      Gets the Obj-C reference for the instance object within the UIView extension.
      - Parameter base: Base object.

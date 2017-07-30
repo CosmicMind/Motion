@@ -142,8 +142,6 @@
 		96E4093B1F24F7370015A2B5 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				96E4093C1F24F7370015A2B5 /* Animator */,
-				96E409431F24F7370015A2B5 /* Extensions */,
 				96E409BB1F24FC210015A2B5 /* Info.plist */,
 				96E409BC1F24FC300015A2B5 /* LICENSE */,
 				96E4094F1F24F7370015A2B5 /* Motion.h */,
@@ -160,6 +158,8 @@
 				96E4095A1F24F7370015A2B5 /* MotionTransition.swift */,
 				96E4095B1F24F7370015A2B5 /* MotionTransitionObserver.swift */,
 				96E4095C1F24F7370015A2B5 /* MotionTransitionState.swift */,
+				96E4093C1F24F7370015A2B5 /* Animator */,
+				96E409431F24F7370015A2B5 /* Extensions */,
 				96E4095D1F24F7370015A2B5 /* Preprocessors */,
 			);
 			path = Sources;

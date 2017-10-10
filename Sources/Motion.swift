@@ -246,6 +246,29 @@ public extension Motion {
     }
 }
 
+public extension Motion {
+    /**
+     A helper transition function.
+     - Parameter from: A UIViewController.
+     - Parameter to: A UIViewController.
+     - Parameter in view: A UIView.
+     - Parameter completion: An optional completion handler.
+     */
+    func transition(from: UIViewController, to: UIViewController, in view: UIView, completion: ((Bool) -> Void)? = nil) {
+        guard !isTransitioning else {
+            return
+        }
+        
+        isPresenting = true
+        transitionContainer = view
+        fromViewController = from
+        toViewController = to
+        completionCallback = completion
+        
+        start()
+    }
+}
+
 fileprivate extension Motion {
     /// Starts the transition animation.
     func start() {
@@ -614,29 +637,6 @@ fileprivate extension Motion {
         for v in animators {
             (v as? MotionHasInsertOrder)?.insertToViewFirst = insertToViewFirst
         }
-    }
-}
-
-internal extension Motion {
-    /**
-     A helper transition function.
-     - Parameter from: A UIViewController.
-     - Parameter to: A UIViewController.
-     - Parameter in view: A UIView.
-     - Parameter completion: An optional completion handler.
-     */
-    func transition(from: UIViewController, to: UIViewController, in view: UIView, completion: ((Bool) -> Void)? = nil) {
-        guard !isTransitioning else {
-            return
-        }
-        
-        isPresenting = true
-        transitionContainer = view
-        fromViewController = from
-        toViewController = to
-        completionCallback = completion
-        
-        start()
     }
 }
 

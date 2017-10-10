@@ -23,7 +23,7 @@
  * THE SOFTWARE.
  */
 
-internal struct AssociatedObject {
+public struct AssociatedObject {
     /**
      Gets the Obj-C reference for the instance object within the UIView extension.
      - Parameter base: Base object.
@@ -31,7 +31,7 @@ internal struct AssociatedObject {
      - Parameter initializer: Object initializer.
      - Returns: The associated reference for the initializer object.
      */
-    static func get<T: Any>(base: Any, key: UnsafePointer<UInt8>, initializer: () -> T) -> T {
+    public static func get<T: Any>(base: Any, key: UnsafePointer<UInt8>, initializer: () -> T) -> T {
         if let v = objc_getAssociatedObject(base, key) as? T {
             return v
         }
@@ -48,7 +48,7 @@ internal struct AssociatedObject {
      - Parameter value: The object instance to set for the associated object.
      - Returns: The associated reference for the initializer object.
      */
-    static func set<T: Any>(base: Any, key: UnsafePointer<UInt8>, value: T) {
+    public static func set<T: Any>(base: Any, key: UnsafePointer<UInt8>, value: T) {
         objc_setAssociatedObject(base, key, value, .OBJC_ASSOCIATION_RETAIN)
     }
 }

@@ -28,7 +28,7 @@
 
 import MetalKit
 
-extension CGSize {
+public extension CGSize {
     /// THe center point based on width and height.
     var center: CGPoint {
         return CGPoint(x: width / 2, y: height / 2)
@@ -73,7 +73,7 @@ extension CGSize {
     }
 }
 
-extension CGRect {
+public extension CGRect {
     /// A center point based on the origin and size values.
     var center: CGPoint {
         return CGPoint(x: origin.x + size.width / 2, y: origin.y + size.height / 2)
@@ -94,7 +94,7 @@ extension CGRect {
     }
 }
 
-extension CGFloat {
+public extension CGFloat {
     /**
      Calculates the limiting position to an area.
      - Parameter _ a: A CGFloat.
@@ -106,7 +106,7 @@ extension CGFloat {
     }
 }
 
-extension CGPoint {
+public extension CGPoint {
     /**
      Calculates a translation point based on the origin value.
      - Parameter _ dx: A CGFloat.
@@ -151,7 +151,7 @@ extension CGPoint {
  - Parameter right: A CGPoint.
  - Returns: A CGPoint.
  */
-func +(left: CGPoint, right: CGPoint) -> CGPoint {
+public func +(left: CGPoint, right: CGPoint) -> CGPoint {
     return CGPoint(x: left.x + right.x, y: left.y + right.y)
 }
 
@@ -161,7 +161,7 @@ func +(left: CGPoint, right: CGPoint) -> CGPoint {
  - Parameter right: A CGPoint.
  - Returns: A CGPoint.
  */
-func -(left: CGPoint, right: CGPoint) -> CGPoint {
+public func -(left: CGPoint, right: CGPoint) -> CGPoint {
     return CGPoint(x: left.x - right.x, y: left.y - right.y)
 }
 
@@ -171,7 +171,7 @@ func -(left: CGPoint, right: CGPoint) -> CGPoint {
  - Parameter right: A CGFloat.
  - Returns: A CGPoint.
  */
-func /(left: CGPoint, right: CGFloat) -> CGPoint {
+public func /(left: CGPoint, right: CGFloat) -> CGPoint {
     return CGPoint(x: left.x / right, y: left.y / right)
 }
 
@@ -181,7 +181,7 @@ func /(left: CGPoint, right: CGFloat) -> CGPoint {
  - Parameter right: A CGPoint.
  - Returns: A CGPoint.
  */
-func /(left: CGPoint, right: CGPoint) -> CGPoint {
+public func /(left: CGPoint, right: CGPoint) -> CGPoint {
     return CGPoint(x: left.x / right.x, y: left.y / right.y)
 }
 
@@ -191,7 +191,7 @@ func /(left: CGPoint, right: CGPoint) -> CGPoint {
  - Parameter right: A CGSize.
  - Returns: A CGSize.
  */
-func /(left: CGSize, right: CGSize) -> CGSize {
+public func /(left: CGSize, right: CGSize) -> CGSize {
     return CGSize(width: left.width / right.width, height: left.height / right.height)
 }
 
@@ -201,7 +201,7 @@ func /(left: CGSize, right: CGSize) -> CGSize {
  - Parameter right: A CGFloat.
  - Returns: A CGPoint.
  */
-func *(left: CGPoint, right: CGFloat) -> CGPoint {
+public func *(left: CGPoint, right: CGFloat) -> CGPoint {
     return CGPoint(x: left.x * right, y: left.y * right)
 }
 
@@ -211,7 +211,7 @@ func *(left: CGPoint, right: CGFloat) -> CGPoint {
  - Parameter right: A CGSize.
  - Returns: A CGPoint.
  */
-func *(left: CGPoint, right: CGSize) -> CGPoint {
+public func *(left: CGPoint, right: CGSize) -> CGPoint {
     return CGPoint(x: left.x * right.width, y: left.y * right.width)
 }
 
@@ -221,7 +221,7 @@ func *(left: CGPoint, right: CGSize) -> CGPoint {
  - Parameter right: A CGPoint.
  - Returns: A CGPoint.
  */
-func *(left: CGFloat, right: CGPoint) -> CGPoint {
+public func *(left: CGFloat, right: CGPoint) -> CGPoint {
     return right * left
 }
 
@@ -231,7 +231,7 @@ func *(left: CGFloat, right: CGPoint) -> CGPoint {
  - Parameter right: A CGPoint.
  - Returns: A CGPoint.
  */
-func *(left: CGPoint, right: CGPoint) -> CGPoint {
+public func *(left: CGPoint, right: CGPoint) -> CGPoint {
     return CGPoint(x: left.x * right.x, y: left.y * right.y)
 }
 
@@ -241,7 +241,7 @@ func *(left: CGPoint, right: CGPoint) -> CGPoint {
  - Parameter right: A CGFloat.
  - Returns: A CGSize.
  */
-func *(left: CGSize, right: CGFloat) -> CGSize {
+public func *(left: CGSize, right: CGFloat) -> CGSize {
     return CGSize(width: left.width * right, height: left.height * right)
 }
 
@@ -251,7 +251,7 @@ func *(left: CGSize, right: CGFloat) -> CGSize {
  - Parameter right: A CGSize.
  - Returns: A CGSize.
  */
-func *(left: CGSize, right: CGSize) -> CGSize {
+public func *(left: CGSize, right: CGSize) -> CGSize {
     return CGSize(width: left.width * right.width, height: left.height * right.width)
 }
 
@@ -261,10 +261,10 @@ func *(left: CGSize, right: CGSize) -> CGSize {
  - Parameter rhs: A CATransform3D.
  - Returns: A Bool.
  */
-func ==(lhs: CATransform3D, rhs: CATransform3D) -> Bool {
+public func ==(lhs: CATransform3D, rhs: CATransform3D) -> Bool {
     var lhs = lhs
     var rhs = rhs
-    return memcmp(&lhs, &rhs, MemoryLayout<CATransform3D>.size) == 0
+    return 0 == memcmp(&lhs, &rhs, MemoryLayout<CATransform3D>.size)
 }
 
 /**
@@ -273,7 +273,7 @@ func ==(lhs: CATransform3D, rhs: CATransform3D) -> Bool {
  - Parameter rhs: A CATransform3D.
  - Returns: A Bool.
  */
-func !=(lhs: CATransform3D, rhs: CATransform3D) -> Bool {
+public func !=(lhs: CATransform3D, rhs: CATransform3D) -> Bool {
     return !(lhs == rhs)
 }
 
@@ -282,7 +282,7 @@ func !=(lhs: CATransform3D, rhs: CATransform3D) -> Bool {
  - Parameter point: A CGPoint.
  - Returns: A CGPoint.
  */
-prefix func -(point: CGPoint) -> CGPoint {
+public prefix func -(point: CGPoint) -> CGPoint {
     return CGPoint.zero - point
 }
 
@@ -291,6 +291,6 @@ prefix func -(point: CGPoint) -> CGPoint {
  - Parameter _ p: A CGPoint.
  - Returns: A CGPoint.
  */
-func abs(_ p: CGPoint) -> CGPoint {
+public func abs(_ p: CGPoint) -> CGPoint {
     return CGPoint(x: abs(p.x), y: abs(p.y))
 }

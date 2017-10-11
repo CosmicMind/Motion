@@ -39,6 +39,23 @@ internal extension CALayer {
             return ($0, self.animation(forKey: $0)!.copy() as! CAAnimation)
         }
     }
+    
+    /**
+     Concats transforms and returns the result.
+     - Parameters layer: A CALayer.
+     - Returns: A CATransform3D.
+     */
+    func flatTransformTo(layer: CALayer) -> CATransform3D {
+        var l = layer
+        var t = l.transform
+        
+        while let sl = l.superlayer, self != sl {
+            t = CATransform3DConcat(sl.transform, t)
+            l = sl
+        }
+        
+        return t
+    }
 }
 
 public extension CALayer {

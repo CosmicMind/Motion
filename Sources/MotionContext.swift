@@ -163,8 +163,8 @@ public extension MotionContext {
      - Returns: A UIView.
      */
     func snapshotView(for view: UIView) -> UIView {
-        if let v = viewToSnapshot[view] {
-            return v
+        if let snapshot = viewToSnapshot[view] {
+            return snapshot
         }
         
         var containerView = container
@@ -174,112 +174,113 @@ public extension MotionContext {
         case .local:
             containerView = view
             
-            while containerView != container, nil == viewToSnapshot[containerView], let superview = containerView.superview {
+            while containerView != container, viewToSnapshot[containerView] == nil, let superview = containerView.superview {
                 containerView = superview
             }
             
             if let snapshot = viewToSnapshot[containerView] {
                 containerView = snapshot
             }
-        case .sameParent:
-            containerView = view.superview!
             
+            if let visualEffectView = containerView as? UIVisualEffectView {
+                containerView = visualEffectView.contentView
+            }
         case .global:
             break
         }
-
-        unhide(view: view)
-
-        // Capture a snapshot without the alpha & cornerRadius values.
-        let oldCornerRadius = view.layer.cornerRadius
-        view.layer.cornerRadius = 0
         
+        unhide(view: view)
+        
+        /// Capture a snapshot without alpha & cornerRadius.
+        let oldCornerRadius = view.layer.cornerRadius
         let oldAlpha = view.alpha
+        view.layer.cornerRadius = 0
         view.alpha = 1
-
+        
         let snapshot: UIView
         let snapshotType: MotionSnapshotType = self[view]?.snapshotType ?? .optimized
         
         switch snapshotType {
         case .normal:
-            snapshot = view.snapshotView(afterScreenUpdates: true)!
-            
+            snapshot = view.snapshotView() ?? UIView()
+        
         case .layerRender:
             snapshot = view.slowSnapshotView()
         
         case .noSnapshot:
-            if nil == superviewToNoSnapshotSubviewMap[view.superview!] {
-                superviewToNoSnapshotSubviewMap[view.superview!] = []
+            if view.superview != container {
+                if superviewToNoSnapshotSubviewMap[view.superview!] == nil {
+                    superviewToNoSnapshotSubviewMap[view.superview!] = []
+                }
+                
+                superviewToNoSnapshotSubviewMap[view.superview!]!.append((view.superview!.subviews.index(of: view)!, view))
             }
             
-            superviewToNoSnapshotSubviewMap[view.superview!]!.append((view.superview!.subviews.index(of: view)!, view))
             snapshot = view
             
         case .optimized:
             #if os(tvOS)
                 snapshot = view.snapshotView(afterScreenUpdates: true)!
-            
             #else
                 if #available(iOS 9.0, *), let stackView = view as? UIStackView {
                     snapshot = stackView.slowSnapshotView()
-                
                 } else if let imageView = view as? UIImageView, view.subviews.isEmpty {
                     let contentView = UIImageView(image: imageView.image)
                     contentView.frame = imageView.bounds
                     contentView.contentMode = imageView.contentMode
                     contentView.tintColor = imageView.tintColor
                     contentView.backgroundColor = imageView.backgroundColor
-                    
                     let snapShotView = UIView()
                     snapShotView.addSubview(contentView)
                     snapshot = snapShotView
-                
-                } else if let navigationBar = view as? UINavigationBar, navigationBar.isTranslucent {
-                    let newNavigationBar = UINavigationBar(frame: navigationBar.frame)
-                    newNavigationBar.barStyle = navigationBar.barStyle
-                    newNavigationBar.tintColor = navigationBar.tintColor
-                    newNavigationBar.barTintColor = navigationBar.barTintColor
-                    newNavigationBar.clipsToBounds = false
-
-                    // Take a snapshot without the background.
-                    navigationBar.layer.sublayers![0].opacity = 0
-                    let realSnapshot = navigationBar.snapshotView(afterScreenUpdates: true)!
-                    navigationBar.layer.sublayers![0].opacity = 1
-
-                    newNavigationBar.addSubview(realSnapshot)
-                    snapshot = newNavigationBar
+                } else if let barView = view as? UINavigationBar, barView.isTranslucent {
+                    let newBarView = UINavigationBar(frame: barView.frame)
                     
+                    newBarView.barStyle = barView.barStyle
+                    newBarView.tintColor = barView.tintColor
+                    newBarView.barTintColor = barView.barTintColor
+                    newBarView.clipsToBounds = false
+                    
+                    // take a snapshot without the background
+                    barView.layer.sublayers![0].opacity = 0
+                    let realSnapshot = barView.snapshotView(afterScreenUpdates: true)!
+                    barView.layer.sublayers![0].opacity = 1
+                    
+                    newBarView.addSubview(realSnapshot)
+                    snapshot = newBarView
                 } else if let effectView = view as? UIVisualEffectView {
                     snapshot = UIVisualEffectView(effect: effectView.effect)
                     snapshot.frame = effectView.bounds
-                
                 } else {
-                    snapshot = view.snapshotView(afterScreenUpdates: true)!
+                    snapshot = view.snapshotView() ?? UIView()
                 }
             #endif
         }
-
+        
         #if os(tvOS)
             if let imageView = view as? UIImageView, imageView.adjustsImageWhenAncestorFocused {
                 snapshot.frame = imageView.focusedFrameGuide.layoutFrame
             }
         #endif
-
+        
         view.layer.cornerRadius = oldCornerRadius
         view.alpha = oldAlpha
-
-        if .noSnapshot != snapshotType {
-            snapshot.layer.allowsGroupOpacity = false
-
+        
+        snapshot.layer.anchorPoint = view.layer.anchorPoint
+        snapshot.layer.position = containerView.convert(view.layer.position, from: view.superview!)
+        snapshot.layer.transform = containerView.layer.flatTransformTo(layer: view.layer)
+        snapshot.layer.bounds = view.layer.bounds
+        snapshot.motionIdentifier = view.motionIdentifier
+        
+        if snapshotType != .noSnapshot {
             if !(view is UINavigationBar), let contentView = snapshot.subviews.get(0) {
-                /** 
-                 The snapshot's contentView must have the cornerRadius value,
-                 since the snapshot might not have maskToBounds set
-                 */
+                // the Snapshot's contentView must have hold the cornerRadius value,
+                // since the snapshot might not have maskToBounds set
                 contentView.layer.cornerRadius = view.layer.cornerRadius
                 contentView.layer.masksToBounds = true
             }
-
+            
+            snapshot.layer.allowsGroupOpacity = false
             snapshot.layer.cornerRadius = view.layer.cornerRadius
             snapshot.layer.zPosition = view.layer.zPosition
             snapshot.layer.opacity = view.layer.opacity
@@ -288,10 +289,9 @@ public extension MotionContext {
             snapshot.layer.masksToBounds = view.layer.masksToBounds
             snapshot.layer.borderColor = view.layer.borderColor
             snapshot.layer.borderWidth = view.layer.borderWidth
-            snapshot.layer.transform = view.layer.transform
             snapshot.layer.contentsRect = view.layer.contentsRect
             snapshot.layer.contentsScale = view.layer.contentsScale
-
+            
             if self[view]?.displayShadow ?? true {
                 snapshot.layer.shadowRadius = view.layer.shadowRadius
                 snapshot.layer.shadowOpacity = view.layer.shadowOpacity
@@ -299,18 +299,16 @@ public extension MotionContext {
                 snapshot.layer.shadowOffset = view.layer.shadowOffset
                 snapshot.layer.shadowPath = view.layer.shadowPath
             }
+            
+            hide(view: view)
         }
-
-        snapshot.frame = containerView.convert(view.bounds, from: view)
-        snapshot.motionIdentifier = view.motionIdentifier
-
-        hide(view: view)
-
+        
         if let pairedView = transitionPairedView(for: view), let pairedSnapshot = viewToSnapshot[pairedView] {
             let siblingViews = pairedView.superview!.subviews
-            let nextSiblings = siblingViews[siblingViews.index(of: pairedView)!+1..<siblingViews.count]
+            let nextSiblings = siblingViews[siblingViews.index(of: pairedView)! + 1..<siblingViews.count]
             
             containerView.addSubview(pairedSnapshot)
+            containerView.addSubview(snapshot)
             
             for subview in pairedView.subviews {
                 insertGlobalViewTree(view: subview)
@@ -319,10 +317,11 @@ public extension MotionContext {
             for sibling in nextSiblings {
                 insertGlobalViewTree(view: sibling)
             }
+        } else {
+            containerView.addSubview(snapshot)
         }
         
         containerView.addSubview(snapshot)
-        
         viewToSnapshot[view] = snapshot
         
         return snapshot

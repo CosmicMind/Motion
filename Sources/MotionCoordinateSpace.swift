@@ -31,5 +31,4 @@ import UIKit
 public enum MotionCoordinateSpace {
     case global
     case local
-    case sameParent
 }

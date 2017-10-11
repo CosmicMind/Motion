@@ -515,11 +515,6 @@ public extension MotionTransition {
         $0.coordinateSpace = .global
     }
     
-    /// Use same parent coordinate space.
-    static var useSameParentCoordinateSpace = MotionTransition {
-        $0.coordinateSpace = .sameParent
-    }
-    
     /// Ignore all motion transition attributes for a view's direct subviews.
     static var ignoreSubviewTransitions: MotionTransition = .ignoreSubviewTransitions()
     

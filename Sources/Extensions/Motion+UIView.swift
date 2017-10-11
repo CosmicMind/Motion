@@ -34,6 +34,9 @@ fileprivate struct AssociatedInstance {
     /// A boolean indicating whether Motion is enabled.
     fileprivate var isEnabled: Bool
     
+    /// A boolean indicating whether Motion is enabled for subviews.
+    fileprivate var isEnabledForSubviews: Bool
+    
     /// An optional reference to the motion identifier.
     fileprivate var identifier: String?
     
@@ -52,7 +55,7 @@ fileprivate extension UIView {
     fileprivate var associatedInstance: AssociatedInstance {
         get {
             return AssociatedObject.get(base: self, key: &AssociatedInstanceKey) {
-                return AssociatedInstance(isEnabled: true, identifier: nil, animations: nil, transitions: nil, alpha: 1)
+                return AssociatedInstance(isEnabled: true, isEnabledForSubviews: true, identifier: nil, animations: nil, transitions: nil, alpha: 1)
             }
         }
         set(value) {
@@ -70,6 +73,17 @@ public extension UIView {
         }
         set(value) {
             associatedInstance.isEnabled = value
+        }
+    }
+    
+    /// A boolean that indicates whether motion is enabled.
+    @IBInspectable
+    var isMotionEnabledForSubviews: Bool {
+        get {
+            return associatedInstance.isEnabledForSubviews
+        }
+        set(value) {
+            associatedInstance.isEnabledForSubviews = value
         }
     }
     
@@ -195,6 +209,25 @@ internal extension UIView {
     }
 }
 
+internal class SnapshotWrapperView: UIView {
+    let contentView: UIView
+    init(contentView: UIView) {
+        self.contentView = contentView
+        super.init(frame: contentView.frame)
+        addSubview(contentView)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        contentView.bounds.size = bounds.size
+        contentView.center = bounds.center
+    }
+}
+
 internal extension UIView {
     /// Retrieves a single Array of UIViews that are in the view hierarchy.
     var flattenedViewHierarchy: [UIView] {
@@ -202,11 +235,15 @@ internal extension UIView {
             return []
         }
         
-        if #available(iOS 9.0, *) {
-            return isHidden && (superview is UICollectionView || superview is UIStackView || self is UITableViewCell) ? [] : ([self] + subviews.flatMap { $0.flattenedViewHierarchy })
+        if #available(iOS 9.0, *), isHidden && (superview is UICollectionView || superview is UIStackView || self is UITableViewCell) {
+            return []
+        } else if isHidden && (superview is UICollectionView || self is UITableViewCell) {
+            return []
+        } else if isMotionEnabledForSubviews {
+            return [self] + subviews.flatMap { $0.flattenedViewHierarchy }
+        } else {
+            return [self]
         }
-        
-        return isHidden && (superview is UICollectionView || self is UITableViewCell) ? [] : ([self] + subviews.flatMap { $0.flattenedViewHierarchy })
     }
     
     /**
@@ -250,8 +287,21 @@ internal extension UIView {
         let imageView = UIImageView(image: image)
         imageView.frame = bounds
         
-        let snapshotView = UIView(frame: bounds)
-        snapshotView.addSubview(imageView)
-        return snapshotView
+        return SnapshotWrapperView(contentView: imageView)
+    }
+    
+    /**
+     Returns a snapshot of the view itself.
+     - Returns: An optional UIView.
+     */
+    func snapshotView() -> UIView? {
+        let snapshot = snapshotView(afterScreenUpdates: true)
+        
+        if #available(iOS 11.0, *), let oldSnapshot = snapshot {
+            /// iOS 11 no longer contains a container view.
+            return SnapshotWrapperView(contentView: oldSnapshot)
+        }
+        
+        return snapshot
     }
 }

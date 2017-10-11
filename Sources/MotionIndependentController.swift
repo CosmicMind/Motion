@@ -61,7 +61,6 @@ fileprivate extension MotionIndependentController {
      - PArameter toViews: An Array of UIViews.
      */
     func prepareContext(fromViews: [UIView], toViews: [UIView]) {
-        context.defaultCoordinateSpace = .sameParent
         context.set(fromViews: fromViews, toViews: toViews)
         processContext()
     }

@@ -702,15 +702,15 @@ extension Motion: UIViewControllerTransitioningDelegate {
     }
     
     public func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        self.isPresenting = true
-        self.fromViewController = fromViewController ?? presenting
-        self.toViewController = toViewController ?? presented
+        isPresenting = true
+        fromViewController = fromViewController ?? presenting
+        toViewController = toViewController ?? presented
         return self
     }
     
     public func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        self.isPresenting = false
-        self.fromViewController = fromViewController ?? dismissed
+        isPresenting = false
+        fromViewController = fromViewController ?? dismissed
         return self
     }
     
@@ -734,10 +734,10 @@ extension Motion: UIViewControllerInteractiveTransitioning {
 
 extension Motion: UINavigationControllerDelegate {
     public func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationControllerOperation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        self.isPresenting = .push == operation
-        self.fromViewController = fromViewController ?? fromVC
-        self.toViewController = toViewController ?? toVC
-        self.isNavigationController = true
+        isPresenting = .push == operation
+        fromViewController = fromViewController ?? fromVC
+        toViewController = toViewController ?? toVC
+        isNavigationController = true
         return self
     }
     
@@ -761,10 +761,10 @@ extension Motion: UITabBarControllerDelegate {
         let fromVCIndex = tabBarController.childViewControllers.index(of: fromVC)!
         let toVCIndex = tabBarController.childViewControllers.index(of: toVC)!
         
-        self.isPresenting = toVCIndex > fromVCIndex
-        self.fromViewController = fromViewController ?? fromVC
-        self.toViewController = toViewController ?? toVC
-        self.isTabBarController = true
+        isPresenting = toVCIndex > fromVCIndex
+        fromViewController = fromViewController ?? fromVC
+        toViewController = toViewController ?? toVC
+        isTabBarController = true
         
         return self
     }

@@ -191,14 +191,14 @@ public extension MotionContext {
         
         unhide(view: view)
         
-        /// Capture a snapshot without alpha & cornerRadius.
+        // Capture a snapshot without alpha & cornerRadius.
         let oldCornerRadius = view.layer.cornerRadius
         let oldAlpha = view.alpha
         view.layer.cornerRadius = 0
         view.alpha = 1
         
         let snapshot: UIView
-        let snapshotType: MotionSnapshotType = self[view]?.snapshotType ?? .optimized
+        let snapshotType = self[view]?.snapshotType ?? MotionSnapshotType.optimized
         
         switch snapshotType {
         case .normal:
@@ -209,7 +209,7 @@ public extension MotionContext {
         
         case .noSnapshot:
             if view.superview != container {
-                if superviewToNoSnapshotSubviewMap[view.superview!] == nil {
+                if nil == superviewToNoSnapshotSubviewMap[view.superview!] {
                     superviewToNoSnapshotSubviewMap[view.superview!] = []
                 }
                 
@@ -222,20 +222,23 @@ public extension MotionContext {
             #if os(tvOS)
                 snapshot = view.snapshotView(afterScreenUpdates: true)!
             #else
+                
                 if #available(iOS 9.0, *), let stackView = view as? UIStackView {
                     snapshot = stackView.slowSnapshotView()
+                    
                 } else if let imageView = view as? UIImageView, view.subviews.isEmpty {
                     let contentView = UIImageView(image: imageView.image)
                     contentView.frame = imageView.bounds
                     contentView.contentMode = imageView.contentMode
                     contentView.tintColor = imageView.tintColor
                     contentView.backgroundColor = imageView.backgroundColor
+                    
                     let snapShotView = UIView()
                     snapShotView.addSubview(contentView)
                     snapshot = snapShotView
+                
                 } else if let barView = view as? UINavigationBar, barView.isTranslucent {
                     let newBarView = UINavigationBar(frame: barView.frame)
-                    
                     newBarView.barStyle = barView.barStyle
                     newBarView.tintColor = barView.tintColor
                     newBarView.barTintColor = barView.barTintColor
@@ -243,14 +246,17 @@ public extension MotionContext {
                     
                     // take a snapshot without the background
                     barView.layer.sublayers![0].opacity = 0
+                    
                     let realSnapshot = barView.snapshotView(afterScreenUpdates: true)!
                     barView.layer.sublayers![0].opacity = 1
                     
                     newBarView.addSubview(realSnapshot)
                     snapshot = newBarView
+                
                 } else if let effectView = view as? UIVisualEffectView {
                     snapshot = UIVisualEffectView(effect: effectView.effect)
                     snapshot.frame = effectView.bounds
+                
                 } else {
                     snapshot = view.snapshotView() ?? UIView()
                 }
@@ -272,10 +278,10 @@ public extension MotionContext {
         snapshot.layer.bounds = view.layer.bounds
         snapshot.motionIdentifier = view.motionIdentifier
         
-        if snapshotType != .noSnapshot {
+        if .noSnapshot != snapshotType {
             if !(view is UINavigationBar), let contentView = snapshot.subviews.get(0) {
-                // the Snapshot's contentView must have hold the cornerRadius value,
-                // since the snapshot might not have maskToBounds set
+                // The Snapshot's contentView must have hold the cornerRadius value,
+                // since the snapshot might not have maskToBounds set.
                 contentView.layer.cornerRadius = view.layer.cornerRadius
                 contentView.layer.masksToBounds = true
             }

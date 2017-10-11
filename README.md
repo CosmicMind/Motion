@@ -129,11 +129,11 @@ In the above code example, a box view is created with a width of 100, height of 
 > **Embedded frameworks require a minimum deployment target of iOS 8.**
 > - [Download Motion](https://github.com/CosmicMind/Motion/archive/master.zip)
 
-Visit the [Installation](https://cosmicmind.gitbooks.io/motion/content/installation.html) page to learn how to install Motion using [CocoaPods](http://cocoapods.org) and [Carthage](https://github.com/Carthage/Carthage).
+Read [Material - It's time to download](https://www.cosmicmind.com/danieldahan/lesson/6) to learn how to install Material using [GitHub](http://github.com), [CocoaPods](http://cocoapods.org), and [Carthage](https://github.com/Carthage/Carthage).
 
 ## Change Log
 
-Motion is a growing project and will encounter changes throughout its development. It is recommended that the [Change Log](https://cosmicmind.gitbooks.io/motion/content/change_log.html) be reviewed prior to updating versions.
+Motion is a growing project and will encounter changes throughout its development. It is recommended that the [Change Log](https://github.com/CosmicMind/Motion/blob/master/CHANGELOG.md) be reviewed prior to updating versions.
 
 ## License
 

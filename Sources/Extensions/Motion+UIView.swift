@@ -210,7 +210,13 @@ internal extension UIView {
 }
 
 internal class SnapshotWrapperView: UIView {
+    /// A reference to the contentView.
     let contentView: UIView
+    
+    /**
+     An initializer that takes in a contentView.
+     - Parameter contentView: A UIView.
+     */
     init(contentView: UIView) {
         self.contentView = contentView
         super.init(frame: contentView.frame)
@@ -269,7 +275,7 @@ internal extension UIView {
         
         let movePoints = realFromPos.distance(realToPos) + realFromSize.bottomRight.distance(realToSize.bottomRight)
         
-        // duration is 0.2 @ 0 to 0.375 @ 500
+        // Duration is 0.2 @ 0 to 0.375 @ 500
         return 0.208 + Double(movePoints.clamp(0, 500)) / 3000
     }
     
@@ -298,7 +304,7 @@ internal extension UIView {
         let snapshot = snapshotView(afterScreenUpdates: true)
         
         if #available(iOS 11.0, *), let oldSnapshot = snapshot {
-            /// iOS 11 no longer contains a container view.
+            // iOS 11 no longer contains a container view.
             return SnapshotWrapperView(contentView: oldSnapshot)
         }
         

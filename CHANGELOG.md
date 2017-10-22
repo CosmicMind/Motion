@@ -1,3 +1,7 @@
+## 1.2.3
+
+* Replaced DispatchQueue.main.async calls to Motion.async.
+
 ## 1.2.2
 
 * Updated Motion for iOS 11, where snapshot would no longer include a container view.

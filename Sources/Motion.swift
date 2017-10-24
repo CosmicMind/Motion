@@ -526,6 +526,9 @@ fileprivate extension Motion {
             return
         }
         
+        fvc.beginAppearanceTransition(false, animated: true)
+        tvc.beginAppearanceTransition(true, animated: true)
+        
         processForMotionDelegate(viewController: fvc) { [weak self] in
             guard let s = self else {
                 return
@@ -559,6 +562,9 @@ fileprivate extension Motion {
         guard let tvc = toViewController else {
             return
         }
+        
+        tvc.endAppearanceTransition()
+        fvc.endAppearanceTransition()
         
         processForMotionDelegate(viewController: fvc) { [weak self] in
             guard let s = self else {
@@ -595,6 +601,9 @@ fileprivate extension Motion {
         guard let tvc = toViewController else {
             return
         }
+        
+        tvc.endAppearanceTransition()
+        fvc.endAppearanceTransition()
         
         processForMotionDelegate(viewController: fvc) { [weak self] in
             guard let s = self else {
@@ -727,6 +736,7 @@ extension Motion: UIViewControllerInteractiveTransitioning {
     public var wantsInteractiveStart: Bool {
         return true
     }
+    
     public func startInteractiveTransition(_ transitionContext: UIViewControllerContextTransitioning) {
         animateTransition(using: transitionContext)
     }

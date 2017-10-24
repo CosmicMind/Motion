@@ -1,3 +1,7 @@
+## 1.2.4
+
+* Added begin / end transition methods for from / to view controllers.
+
 ## 1.2.3
 
 * Replaced DispatchQueue.main.async calls to Motion.async.

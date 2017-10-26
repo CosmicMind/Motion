@@ -1,3 +1,7 @@
+## 1.2.5
+
+* `UIViewController.motionModalTransitionType` renamed to `UIViewController.motionTransitionType`.
+
 ## 1.2.4
 
 * Added begin / end transition methods for from / to view controllers.

@@ -33,24 +33,24 @@ fileprivate var AssociatedInstanceKey: UInt8 = 0
 fileprivate struct AssociatedInstance {
     /// A reference to the modal animation.
     var modalTransitionType: MotionTransitionType
-    
+
     /// A reference to the navigation animation.
     var navigationTransitionType: MotionTransitionType
-    
+
     /// A reference to the tabBar animation.
     var tabBarTransitionType: MotionTransitionType
-    
+
     /// A reference to the stored snapshot.
     var storedSnapshot: UIView?
-    
-    /** 
-     A reference to the previous navigation controller delegate 
+
+    /**
+     A reference to the previous navigation controller delegate
      before Motion was enabled.
      */
     weak var previousNavigationDelegate: UINavigationControllerDelegate?
-    
+
     /**
-     A reference to the previous tab bar controller delegate 
+     A reference to the previous tab bar controller delegate
      before Motion was enabled.
      */
     weak var previousTabBarDelegate: UITabBarControllerDelegate?
@@ -73,9 +73,9 @@ extension UIViewController {
             AssociatedObject.set(base: self, key: &AssociatedInstanceKey, value: value)
         }
     }
-    
-    /// default motion animation type for presenting & dismissing modally
-    public var motionModalTransitionType: MotionTransitionType {
+
+    /// Default motion animation type for presenting & dismissing modally.
+    public var motionTransitionType: MotionTransitionType {
         get {
             return associatedInstance.modalTransitionType
         }
@@ -83,8 +83,8 @@ extension UIViewController {
             associatedInstance.modalTransitionType = value
         }
     }
-    
-    /// used for .overFullScreen presentation
+
+    /// Used for .overFullScreen presentation.
     internal var motionStoredSnapshot: UIView? {
         get {
             return associatedInstance.storedSnapshot
@@ -93,7 +93,7 @@ extension UIViewController {
             associatedInstance.storedSnapshot = value
         }
     }
-    
+
     /**
      A reference to the previous navigation controller delegate
      before Motion was enabled.
@@ -184,8 +184,8 @@ extension UITabBarController {
 
 extension UIViewController {
     /**
-     Dismiss the current view controller with animation. Will perform a 
-     navigationController.popViewController if the current view controller 
+     Dismiss the current view controller with animation. Will perform a
+     navigationController.popViewController if the current view controller
      is contained inside a navigationController
      */
     @IBAction
@@ -196,33 +196,41 @@ extension UIViewController {
             dismiss(animated: true)
         }
     }
-    
+
     /// Unwind to the root view controller using Motion.
     @IBAction
     public func motionUnwindToRootViewController() {
-        motionUnwindToViewController { $0.presentingViewController == nil }
+        motionUnwindToViewController {
+            nil == $0.presentingViewController
+        }
     }
-    
+
     /// Unwind to a specific view controller using Motion.
     public func motionUnwindToViewController(_ toViewController: UIViewController) {
-        motionUnwindToViewController { $0 == toViewController }
+        motionUnwindToViewController {
+            $0 == toViewController
+        }
     }
-    
+
     /// Unwind to a view controller that responds to the given selector using Motion.
     public func motionUnwindToViewController(withSelector: Selector) {
-        motionUnwindToViewController { $0.responds(to: withSelector) }
+        motionUnwindToViewController {
+            $0.responds(to: withSelector)
+        }
     }
-    
+
     /// Unwind to a view controller with given class using Motion
     public func motionUnwindToViewController(withClass: AnyClass) {
-        motionUnwindToViewController { $0.isKind(of: withClass) }
+        motionUnwindToViewController {
+            $0.isKind(of: withClass)
+        }
     }
-    
+
     /// Unwind to a view controller that the matchBlock returns true on.
     public func motionUnwindToViewController(withMatchBlock: (UIViewController) -> Bool) {
         var target: UIViewController?
         var current: UIViewController? = self
-        
+
         while nil == target && nil != current {
             if let childViewControllers = (current as? UINavigationController)?.childViewControllers ?? current!.navigationController?.childViewControllers {
                 for v in childViewControllers.reversed() {
@@ -232,34 +240,34 @@ extension UIViewController {
                     }
                 }
             }
-            
+
             guard nil == target else {
                 continue
             }
-            
+
             current = current?.presentingViewController
-                
+
             guard let v = current, withMatchBlock(v) else {
                 continue
             }
-            
+
             target = v
         }
-        
+
         guard let v = target else {
             return
         }
-        
+
         guard nil != v.presentedViewController else {
             v.navigationController?.popToViewController(v, animated: true)
             return
         }
-        
+
         v.navigationController?.popToViewController(v, animated: false)
-        
+
         let fromVC = navigationController ?? self
         let toVC = v.navigationController ?? v
-        
+
         if v.presentedViewController != fromVC {
             /**
              UIKit's UIViewController.dismiss will jump to target.presentedViewController then perform the dismiss.
@@ -267,17 +275,17 @@ extension UIViewController {
              And also force Motion to use the current view controller as the fromViewController.
             */
             Motion.shared.fromViewController = fromVC
-            
+
             guard let snapshot = fromVC.view.snapshotView(afterScreenUpdates: true) else {
                 return
             }
-            
+
             toVC.presentedViewController?.view.addSubview(snapshot)
         }
-        
+
         toVC.dismiss(animated: true)
     }
-    
+
     /**
      Replace the current view controller with another view controller within the
      navigation/modal stack.
@@ -288,35 +296,35 @@ extension UIViewController {
             print("motionReplaceViewController cancelled because Motion was doing a transition. Use Motion.shared.cancel(animated: false) or Motion.shared.end(animated: false) to stop the transition first before calling motionReplaceViewController.")
             return
         }
-        
+
         if let nc = navigationController {
             var v = nc.childViewControllers
-            
+
             if !v.isEmpty {
                 v.removeLast()
                 v.append(next)
             }
-            
+
             if nc.isMotionEnabled {
                 Motion.shared.forceNonInteractive = true
             }
-            
+
             nc.setViewControllers(v, animated: true)
         } else if let container = view.superview {
             let presentingVC = presentingViewController
-            
+
             Motion.shared.transition(from: self, to: next, in: container) { [weak self] (isFinished) in
                 guard isFinished else {
                     return
                 }
-                
+
                 UIApplication.shared.keyWindow?.addSubview(next.view)
-                
+
                 guard let pvc = presentingVC else {
                     UIApplication.shared.keyWindow?.rootViewController = next
                     return
                 }
-                
+
                 self?.dismiss(animated: false) {
                     pvc.present(next, animated: false)
                 }

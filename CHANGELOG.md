@@ -1,6 +1,7 @@
 ## 1.2.5
 
 * `UIViewController.motionModalTransitionType` renamed to `UIViewController.motionTransitionType`.
+* Updated logic steps for `TabsController.motionTransitionType` and child view controller `motionTransitionType` values.
 
 ## 1.2.4
 

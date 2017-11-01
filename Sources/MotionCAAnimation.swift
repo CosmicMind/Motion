@@ -106,7 +106,7 @@ public extension MotionCAAnimation {
      - Returns: A CABasicAnimation.
      */
     static func background(color: UIColor) -> CABasicAnimation {
-        return MotionCAAnimation.createAnimation(keyPath: .backgroundColor, toValue: color.cgColor)
+        return createAnimation(keyPath: .backgroundColor, toValue: color.cgColor)
     }
     
     /**
@@ -115,7 +115,7 @@ public extension MotionCAAnimation {
      - Returns: A CABasicAnimation.
      */
     static func border(color: UIColor) -> CABasicAnimation {
-        return MotionCAAnimation.createAnimation(keyPath: .borderColor, toValue: color.cgColor)
+        return createAnimation(keyPath: .borderColor, toValue: color.cgColor)
     }
     
     /**
@@ -124,7 +124,7 @@ public extension MotionCAAnimation {
      - Returns: A CABasicAnimation.
      */
     static func border(width: CGFloat) -> CABasicAnimation {
-        return MotionCAAnimation.createAnimation(keyPath: .borderWidth, toValue: NSNumber(floatLiteral: Double(width)))
+        return createAnimation(keyPath: .borderWidth, toValue: NSNumber(floatLiteral: Double(width)))
     }
     
     /**
@@ -133,7 +133,7 @@ public extension MotionCAAnimation {
      - Returns: A CABasicAnimation.
      */
     static func corner(radius: CGFloat) -> CABasicAnimation {
-        return MotionCAAnimation.createAnimation(keyPath: .cornerRadius, toValue: NSNumber(floatLiteral: Double(radius)))
+        return createAnimation(keyPath: .cornerRadius, toValue: NSNumber(floatLiteral: Double(radius)))
     }
     
     /**
@@ -142,7 +142,7 @@ public extension MotionCAAnimation {
      - Returns: A CABasicAnimation.
      */
     static func transform(_ t: CATransform3D) -> CABasicAnimation {
-        return MotionCAAnimation.createAnimation(keyPath: .transform, toValue: NSValue(caTransform3D: t))
+        return createAnimation(keyPath: .transform, toValue: NSValue(caTransform3D: t))
     }
     
     /**
@@ -195,7 +195,7 @@ public extension MotionCAAnimation {
      - Returns: A CABasicAnimation.
      */
     static func spin(x: CGFloat) -> CABasicAnimation {
-        return MotionCAAnimation.createAnimation(keyPath: .rotateX, toValue: NSNumber(value: Double(CGFloat(Double.pi) * 2 * x)))
+        return createAnimation(keyPath: .rotateX, toValue: NSNumber(value: Double(CGFloat(Double.pi) * 2 * x)))
     }
     
     /**
@@ -204,7 +204,7 @@ public extension MotionCAAnimation {
      - Returns: A CABasicAnimation.
      */
     static func spin(y: CGFloat) -> CABasicAnimation {
-        return MotionCAAnimation.createAnimation(keyPath: .rotateY, toValue: NSNumber(value: Double(CGFloat(Double.pi) * 2 * y)))
+        return createAnimation(keyPath: .rotateY, toValue: NSNumber(value: Double(CGFloat(Double.pi) * 2 * y)))
     }
     
     /**
@@ -213,7 +213,7 @@ public extension MotionCAAnimation {
      - Returns: A CABasicAnimation.
      */
     static func spin(z: CGFloat) -> CABasicAnimation {
-        return MotionCAAnimation.createAnimation(keyPath: .rotateZ, toValue: NSNumber(value: Double(CGFloat(Double.pi) * 2 * z)))
+        return createAnimation(keyPath: .rotateZ, toValue: NSNumber(value: Double(CGFloat(Double.pi) * 2 * z)))
     }
     
     /**
@@ -222,7 +222,7 @@ public extension MotionCAAnimation {
      - Returns: A CABasicAnimation.
      */
     static func position(_ point: CGPoint) -> CABasicAnimation {
-        return MotionCAAnimation.createAnimation(keyPath: .position, toValue: NSValue(cgPoint: point))
+        return createAnimation(keyPath: .position, toValue: NSValue(cgPoint: point))
     }
     
     /**
@@ -231,7 +231,7 @@ public extension MotionCAAnimation {
      - Returns: A CABasicAnimation.
      */
     static func fade(_ opacity: Double) -> CABasicAnimation {
-        return MotionCAAnimation.createAnimation(keyPath: .opacity, toValue: NSNumber(floatLiteral: opacity))
+        return createAnimation(keyPath: .opacity, toValue: NSNumber(floatLiteral: opacity))
     }
     
     /**
@@ -240,7 +240,7 @@ public extension MotionCAAnimation {
      - Returns: A CABasicAnimation.
      */
     static func zPosition(_ position: CGFloat) -> CABasicAnimation {
-        return MotionCAAnimation.createAnimation(keyPath: .zPosition, toValue: NSNumber(value: Double(position)))
+        return createAnimation(keyPath: .zPosition, toValue: NSNumber(value: Double(position)))
     }
     
     /**
@@ -249,7 +249,7 @@ public extension MotionCAAnimation {
      - Returns: A CABasicAnimation.
      */
     static func width(_ width: CGFloat) -> CABasicAnimation {
-        return MotionCAAnimation.createAnimation(keyPath: .width, toValue: NSNumber(floatLiteral: Double(width)))
+        return createAnimation(keyPath: .width, toValue: NSNumber(floatLiteral: Double(width)))
     }
     
     /**
@@ -258,7 +258,7 @@ public extension MotionCAAnimation {
      - Returns: A CABasicAnimation.
      */
     static func height(_ height: CGFloat) -> CABasicAnimation {
-        return MotionCAAnimation.createAnimation(keyPath: .height, toValue: NSNumber(floatLiteral: Double(height)))
+        return createAnimation(keyPath: .height, toValue: NSNumber(floatLiteral: Double(height)))
     }
     
     /**
@@ -267,7 +267,7 @@ public extension MotionCAAnimation {
      - Returns: A CABasicAnimation.
      */
     static func size(_ size: CGSize) -> CABasicAnimation {
-        return MotionCAAnimation.createAnimation(keyPath: .size, toValue: NSValue(cgSize: size))
+        return createAnimation(keyPath: .size, toValue: NSValue(cgSize: size))
     }
     
     /**
@@ -276,7 +276,7 @@ public extension MotionCAAnimation {
      - Returns: A CABasicAnimation.
      */
     static func shadow(path: CGPath) -> CABasicAnimation {
-        return MotionCAAnimation.createAnimation(keyPath: .shadowPath, toValue: path)
+        return createAnimation(keyPath: .shadowPath, toValue: path)
     }
     
     /**
@@ -285,7 +285,7 @@ public extension MotionCAAnimation {
      - Returns: A CABasicAnimation.
      */
     static func shadow(color: UIColor) -> CABasicAnimation {
-        return MotionCAAnimation.createAnimation(keyPath: .shadowColor, toValue: color.cgColor)
+        return createAnimation(keyPath: .shadowColor, toValue: color.cgColor)
     }
     
     /**
@@ -294,7 +294,7 @@ public extension MotionCAAnimation {
      - Returns: A CABasicAnimation.
      */
     static func shadow(offset: CGSize) -> CABasicAnimation {
-        return MotionCAAnimation.createAnimation(keyPath: .shadowOffset, toValue: NSValue(cgSize: offset))
+        return createAnimation(keyPath: .shadowOffset, toValue: NSValue(cgSize: offset))
     }
     
     /**
@@ -303,7 +303,7 @@ public extension MotionCAAnimation {
      - Returns: A CABasicAnimation.
      */
     static func shadow(opacity: Float) -> CABasicAnimation {
-        return MotionCAAnimation.createAnimation(keyPath: .shadowOpacity, toValue: NSNumber(floatLiteral: Double(opacity)))
+        return createAnimation(keyPath: .shadowOpacity, toValue: NSNumber(floatLiteral: Double(opacity)))
     }
     
     /**
@@ -312,6 +312,6 @@ public extension MotionCAAnimation {
      - Returns: A CABasicAnimation.
      */
     static func shadow(radius: CGFloat) -> CABasicAnimation {
-        return MotionCAAnimation.createAnimation(keyPath: .shadowRadius, toValue: NSNumber(floatLiteral: Double(radius)))
+        return createAnimation(keyPath: .shadowRadius, toValue: NSNumber(floatLiteral: Double(radius)))
     }
 }

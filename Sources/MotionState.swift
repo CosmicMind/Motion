@@ -26,42 +26,23 @@
  * THE SOFTWARE.
  */
 
-import UIKit
-
-public class MotionIndependentController: MotionController {
-    /// An initializer.
-    public override init() {
-        super.init()
-    }
-
-    /**
-     Transitions source views to their corresponding destination view
-     within a given root view.
-     - Parameter rootView: A UIView.
-     - Parameter fromViews: An Array of UIViews.
-     - Parameter toViews: An Array of UIViews.
-     - Parameter completion: An optional callback.
-     */
-    public func transition(rootView: UIView, fromViews: [UIView], toViews: [UIView], completion: ((Bool) -> Void)? = nil) {
-        transitionContainer = rootView
-        completionCallback = completion
-
-        prepareTransition()
-        prepareContext(fromViews: fromViews, toViews: toViews)
-        prepareTransitionPairs()
-        
-        animate()
-    }
+@objc(MotionState)
+public enum MotionState: Int {
+    /// Motion is able to start a new transition.
+    case possible
+    
+    /// UIKit has notified Motion about a pending transition.
+    /// Motion hasn't started preparation.
+    case notified
+    
+    /// Motion's `start` method has been called. Preparing the animation.
+    case starting
+    
+    /// Motions's `animate` method has been called. Animation has started.
+    case animating
+    
+    /// Motions's `complete` method has been called. Transition has ended or has
+    /// been cancelled. Motion is cleaning up.
+    case completing
 }
 
-fileprivate extension MotionIndependentController {
-    /** 
-     Prepares the context.
-     - Parameter fromViews: An Array of UIViews.
-     - PArameter toViews: An Array of UIViews.
-     */
-    func prepareContext(fromViews: [UIView], toViews: [UIView]) {
-        context.set(fromViews: fromViews, toViews: toViews)
-        processContext()
-    }
-}

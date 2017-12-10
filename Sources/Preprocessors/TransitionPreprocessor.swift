@@ -218,7 +218,7 @@ class TransitionPreprocessor: MotionPreprocessor {
         if case .auto = defaultAnimation {
             if isNavigationController, let navAnim = toViewController?.navigationController?.motionNavigationTransitionType {
                 defaultAnimation = navAnim
-
+                
             } else if isTabBarController, let tabAnim = toViewController?.tabBarController?.motionTabBarTransitionType {
                 defaultAnimation = tabAnim
 

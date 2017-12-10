@@ -77,6 +77,7 @@ internal extension MotionContext {
     func set(fromViews: [UIView], toViews: [UIView]) {
         self.fromViews = fromViews
         self.toViews = toViews
+        
         map(views: fromViews, identifierMap: &motionIdentifierToSourceView)
         map(views: toViews, identifierMap: &motionIdentifierToDestinationView)
     }
@@ -114,8 +115,8 @@ public extension MotionContext {
         get {
             return viewToTargetState[view]
         }
-        set {
-            viewToTargetState[view] = newValue
+        set(value) {
+            viewToTargetState[view] = value
         }
     }
 }
@@ -185,6 +186,7 @@ public extension MotionContext {
             if let visualEffectView = containerView as? UIVisualEffectView {
                 containerView = visualEffectView.contentView
             }
+            
         case .global:
             break
         }
@@ -221,8 +223,8 @@ public extension MotionContext {
         case .optimized:
             #if os(tvOS)
                 snapshot = view.snapshotView(afterScreenUpdates: true)!
-            #else
                 
+            #else
                 if #available(iOS 9.0, *), let stackView = view as? UIStackView {
                     snapshot = stackView.slowSnapshotView()
                     
@@ -246,7 +248,6 @@ public extension MotionContext {
                     
                     // take a snapshot without the background
                     barView.layer.sublayers![0].opacity = 0
-                    
                     let realSnapshot = barView.snapshotView(afterScreenUpdates: true)!
                     barView.layer.sublayers![0].opacity = 1
                     
@@ -260,6 +261,7 @@ public extension MotionContext {
                 } else {
                     snapshot = view.snapshotView() ?? UIView()
                 }
+                
             #endif
         }
         
@@ -267,6 +269,7 @@ public extension MotionContext {
             if let imageView = view as? UIImageView, imageView.adjustsImageWhenAncestorFocused {
                 snapshot.frame = imageView.focusedFrameGuide.layoutFrame
             }
+            
         #endif
         
         view.layer.cornerRadius = oldCornerRadius
@@ -323,6 +326,7 @@ public extension MotionContext {
             for sibling in nextSiblings {
                 insertGlobalViewTree(view: sibling)
             }
+            
         } else {
             containerView.addSubview(snapshot)
         }
@@ -363,7 +367,7 @@ internal extension MotionContext {
      - Parameter view: A UIView.
      */
     func hide(view: UIView) {
-        guard nil == viewToAlphas[view], .noSnapshot != self[view]?.snapshotType else {
+        guard nil == viewToAlphas[view] else {
             return
         }
         
@@ -372,7 +376,7 @@ internal extension MotionContext {
             viewToAlphas[view] = 1
         
         } else {
-            viewToAlphas[view] = view.isOpaque ? .infinity : view.alpha
+            viewToAlphas[view] = view.alpha
             view.alpha = 0
         }
     }
@@ -388,10 +392,6 @@ internal extension MotionContext {
         
         if view is UIVisualEffectView {
             view.isHidden = false
-        
-        } else if oldAlpha == .infinity {
-            view.alpha = 1
-            view.isOpaque = true
         
         } else {
             view.alpha = oldAlpha

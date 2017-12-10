@@ -220,6 +220,7 @@ internal class SnapshotWrapperView: UIView {
     init(contentView: UIView) {
         self.contentView = contentView
         super.init(frame: contentView.frame)
+        contentView.frame = bounds
         addSubview(contentView)
     }
     
@@ -229,8 +230,7 @@ internal class SnapshotWrapperView: UIView {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        contentView.bounds.size = bounds.size
-        contentView.center = bounds.center
+        contentView.frame = bounds
     }
 }
 
@@ -243,13 +243,17 @@ internal extension UIView {
         
         if #available(iOS 9.0, *), isHidden && (superview is UICollectionView || superview is UIStackView || self is UITableViewCell) {
             return []
+            
         } else if isHidden && (superview is UICollectionView || self is UITableViewCell) {
             return []
+        
         } else if isMotionEnabledForSubviews {
-            return [self] + subviews.flatMap { $0.flattenedViewHierarchy }
-        } else {
-            return [self]
+            return [self] + subviews.flatMap {
+                $0.flattenedViewHierarchy
+            }
         }
+        
+        return [self]
     }
     
     /**
@@ -285,7 +289,13 @@ internal extension UIView {
      */
     func slowSnapshotView() -> UIView {
         UIGraphicsBeginImageContextWithOptions(bounds.size, isOpaque, 0)
-        layer.render(in: UIGraphicsGetCurrentContext()!)
+        
+        guard let currentContext = UIGraphicsGetCurrentContext() else {
+            UIGraphicsEndImageContext()
+            return UIView()
+        }
+        
+        layer.render(in: currentContext)
         
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()

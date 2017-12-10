@@ -28,36 +28,14 @@
 
 import UIKit
 
-internal class MotionTransitionAnimator<T: MotionAnimatorViewContext>: MotionAnimator, MotionHasInsertOrder {
-    /// A reference to a MotionContext.
-    weak public var context: MotionContext!
-  
+internal class MotionTransitionAnimator<T: MotionAnimatorViewContext>: BaseMotionAnimator, MotionHasInsertOrder {
     /// An index of views to their corresponding animator context.
     var viewToContexts = [UIView: T]()
 
     var insertToViewFirst = false
-}
-
-extension MotionTransitionAnimator {
-    /**
-     Animates a given view.
-     - Parameter view: A UIView.
-     - Parameter isAppearing: A boolean that determines whether the
-     view is appearing.
-     */
-    fileprivate func animate(view: UIView, isAppearing: Bool) {
-        let s = context.snapshotView(for: view)
-        let v = T(animator: self, snapshot: s, targetState: context[view]!)
-        
-        viewToContexts[view] = v
-        
-        v.startAnimations(isAppearing: isAppearing)
-    }
-}
-
-extension MotionTransitionAnimator {
+    
     /// Cleans the contexts.
-    func clean() {
+    override func clean() {
         for v in viewToContexts.values {
             v.clean()
         }
@@ -72,7 +50,7 @@ extension MotionTransitionAnimator {
      - Parameter isAppearing: A boolean that determines whether the
      view is appearing.
      */
-    func canAnimate(view: UIView, isAppearing: Bool) -> Bool {
+    override func canAnimate(view: UIView, isAppearing: Bool) -> Bool {
         guard let state = context[view] else {
             return false
         }
@@ -86,7 +64,7 @@ extension MotionTransitionAnimator {
      - Parameter toViews: An Array of UIViews.
      - Returns: A TimeInterval.
      */
-    func animate(fromViews: [UIView], toViews: [UIView]) -> TimeInterval {
+    override func animate(fromViews: [UIView], toViews: [UIView]) -> TimeInterval {
         var duration: TimeInterval = 0
         
         if insertToViewFirst {
@@ -119,7 +97,7 @@ extension MotionTransitionAnimator {
      Moves the view's animation to the given elapsed time.
      - Parameter to elapsedTime: A TimeInterval.
      */
-    func seek(to elapsedTime: TimeInterval) {
+    override func seek(to elapsedTime: TimeInterval) {
         for v in viewToContexts.values {
             v.seek(to: elapsedTime)
         }
@@ -132,7 +110,7 @@ extension MotionTransitionAnimator {
      - Parameter isReversed: A boolean to reverse the animation
      or not.
      */
-    func resume(at elapsedTime: TimeInterval, isReversed: Bool) -> TimeInterval {
+    override func resume(at elapsedTime: TimeInterval, isReversed: Bool) -> TimeInterval {
         var duration: TimeInterval = 0
         
         for (_, v) in viewToContexts {
@@ -148,7 +126,7 @@ extension MotionTransitionAnimator {
      - Parameter state: A MotionTransitionState.
      - Parameter to view: A UIView.
      */
-    func apply(state: MotionTransitionState, to view: UIView) {
+    override func apply(state: MotionTransitionState, to view: UIView) {
         guard let v = viewToContexts[view] else {
             return
         }
@@ -156,3 +134,21 @@ extension MotionTransitionAnimator {
         v.apply(state: state)
     }
 }
+
+extension MotionTransitionAnimator {
+    /**
+     Animates a given view.
+     - Parameter view: A UIView.
+     - Parameter isAppearing: A boolean that determines whether the
+     view is appearing.
+     */
+    fileprivate func animate(view: UIView, isAppearing: Bool) {
+        let s = context.snapshotView(for: view)
+        let v = T(animator: self, snapshot: s, targetState: context[view]!)
+        
+        viewToContexts[view] = v
+        
+        v.startAnimations(isAppearing: isAppearing)
+    }
+}
+

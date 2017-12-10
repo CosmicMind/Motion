@@ -29,8 +29,8 @@
 import UIKit
 
 public protocol MotionAnimator: class {
-    /// A reference to a MotionContext.
-    weak var context: MotionContext! { get set }
+    /// A reference to Motion.
+    weak var motion: Motion! { get set }
     
     /// Cleans the contexts.
     func clean()

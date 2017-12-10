@@ -30,7 +30,7 @@ import UIKit
 
 protocol MotionProgressRunnerDelegate: class {
     func update(elapsedTime: TimeInterval)
-    func complete(isFinished: Bool)
+    func complete(isFinishing: Bool)
 }
 
 class MotionProgressRunner {
@@ -50,13 +50,13 @@ class MotionProgressRunner {
         timePassed += isReversed ? -link.duration : link.duration
         
         if isReversed, timePassed <= 1.0 / 120 {
-            delegate?.complete(isFinished: false)
+            delegate?.complete(isFinishing: false)
             stop()
             return
         }
         
         if !isReversed, timePassed > duration - 1.0 / 120 {
-            delegate?.complete(isFinished: true)
+            delegate?.complete(isFinishing: true)
             stop()
             return
         }

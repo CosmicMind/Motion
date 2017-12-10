@@ -30,7 +30,7 @@ import UIKit
 
 internal class MotionAnimatorViewContext {
     /// An optional reference to a MotionAnimator.
-    var animator: MotionAnimator?
+    var animator: BaseMotionAnimator?
     
     /// A reference to the snapshot UIView.
     var snapshot: UIView
@@ -57,7 +57,7 @@ internal class MotionAnimatorViewContext {
      - Parameter snapshot: A UIView.
      - Parameter targetState: A MotionTransitionState.
      */
-    required init(animator: MotionAnimator, snapshot: UIView, targetState: MotionTransitionState) {
+    required init(animator: BaseMotionAnimator, snapshot: UIView, targetState: MotionTransitionState) {
         self.animator = animator
         self.snapshot = snapshot
         self.targetState = targetState

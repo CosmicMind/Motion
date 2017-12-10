@@ -313,8 +313,8 @@ extension UIViewController {
         } else if let container = view.superview {
             let presentingVC = presentingViewController
 
-            Motion.shared.transition(from: self, to: next, in: container) { [weak self] (isFinished) in
-                guard isFinished else {
+            Motion.shared.transition(from: self, to: next, in: container) { [weak self] (isFinishing) in
+                guard isFinishing else {
                     return
                 }
 

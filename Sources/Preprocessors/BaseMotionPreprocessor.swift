@@ -28,14 +28,14 @@
 
 import UIKit
 
-public protocol MotionPreprocessor: class {
-    /// A reference to Motion.
-    weak var motion: Motion! { get set }
+class BaseMotionPreprocessor: MotionPreprocessor {
+    weak public var motion: Motion!
     
-    /**
-     Processes the transitionary views.
-     - Parameter fromViews: An Array of UIViews.
-     - Parameter toViews: An Array of UIViews.
-     */
-    func process(fromViews: [UIView], toViews: [UIView])
+    /// A reference to the MotionContext.
+    public var context: MotionContext! {
+        return motion?.context
+    }
+    
+    func process(fromViews: [UIView], toViews: [UIView]) {}
 }
+

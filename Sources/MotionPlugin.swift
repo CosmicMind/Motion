@@ -28,9 +28,7 @@
 
 import UIKit
 
-open class MotionPlugin: NSObject, MotionPreprocessor, MotionAnimator {
-  weak public var context: MotionContext!
-
+class MotionPlugin: BaseMotionPreprocessor, MotionAnimator {
   /**
     Determines whether or not to receive `seekTo` callback on every frame.
    
@@ -64,7 +62,7 @@ open class MotionPlugin: NSObject, MotionPreprocessor, MotionAnimator {
        context[view, "transition1"] = ["parameter1", "parameter2"]
 
   */
-  open func process(fromViews: [UIView], toViews: [UIView]) {}
+  open override func process(fromViews: [UIView], toViews: [UIView]) {}
 
   /**
    - Returns: return true if the plugin can handle animating the view.

@@ -32,36 +32,33 @@ extension Motion {
     /**
      Complete the transition.
      - Parameter after: A TimeInterval.
-     - Parameter isFinished: A Boolean indicating if the transition
+     - Parameter isFinishing: A Boolean indicating if the transition
      has completed.
      */
-    func complete(after: TimeInterval, isFinished: Bool) {
-        guard isTransitioning else {
+    func complete(after: TimeInterval, isFinishing: Bool) {
+        guard [MotionState.animating, .starting, .notified].contains(state) else {
             return
         }
         
-        if after <= 0.001 {
-            complete(isFinished: isFinished)
+        if after <= 1.0 / 120 {
+            complete(isFinishing: isFinishing)
             return
         }
         
-        let v = (isFinished ? elapsedTime : 1 - elapsedTime) * totalDuration
+        let totalTime = after / (isFinishing ? max((1 - elapsedTime), 0.01) : max(elapsedTime, 0.01))
         
-        self.isFinished = isFinished
-        
-        currentAnimationDuration = after + v
-        beginTime = CACurrentMediaTime() - v
+        progressRunner.start(timePassed: elapsedTime * totalTime, totalTime: totalTime, reverse: !isFinishing)
     }
     
     /**
      Complete the transition.
-     - Parameter isFinished: A Boolean indicating if the transition
+     - Parameter isFinishing: A Boolean indicating if the transition
      has completed.
      */
     @objc
-    func complete(isFinished: Bool) {
+    func complete(isFinishing: Bool) {
         if state == .notified {
-            forceFinishing = isFinished
+            forceFinishing = isFinishing
         }
         
         guard .animating == state || .starting == state else {
@@ -97,7 +94,7 @@ extension Motion {
         context.clean()
         
         if let tv = toView, let fv = fromView {
-            if isFinished && isPresenting && toOverFullScreen {
+            if isFinishing && isPresenting && toOverFullScreen {
                 // finished presenting a overFullScreen view controller.
                 context.unhide(rootView: tv)
                 context.removeSnapshots(rootView: tv)
@@ -107,7 +104,7 @@ extension Motion {
                 fv.removeFromSuperview()
                 fv.addSubview(container)
                 
-            } else if !isFinished && !isPresenting && fromOverFullScreen {
+            } else if !isFinishing && !isPresenting && fromOverFullScreen {
                 // Cancelled dismissing a overFullScreen view controller.
                 context.unhide(rootView: fv)
                 context.removeSnapshots(rootView: fv)
@@ -123,13 +120,13 @@ extension Motion {
             }
             
             // Move fromView & toView back from our container back to the one supplied by UIKit.
-            if (toOverFullScreen && isFinished) || (fromOverFullScreen && !isFinished) {
-                transitionContainer?.addSubview(isFinished ? fv : tv)
+            if (toOverFullScreen && isFinishing) || (fromOverFullScreen && !isFinishing) {
+                transitionContainer?.addSubview(isFinishing ? fv : tv)
             }
             
-            transitionContainer?.addSubview(isFinished ? tv : fv)
+            transitionContainer?.addSubview(isFinishing ? tv : fv)
             
-            if isPresenting != isFinished, !isContainerController {
+            if isPresenting != isFinishing, !isContainerController {
                 // Only happens when present a .overFullScreen view controller.
                 // bug: http://openradar.appspot.com/radar?id=5320103646199808
                 UIApplication.shared.keyWindow?.addSubview(isPresenting ? fv : tv)
@@ -146,19 +143,19 @@ extension Motion {
         
         transitionContainer?.isUserInteractionEnabled = true
         
-        completionCallback?(isFinished)
+        completionCallback?(isFinishing)
         
         let tContext = transitionContext
         let fvc = fromViewController
         let tvc = toViewController
         
-        if isFinished {
+        if isFinishing {
             processEndTransitionDelegation(transitionContext: tContext, fromViewController: fvc, toViewController: tvc)
         } else {
             processCancelTransitionDelegation(transitionContext: tContext, fromViewController: fvc, toViewController: tvc)
             tContext?.cancelInteractiveTransition()
         }
         
-        tContext?.completeTransition(isFinished)
+        tContext?.completeTransition(isFinishing)
     }
 }

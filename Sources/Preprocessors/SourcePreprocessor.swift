@@ -28,16 +28,13 @@
 
 import UIKit
 
-class SourcePreprocessor: MotionPreprocessor {
-    /// A reference to a MotionContext.
-    weak var context: MotionContext!
-
+class SourcePreprocessor: BaseMotionPreprocessor {
     /**
      Processes the transitionary views.
      - Parameter fromViews: An Array of UIViews.
      - Parameter toViews: An Array of UIViews.
      */
-    func process(fromViews: [UIView], toViews: [UIView]) {
+    override func process(fromViews: [UIView], toViews: [UIView]) {
         for fv in fromViews {
             guard let i = context[fv]?.motionIdentifier, let tv = context.destinationView(for: i) else {
                 continue

@@ -131,6 +131,13 @@ public class Motion: NSObject, MotionProgressRunnerDelegate {
     /// Shared singleton object for controlling the transition
     public static let shared = Motion()
     
+    /// A boolean indicating if the user may interact with the
+    /// view controller while in transition.
+    public var isUserInteractionEnabled = false
+    
+    /// A reference to the MotionViewOrderStrategy.
+    public var viewOrderStrategy = MotionViewOrderStrategy.auto
+    
     /// Plugins that are enabled during the transition.
     internal static var enabledPlugins = [MotionPlugin.Type]()
     
@@ -142,7 +149,7 @@ public class Motion: NSObject, MotionProgressRunnerDelegate {
     
     /// A boolean indicating whether the transition interactive or not.
     public var isInteractive: Bool {
-        return nil == displayLink
+        return !progressRunner.isRunning
     }
     
     /// Source view controller.
@@ -207,8 +214,14 @@ public class Motion: NSObject, MotionProgressRunnerDelegate {
     
     /// A boolean indicating whether a transition is active.
     public var isTransitioning: Bool {
-        return nil != transitionContainer
+        return state != .possible
     }
+    
+    /// Whether or not we are presenting the destination view controller.
+    public internal(set) var isPresenting = true
+    
+    /// Indicates whether the transition is animating or not.
+    public internal(set) var isAnimating = false
     
     /**
      A view container used to hold all the animating views during a
@@ -224,9 +237,6 @@ public class Motion: NSObject, MotionProgressRunnerDelegate {
     
     /// An optional completion callback.
     internal var completionCallback: ((Bool) -> Void)?
-    
-    /// Binds the render cycle to the transition animation.
-    internal var displayLink: CADisplayLink?
     
     /// An Array of observers that are updated during a transition.
     internal var transitionObservers: [MotionTransitionObserver]?
@@ -244,27 +254,8 @@ public class Motion: NSObject, MotionProgressRunnerDelegate {
         return runner
     }()
     
-    /// The start time of the animation.
-    internal var beginTime: TimeInterval? {
-        didSet {
-            guard nil != beginTime else {
-                displayLink?.isPaused = true
-                displayLink?.remove(from: RunLoop.main, forMode: RunLoopMode(rawValue: RunLoopMode.commonModes.rawValue))
-                displayLink = nil
-                return
-            }
-            
-            guard nil == displayLink else {
-                return
-            }
-            
-            displayLink = CADisplayLink(target: self, selector: #selector(handleDisplayLink(_:)))
-            displayLink?.add(to: RunLoop.main, forMode: RunLoopMode(rawValue: RunLoopMode.commonModes.rawValue))
-        }
-    }
-    
     /// A boolean indicating if the transition has finished.
-    internal var isFinished = true
+    internal var isFinishing = true
     
     /// An Array of MotionPreprocessors used during a transition.
     internal lazy var preprocessors = [MotionPreprocessor]()
@@ -278,12 +269,6 @@ public class Motion: NSObject, MotionProgressRunnerDelegate {
     /// The matching fromViews to toViews based on the motionIdentifier value.
     internal lazy var transitionPairs = [(fromViews: [UIView], toViews: [UIView])]()
     
-    /// Whether or not we are presenting the destination view controller.
-    public var isPresenting = true
-    
-    /// Indicates whether the transition is animating or not.
-    public var isAnimating = false
-    
     /// Default animation type.
     internal var defaultAnimation = MotionTransitionType.auto
     
@@ -295,9 +280,6 @@ public class Motion: NSObject, MotionProgressRunnerDelegate {
     internal var forceNonInteractive = false
     internal var forceFinishing: Bool?
     internal var startingProgress: CGFloat?
-    
-    /// Inserts the toViews first.
-    internal var insertToViewFirst = false
     
     /// Indicates whether a UINavigationController is transitioning.
     internal var isNavigationController = false
@@ -378,58 +360,13 @@ private extension Motion {
     }
 }
 
-private extension Motion {
-    /**
-     Handler for the DisplayLink updates.
-     - Parameter _ link: CADisplayLink.
-     */
-    @objc
-    func handleDisplayLink(_ link: CADisplayLink) {
-        guard isTransitioning else {
-            return
-        }
-        
-        guard 0 < currentAnimationDuration else {
-            return
-        }
-        
-        guard let t = beginTime else {
-            return
-        }
-        
-        let cTime = CACurrentMediaTime() - t
-        
-        if cTime > currentAnimationDuration {
-            elapsedTime = isFinished ? 1 : 0
-            
-            beginTime = nil
-            
-            complete(isFinished: isFinished)
-            
-        } else {
-            var eTime = cTime / totalDuration
-            
-            if !isFinished {
-                eTime = 1 - eTime
-            }
-            
-            elapsedTime = max(0, min(1, eTime))
-        }
-    }
-}
-
 public extension Motion {
     /**
      Updates the elapsed time for the interactive transition.
      - Parameter elapsedTime t: the current progress, must be between -1...1.
      */
     public func update(elapsedTime: TimeInterval) {
-        guard isTransitioning else {
-            return
-        }
-        
-        beginTime = nil
-        self.elapsedTime = max(-1, min(1, elapsedTime))
+        self.elapsedTime = elapsedTime
     }
     
     /**
@@ -444,7 +381,7 @@ public extension Motion {
         }
         
         guard isAnimated else {
-            complete(isFinished: true)
+            complete(isFinishing: true)
             return
         }
         
@@ -454,7 +391,7 @@ public extension Motion {
             t = max(t, a.resume(at: elapsedTime * totalDuration, isReversed: false))
         }
         
-        complete(after: t, isFinished: true)
+        complete(after: t, isFinishing: true)
     }
     
     /**
@@ -469,7 +406,7 @@ public extension Motion {
         }
         
         guard isAnimated else {
-            complete(isFinished: false)
+            complete(isFinishing: false)
             return
         }
         
@@ -484,7 +421,7 @@ public extension Motion {
             d = max(d, a.resume(at: t * totalDuration, isReversed: true))
         }
         
-        complete(after: d, isFinished: false)
+        complete(after: d, isFinishing: false)
     }
     
     /**
@@ -513,64 +450,6 @@ public extension Motion {
 }
 
 internal extension Motion {
-    /**
-     Load plugins, processors, animators, container, & context
-     The transitionContainer must already be set.
-     Subclasses should call context.set(fromViews: toViews) after
-     inserting fromViews & toViews into the container
-     */
-    @objc
-    func prepareTransition() {
-        guard isTransitioning else {
-            return
-        }
-        
-        prepareTransitionContainer()
-        prepareContext()
-        preparePreprocessors()
-        prepareAnimators()
-        preparePlugins()
-    }
-    
-    /// Prepares the transition fromView & toView pairs.
-    @objc
-    func prepareTransitionPairs() {
-        guard isTransitioning else {
-            return
-        }
-        
-        for a in animators {
-            let fv = context.fromViews.filter { (view) -> Bool in
-                return a.canAnimate(view: view, isAppearing: false)
-            }
-            
-            let tv = context.toViews.filter {
-                return a.canAnimate(view: $0, isAppearing: true)
-            }
-            
-            transitionPairs.append((fv, tv))
-        }
-        
-        guard let tv = toView else {
-            return
-        }
-        
-        context.hide(view: tv)
-    }
-}
-
-internal extension Motion {
-    /// Executes the preprocessors' process function.
-    func processContext() {
-        guard isTransitioning else {
-            return
-        }
-        
-        for x in preprocessors {
-            x.process(fromViews: context.fromViews, toViews: context.toViews)
-        }
-    }
-    
     /**
      Animates the views. Subclasses should call `prepareTransition` &
      `prepareTransitionPairs` before calling `animate`.
@@ -615,7 +494,7 @@ internal extension Motion {
         if b {
             update(elapsedTime: 0)
         } else {
-            complete(after: t, isFinished: true)
+            complete(after: t, isFinishing: true)
         }
         
         updateContainerBackgroundColor()
@@ -627,66 +506,7 @@ internal extension Motion {
     }
 }
 
-private extension Motion {
-    /// Prepares the transition container.
-    func prepareTransitionContainer() {
-        guard let v = transitionContainer else {
-            return
-        }
-        
-        v.isUserInteractionEnabled = false
-        
-        // a view to hold all the animating views
-        container = UIView(frame: v.bounds)
-        v.addSubview(container!)
-    }
-    
-    /// Prepares the preprocessors.
-    func preparePreprocessors() {
-        for x in [
-            IgnoreSubviewTransitionsPreprocessor(),
-            MatchPreprocessor(),
-            SourcePreprocessor(),
-            CascadePreprocessor(),
-            TransitionPreprocessor(motion: self),
-            DurationPreprocessor()] as [MotionPreprocessor] {
-                preprocessors.append(x)
-        }
-        
-        for x in preprocessors {
-            x.context = context
-        }
-    }
-    
-    /// Prepares the animators.
-    func prepareAnimators() {
-        animators.append(MotionTransitionAnimator<MotionCoreAnimationViewContext>())
-        
-        if #available(iOS 10, tvOS 10, *) {
-            animators.append(MotionTransitionAnimator<MotionViewPropertyViewContext>())
-        }
-        
-        for v in animators {
-            v.context = context
-        }
-    }
-    
-    /// Prepares the plugins.
-    func preparePlugins() {
-        for x in Motion.enabledPlugins.map({
-            return $0.init()
-        }) {
-            plugins.append(x)
-        }
-        
-        for plugin in plugins {
-            preprocessors.append(plugin)
-            animators.append(plugin)
-        }
-    }
-}
-
-private extension Motion {
+internal extension Motion {
     /// Updates the container background color.
     func updateContainerBackgroundColor() {
         if let v = containerBackgroundColor {
@@ -700,11 +520,11 @@ private extension Motion {
     /// Updates the insertToViewFirst boolean for animators.
     func updateInsertOrder() {
         if fromOverFullScreen {
-            insertToViewFirst = true
+            context.insertToViewFirst = true
         }
         
         for v in animators {
-            (v as? MotionHasInsertOrder)?.insertToViewFirst = insertToViewFirst
+            (v as? MotionHasInsertOrder)?.insertToViewFirst = context.insertToViewFirst
         }
     }
 }
@@ -738,15 +558,6 @@ internal extension Motion {
         }
         
         enabledPlugins.remove(at: index)
-    }
-}
-
-internal extension Motion {
-    // should call this after `prepareTransitionPairs` & before `processContext`
-    func insert<T>(preprocessor: MotionPreprocessor, before: T.Type) {
-        let i = preprocessors.index { $0 is T } ?? preprocessors.count
-        preprocessor.context = context
-        preprocessors.insert(preprocessor, at: i)
     }
 }
 
@@ -797,145 +608,7 @@ public extension Motion {
     }
 }
 
-private extension Motion {
-    /// Starts the transition animation.
-    func start() {
-        guard .notified == state else {
-            return
-        }
-        
-        state = .starting
-        
-        prepareViewControllers()
-        prepareSnapshotView()
-        prepareTransition()
-        prepareContext()
-        prepareToView()
-        prepareViewHierarchy()
-        processContext()
-        prepareTransitionPairs()
-        processForAnimation()
-    }
-}
-
 internal extension Motion {
-    /// Resets the transition values.
-    func resetTransition() {
-        transitionContext = nil
-        fromViewController = nil
-        toViewController = nil
-        containerBackgroundColor = nil
-        isNavigationController = false
-        isTabBarController = false
-        forceNonInteractive = false
-        insertToViewFirst = false
-        defaultAnimation = .auto
-    }
-}
-
-internal extension Motion {
-    /// Prepares the from and to view controllers.
-    func prepareViewControllers() {
-        processStartTransitionDelegation(fromViewController: fromViewController, toViewController: toViewController)
-    }
-    
-    /// Prepares the snapshot view, which hides any flashing that may occur.
-    func prepareSnapshotView() {
-        guard let v = transitionContainer else {
-            return
-        }
-        
-        fullScreenSnapshot = v.window?.snapshotView(afterScreenUpdates: true) ?? fromView?.snapshotView(afterScreenUpdates: true)
-        (v.window ?? transitionContainer)?.addSubview(fullScreenSnapshot)
-        
-        if let v = fromViewController?.motionStoredSnapshot {
-            v.removeFromSuperview()
-            fromViewController?.motionStoredSnapshot = nil
-        }
-        
-        if let v = toViewController?.motionStoredSnapshot {
-            v.removeFromSuperview()
-            toViewController?.motionStoredSnapshot = nil
-        }
-    }
-    
-    /// Prepares the MotionContext instance.
-    func prepareContext() {
-        guard let v = container else {
-            return
-        }
-        
-        guard let fv = fromView else {
-            return
-        }
-        
-        guard let tv = toView else {
-            return
-        }
-        
-        context = MotionContext(container: v)
-        
-        context.loadViewAlpha(rootView: tv)
-        v.addSubview(tv)
-        
-        context.loadViewAlpha(rootView: fv)
-        v.addSubview(fv)
-    }
-    
-    /// Prepares the toView instance.
-    func prepareToView() {
-        guard let fv = fromView else {
-            return
-        }
-        
-        guard let tv = toView else {
-            return
-        }
-        
-        if let toViewController = toViewController, let transitionContext = transitionContext {
-            tv.frame = transitionContext.finalFrame(for: toViewController)
-        } else {
-            tv.frame = fv.frame
-        }
-        
-        tv.setNeedsLayout()
-        tv.layoutIfNeeded()
-    }
-    
-    /// Prepares the view hierarchy.
-    func prepareViewHierarchy() {
-        guard let fv = fromView else {
-            return
-        }
-        
-        guard let tv = toView else {
-            return
-        }
-        
-        context.set(fromViews: fv.flattenedViewHierarchy, toViews: tv.flattenedViewHierarchy)
-    }
-}
-
-internal extension Motion {
-    /// Processes the animations.
-    func processForAnimation() {
-        #if os(tvOS)
-            animate()
-            
-        #else
-            if isNavigationController {
-                // When animating within navigationController, we have to dispatch later into the main queue.
-                // otherwise snapshots will be pure white. Possibly a bug with UIKit
-                Motion.async { [weak self] in
-                    self?.animate()
-                }
-            } else {
-                animate()
-            }
-            
-        #endif
-    }
-    
     /**
      Processes the start transition delegation methods.
      - Parameter fromViewController: An optional UIViewController.

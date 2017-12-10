@@ -28,19 +28,16 @@
 
 import UIKit
 
-class DurationPreprocessor: MotionPreprocessor {
-    /// A reference to a MotionContext.
-    weak var context: MotionContext!
-    
+class DurationPreprocessor: BaseMotionPreprocessor {
     /**
      Processes the transitionary views.
      - Parameter fromViews: An Array of UIViews.
      - Parameter toViews: An Array of UIViews.
      */
-    func process(fromViews: [UIView], toViews: [UIView]) {
+    override func process(fromViews: [UIView], toViews: [UIView]) {
         var maxDuration: TimeInterval = 0
-        maxDuration = applyOptimizedDurationIfNoDuration(views:fromViews)
-        maxDuration = max(maxDuration, applyOptimizedDurationIfNoDuration(views:toViews))
+        maxDuration = applyOptimizedDurationIfNoDuration(views: fromViews)
+        maxDuration = max(maxDuration, applyOptimizedDurationIfNoDuration(views: toViews))
         setDurationForInfiniteDuration(views: fromViews, duration: maxDuration)
         setDurationForInfiniteDuration(views: toViews, duration: maxDuration)
     }

@@ -172,18 +172,13 @@ public enum MotionTransitionType {
     }
 }
 
-class TransitionPreprocessor: MotionPreprocessor {
-    /// A reference to a MotionContext.
-    weak var context: MotionContext!
-
-    /// A reference to a Motion.
-    weak var motion: Motion?
-
+class TransitionPreprocessor: BaseMotionPreprocessor {
     /**
      An initializer that accepts a given Motion instance.
      - Parameter motion: A Motion.
      */
     init(motion: Motion) {
+        super.init()
         self.motion = motion
     }
 
@@ -192,7 +187,7 @@ class TransitionPreprocessor: MotionPreprocessor {
      - Parameter fromViews: An Array of UIViews.
      - Parameter toViews: An Array of UIViews.
      */
-    func process(fromViews: [UIView], toViews: [UIView]) {
+    override func process(fromViews: [UIView], toViews: [UIView]) {
         guard let m = motion else {
             return
         }
@@ -271,7 +266,7 @@ class TransitionPreprocessor: MotionPreprocessor {
                                              .timingFunction(.deceleration)])
 
         case .pull(let direction):
-            m.insertToViewFirst = true
+            context.insertToViewFirst = true
 
             context[fv]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: false)),
                                              .shadow(opacity: 0),
@@ -300,7 +295,7 @@ class TransitionPreprocessor: MotionPreprocessor {
                                              .timingFunction(.deceleration)])
 
         case .uncover(let direction):
-            m.insertToViewFirst = true
+            context.insertToViewFirst = true
 
             context[fv]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: false)),
                                              .shadow(opacity: 0),
@@ -319,7 +314,7 @@ class TransitionPreprocessor: MotionPreprocessor {
                                              .timingFunction(.deceleration)])
 
         case .pageOut(let direction):
-            m.insertToViewFirst = true
+            context.insertToViewFirst = true
 
             context[fv]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: false)),
                                              .shadow(opacity: 0),
@@ -346,7 +341,7 @@ class TransitionPreprocessor: MotionPreprocessor {
             context[fv]!.append(.preferredDurationMatchesLongest)
 
         case .zoom:
-            m.insertToViewFirst = true
+            context.insertToViewFirst = true
             context[fv]!.append(contentsOf: [.scale(1.3), .fadeOut])
             context[tv]!.append(contentsOf: [.scale(0.7)])
 

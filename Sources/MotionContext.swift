@@ -29,6 +29,9 @@
 import UIKit
 
 public class MotionContext {
+    /// Inserts the toViews first.
+    internal var insertToViewFirst = false
+    
     /// A reference of motion identifiers to source views.
     internal var motionIdentifierToSourceView = [String: UIView]()
     

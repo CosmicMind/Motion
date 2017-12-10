@@ -28,14 +28,31 @@
 
 import UIKit
 
-public protocol MotionPreprocessor: class {
-    /// A reference to Motion.
-    weak var motion: Motion! { get set }
+class BaseMotionAnimator: MotionAnimator {
+    weak public var motion: Motion!
     
-    /**
-     Processes the transitionary views.
-     - Parameter fromViews: An Array of UIViews.
-     - Parameter toViews: An Array of UIViews.
-     */
-    func process(fromViews: [UIView], toViews: [UIView])
+    /// A reference to the MotionContext.
+    public var context: MotionContext! {
+        return motion?.context
+    }
+    
+    func clean() {}
+    
+    func canAnimate(view: UIView, isAppearing: Bool) -> Bool {
+        return false
+    }
+    
+    func animate(fromViews: [UIView], toViews: [UIView]) -> TimeInterval {
+        return 0
+    }
+    
+    func seek(to elapsedTime: TimeInterval) {}
+    
+    func resume(at elapsedTime: TimeInterval, isReversed: Bool) -> TimeInterval {
+        return 0
+    }
+    
+    func apply(state: MotionTransitionState, to view: UIView) {}
 }
+
+

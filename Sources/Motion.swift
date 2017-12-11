@@ -279,7 +279,7 @@ public class Motion: NSObject, MotionProgressRunnerDelegate {
      */
     internal var forceNonInteractive = false
     internal var forceFinishing: Bool?
-    internal var startingProgress: CGFloat?
+    internal var startingProgress: TimeInterval?
     
     /// Indicates whether a UINavigationController is transitioning.
     internal var isNavigationController = false
@@ -446,63 +446,6 @@ public extension Motion {
         for a in animators {
             a.apply(state: s, to: v)
         }
-    }
-}
-
-internal extension Motion {
-    /**
-     Animates the views. Subclasses should call `prepareTransition` &
-     `prepareTransitionPairs` before calling `animate`.
-     */
-    @objc
-    func animate() {
-        guard .starting == state else {
-            return
-        }
-        
-        state = .animating
-        
-        if let tv = toView {
-            context.unhide(view: tv)
-        }
-        
-        for (fv, tv) in transitionPairs {
-            for view in fv {
-                context.hide(view: view)
-            }
-            
-            for view in tv {
-                context.hide(view: view)
-            }
-        }
-        
-        var t: TimeInterval = 0
-        var b = false
-        
-        for (i, a) in animators.enumerated() {
-            let d = a.animate(fromViews: transitionPairs[i].0, toViews: transitionPairs[i].1)
-            
-            if .infinity == d {
-                b = true
-            } else {
-                t = max(t, d)
-            }
-        }
-        
-        totalDuration = t
-        
-        if b {
-            update(elapsedTime: 0)
-        } else {
-            complete(after: t, isFinishing: true)
-        }
-        
-        updateContainerBackgroundColor()
-        updateInsertOrder()
-        
-        
-        fullScreenSnapshot?.removeFromSuperview()
-        
     }
 }
 

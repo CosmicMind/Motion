@@ -166,6 +166,7 @@ public extension MotionContext {
      - Parameter for view: A UIView.
      - Returns: A UIView.
      */
+    @discardableResult
     func snapshotView(for view: UIView) -> UIView {
         if let snapshot = viewToSnapshot[view] {
             return snapshot

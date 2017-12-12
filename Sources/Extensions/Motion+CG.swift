@@ -187,6 +187,16 @@ public func /(left: CGPoint, right: CGPoint) -> CGPoint {
 
 /**
  A handler for the (/) operator.
+ - Parameter left: A CGPoint.
+ - Parameter right: A CGSize.
+ - Returns: A CGPoint.
+ */
+public func /(left: CGPoint, right: CGSize) -> CGPoint {
+    return CGPoint(x: left.x / right.width, y: left.y / right.height)
+}
+
+/**
+ A handler for the (/) operator.
  - Parameter left: A CGSize.
  - Parameter right: A CGSize.
  - Returns: A CGSize.

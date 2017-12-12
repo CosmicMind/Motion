@@ -28,7 +28,7 @@
 
 import UIKit
 
-class BaseMotionAnimator: MotionAnimator {
+class MotionCoreAnimator: MotionAnimator {
     weak public var motion: Motion!
     
     /// A reference to the MotionContext.

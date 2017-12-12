@@ -29,6 +29,26 @@ import UIKit
 extension CALayer: CAAnimationDelegate {}
 
 internal extension CALayer {
+    internal static var motionAddedAnimations: [(CALayer, String, CAAnimation)]? = {
+        let swizzling: (AnyClass, Selector, Selector) -> Void = { forClass, originalSelector, swizzledSelector in
+            if let originalMethod = class_getInstanceMethod(forClass, originalSelector), let swizzledMethod = class_getInstanceMethod(forClass, swizzledSelector) {
+                method_exchangeImplementations(originalMethod, swizzledMethod)
+            }
+        }
+        
+        swizzling(CALayer.self, #selector(add(_:forKey:)), #selector(motionAdd(anim:forKey:)))
+        
+        return nil
+    }()
+    
+    @objc
+    dynamic func motionAdd(anim: CAAnimation, forKey: String?) {
+        let copiedAnim = anim.copy() as! CAAnimation
+        copiedAnim.delegate = nil // having delegate resulted some weird animation behavior
+        CALayer.motionAddedAnimations?.append((self, forKey!, copiedAnim))
+        motionAdd(anim: anim, forKey: forKey)
+    }
+    
     /// Retrieves all currently running animations for the layer.
     var animations: [(String, CAAnimation)] {
         guard let keys = animationKeys() else {

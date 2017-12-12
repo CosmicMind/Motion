@@ -35,6 +35,9 @@ internal class MotionCoreAnimationViewContext: MotionAnimatorViewContext {
     /// A reference to the animation timing function.
     fileprivate var timingFunction = CAMediaTimingFunction.standard
 
+    /// Current animations.
+    var animations = [(CALayer, String, CAAnimation)]()
+    
     /// Layer which holds the content.
     fileprivate var contentLayer: CALayer? {
         return snapshot.layer.sublayers?.get(0)
@@ -68,40 +71,60 @@ internal class MotionCoreAnimationViewContext: MotionAnimatorViewContext {
     }
     
     override func apply(state: MotionTransitionState) {
-        let ts = viewState(targetState: state)
+        let targetState = viewState(targetState: state)
         
-        for (key, targetValue) in ts {
+        for (key, targetValue) in targetState {
             if nil == transitionStates[key] {
                 let current = currentValue(for: key)
                 transitionStates[key] = (current, current)
             }
             
-            animate(key: key, beginTime: 0, fromValue: targetValue, toValue: targetValue)
+            let oldAnimations = animations
+            animations = []
+            animate(key: key, beginTime: 0, duration: 100, fromValue: targetValue, toValue: targetValue)
+            animations = oldAnimations
         }
     }
 
-    override func resume(at elapsedTime: TimeInterval, isReversed: Bool) {
+    override func resume(at elapsedTime: TimeInterval, isReversed: Bool) -> TimeInterval {
         for (key, (fromValue, toValue)) in transitionStates {
-            transitionStates[key] = (currentValue(for: key), !isReversed ? toValue : fromValue)
+            transitionStates[key] = (currentValue(for: key), isReversed ? fromValue : toValue)
         }
-
-        targetState.duration = isReversed ? elapsedTime - targetState.delay : duration - elapsedTime
-        animate(delay: max(0, targetState.delay - elapsedTime))
+        
+        if isReversed {
+            if elapsedTime > targetState.delay + duration {
+                let backDelay = elapsedTime - (targetState.delay + duration)
+                return animate(delay: backDelay, duration: duration)
+                
+            } else if elapsedTime > targetState.delay {
+                return animate(delay: 0, duration: duration - elapsedTime - targetState.delay)
+            }
+            
+        } else {
+            if elapsedTime <= targetState.delay {
+                return animate(delay: targetState.delay - elapsedTime, duration: duration)
+            
+            } else if elapsedTime <= targetState.delay + duration {
+                let timePassedDelay = elapsedTime - targetState.delay
+                return animate(delay: 0, duration: duration - timePassedDelay)
+            }
+        }
+        
+        return 0
     }
 
     override func seek(to elapsedTime: TimeInterval) {
-        seek(layer: snapshot.layer, elapsedTime: elapsedTime)
+        let timeOffset = CGFloat(elapsedTime - targetState.delay)
         
-        if let v = contentLayer {
-            seek(layer: v, elapsedTime: elapsedTime)
-        }
-    
-        if let v = overlayLayer {
-            seek(layer: v, elapsedTime: elapsedTime)
+        for (layer, key, anim) in animations {
+            anim.speed = 0
+            anim.timeOffset = CFTimeInterval(timeOffset.clamp(0, CGFloat(anim.duration) - 0.001))
+            layer.removeAnimation(forKey: key)
+            layer.add(anim, forKey: key)
         }
     }
 
-    override func startAnimations(isAppearing: Bool) {
+    override func startAnimations() -> TimeInterval {
         if let beginState = targetState.beginState?.state {
             let appeared = viewState(targetState: beginState)
             for (k, v) in appeared {
@@ -124,16 +147,16 @@ internal class MotionCoreAnimationViewContext: MotionAnimatorViewContext {
             transitionStates[k] = (fromValue, toValue)
         }
 
-        animate(delay: targetState.delay)
+        return animate(delay: targetState.delay, duration: duration)
     }
 }
 
-extension MotionCoreAnimationViewContext {
+fileprivate extension MotionCoreAnimationViewContext {
     /**
      Lazy loads the overlay layer.
      - Returns: A CALayer.
      */
-    fileprivate func getOverlayLayer() -> CALayer {
+    func getOverlayLayer() -> CALayer {
         if nil == overlayLayer {
             overlayLayer = CALayer()
             overlayLayer!.frame = snapshot.bounds
@@ -149,7 +172,7 @@ extension MotionCoreAnimationViewContext {
      - Parameter for key: A String.
      - Returns: An optional String.
      */
-    fileprivate func overlayKey(for key: String) -> String? {
+    func overlayKey(for key: String) -> String? {
         guard key.hasPrefix("overlay.") else {
             return nil
         }
@@ -164,9 +187,9 @@ extension MotionCoreAnimationViewContext {
      - Parameter for key: A String.
      - Returns: An optional Any value.
      */
-    fileprivate func currentValue(for key: String) -> Any? {
+    func currentValue(for key: String) -> Any? {
         if let key = overlayKey(for: key) {
-            return overlayLayer?.value(forKeyPath: key)
+            return (overlayLayer?.presentation() ?? overlayLayer)?.value(forKeyPath: key)
         }
         
         if false != snapshot.layer.animationKeys()?.isEmpty {
@@ -180,11 +203,12 @@ extension MotionCoreAnimationViewContext {
      Retrieves the animation for a given key.
      - Parameter key: String.
      - Parameter beginTime: A TimeInterval.
+     - Parameter duration: A TimeInterval.
      - Parameter fromValue: An optional Any value.
      - Parameter toValue: An optional Any value.
      - Parameter ignoreArc: A Boolean value to ignore an arc position.
      */
-    fileprivate func getAnimation(key: String, beginTime: TimeInterval, fromValue: Any?, toValue: Any?, ignoreArc: Bool = false) -> CAPropertyAnimation {
+    func getAnimation(key: String, beginTime: TimeInterval, duration: TimeInterval, fromValue: Any?, toValue: Any?, ignoreArc: Bool = false) -> CAPropertyAnimation {
         let key = overlayKey(for: key) ?? key
         let anim: CAPropertyAnimation
         
@@ -211,7 +235,7 @@ extension MotionCoreAnimationViewContext {
             let a = CASpringAnimation(keyPath: key)
             a.stiffness = stiffness
             a.damping = damping
-            a.duration = a.settlingDuration * 0.9
+            a.duration = a.settlingDuration
             a.fromValue = fromValue
             a.toValue = toValue
             
@@ -234,28 +258,118 @@ extension MotionCoreAnimationViewContext {
     }
     
     /**
+     Sets a new size for the given view.
+     - Parameter view: A UIView.
+     - Parameter newSize: A CGSize.
+     */
+    func setSize(view: UIView, newSize: CGSize) {
+        let oldSize = view.bounds.size
+        
+        if .noSnapshot != targetState.snapshotType {
+            if 0 == oldSize.width || 0 == oldSize.height || 0 == newSize.width || 0 == newSize.height {
+                for v in view.subviews {
+                    v.center = newSize.center
+                    v.bounds.size = newSize
+                    setSize(view: v, newSize: newSize)
+                }
+            } else {
+                let sizeRatio = oldSize / newSize
+                for v in view.subviews {
+                    let center = v.center
+                    let size = v.bounds.size
+                    v.center = center / sizeRatio
+                    v.bounds.size = size / sizeRatio
+                    setSize(view: v, newSize: size / sizeRatio)
+                }
+            }
+            
+            view.bounds.size = newSize
+        
+        } else {
+            view.bounds.size = newSize
+            view.layoutSubviews()
+        }
+    }
+    
+    /**
+     Executes a UIView based animation.
+     - Parameter duration: A TimeInterval.
+     - Parameter delay: A TimeInterval.
+     - Parameter _ animations: An animation block.
+     */
+    func uiViewBasedAnimate(duration: TimeInterval, delay: TimeInterval, _ animations: @escaping () -> Void) {
+        CALayer.motionAddedAnimations = []
+        
+        if let (stiffness, damping) = targetState.spring {
+            UIView.animate(withDuration: duration, delay: delay, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: [], animations: animations, completion: nil)
+            
+            let addedAnimations = CALayer.motionAddedAnimations!
+            CALayer.motionAddedAnimations = nil
+            
+            for (layer, key, anim) in addedAnimations {
+                if #available(iOS 9.0, *), let anim = anim as? CASpringAnimation {
+                    anim.stiffness = stiffness
+                    anim.damping = damping
+                    self.addAnimation(anim, for: key, to: layer)
+                } else {
+                    self.animations.append((layer, key, anim))
+                }
+            }
+            
+        } else {
+            CATransaction.begin()
+            CATransaction.setAnimationTimingFunction(timingFunction)
+            UIView.animate(withDuration: duration, delay: delay, options: [], animations: animations, completion: nil)
+            CATransaction.commit()
+            
+            let addedAnimations = CALayer.motionAddedAnimations!
+            CALayer.motionAddedAnimations = nil
+            self.animations.append(contentsOf: addedAnimations)
+        }
+    }
+    
+    /**
+     Adds an animation to a given layer.
+     - Parameter _ animation: A CAAnimation.
+     - Parameter for key: A String.
+     - Parameter to layer: A CALayer.
+     */
+    func addAnimation(_ animation: CAAnimation, for key: String, to layer: CALayer) {
+        animations.append((layer, key, animation))
+        layer.add(animation, forKey: key)
+    }
+    
+    /**
      Retrieves the duration of an animation, including the
      duration of the animation and the initial delay.
      - Parameter key: A String.
      - Parameter beginTime: A TimeInterval.
+     - Parameter duration: A TimeInterval.
      - Parameter fromValue: A optional Any value.
      - Parameter toValue: A optional Any value.
      - Returns: A TimeInterval.
      */
     @discardableResult
-    fileprivate func animate(key: String, beginTime: TimeInterval, fromValue: Any?, toValue: Any?) -> TimeInterval {
-        let anim = getAnimation(key: key, beginTime:beginTime, fromValue: fromValue, toValue: toValue)
+    func animate(key: String, beginTime: TimeInterval, duration: TimeInterval, fromValue: Any?, toValue: Any?) -> TimeInterval {
+        let anim = getAnimation(key: key, beginTime: beginTime, duration: duration, fromValue: fromValue, toValue: toValue)
         
         if let overlayKey = overlayKey(for: key) {
-            getOverlayLayer().add(anim, forKey: overlayKey)
+            addAnimation(anim, for: overlayKey, to: getOverlayLayer())
             
         } else {
             snapshot.layer.add(anim, forKey: key)
             
             switch key {
             case "cornerRadius", "contentsRect", "contentsScale":
-                contentLayer?.add(anim, forKey: key)
-                overlayLayer?.add(anim, forKey: key)
+                addAnimation(anim, for: key, to: snapshot.layer)
+                
+                if let v = contentLayer {
+                    addAnimation(anim.copy() as! CAAnimation, for: key, to: v)
+                }
+                
+                if let v = overlayLayer {
+                    addAnimation(anim.copy() as! CAAnimation, for: key, to: v)
+                }
                 
             case "bounds.size":
                 guard let fs = (fromValue as? NSValue)?.cgSizeValue else {
@@ -266,26 +380,17 @@ extension MotionCoreAnimationViewContext {
                     return 0
                 }
                 
-                // for the snapshotView(UIReplicantView): there is a
-                // subview(UIReplicantContentView) that is hosting the real snapshot image.
-                // because we are using CAAnimations and not UIView animations,
-                // The snapshotView will not layout during animations.
-                // we have to add two more animations to manually layout the content view.
-                let fpn = NSValue(cgPoint: fs.center)
-                let tpn = NSValue(cgPoint: ts.center)
+                setSize(view: snapshot, newSize: fs)
+                uiViewBasedAnimate(duration: anim.duration, delay: beginTime - currentTime) { [weak self] in
+                    guard let `self` = self else {
+                        return
+                    }
+                    
+                    self.setSize(view: self.snapshot, newSize: ts)
+                }
                 
-                let a = getAnimation(key: "position", beginTime: 0, fromValue: fpn, toValue: tpn, ignoreArc: true)
-                a.beginTime = anim.beginTime
-                a.timingFunction = anim.timingFunction
-                a.duration = anim.duration
-                
-                contentLayer?.add(a, forKey: "position")
-                contentLayer?.add(anim, forKey: key)
-                
-                overlayLayer?.add(a, forKey: "position")
-                overlayLayer?.add(anim, forKey: key)
-                
-            default: break
+            default:
+                addAnimation(anim, for: key, to: snapshot.layer)
             }
         }
         
@@ -295,26 +400,28 @@ extension MotionCoreAnimationViewContext {
     /**
      Animates the contentLayer and overlayLayer with a given delay.
      - Parameter delay: A TimeInterval.
+     - Parameter duration: A TimeInterval.
+     - Returns: A TimeInterval.
      */
-    fileprivate func animate(delay: TimeInterval) {
-        if let v = targetState.timingFunction {
-            timingFunction = v
+    func animate(delay: TimeInterval, duration: TimeInterval) -> TimeInterval {
+        for (layer, key, _) in animations {
+            layer.removeAnimation(forKey: key)
         }
         
-        if let v = targetState.duration {
-            duration = v
+        if let tf = targetState.timingFunction {
+            timingFunction = tf
         }
         
-        let beginTime = currentTime + delay
+        var timeUntilStop = duration
         
-        var finalDuration: TimeInterval = duration
+        animations = []
         
         for (key, (fromValue, toValue)) in transitionStates {
-            let neededTime = animate(key: key, beginTime: beginTime, fromValue: fromValue, toValue: toValue)
-            finalDuration = max(finalDuration, neededTime + delay)
+            let neededTime = animate(key: key, beginTime: currentTime + delay, duration: duration, fromValue: fromValue, toValue: toValue)
+            timeUntilStop = max(timeUntilStop, neededTime)
         }
         
-        duration = finalDuration
+        return timeUntilStop + delay
     }
     
     /**
@@ -322,7 +429,7 @@ extension MotionCoreAnimationViewContext {
      - Parameter targetState state: A MotionTransitionState.
      - Returns: A map of key paths to animation values.
      */
-    fileprivate func viewState(targetState ts: MotionTransitionState) -> [String: Any?] {
+    func viewState(targetState ts: MotionTransitionState) -> [String: Any?] {
         var ts = ts
         var values = [String: Any?]()
         
@@ -408,20 +515,5 @@ extension MotionCoreAnimationViewContext {
         }
         
         return values
-    }
-    
-    /**
-     Moves a layer's animation to a given elapsed time.
-     - Parameter layer: A CALayer.
-     - Parameter elapsedTime: A TimeInterval.
-     */
-    fileprivate func seek(layer: CALayer, elapsedTime: TimeInterval) {
-        let timeOffset = elapsedTime - targetState.delay
-        for (key, anim) in layer.animations {
-            anim.speed = 0
-            anim.timeOffset = max(0, min(anim.duration - 0.01, timeOffset))
-            layer.removeAnimation(forKey: key)
-            layer.add(anim, forKey: key)
-        }
     }
 }

@@ -13,7 +13,7 @@
 		965FE9671FDD99800098BDD0 /* Motion+Start.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965FE9661FDD99800098BDD0 /* Motion+Start.swift */; };
 		965FE9691FDDA1F20098BDD0 /* MotionViewOrderStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965FE9681FDDA1F20098BDD0 /* MotionViewOrderStrategy.swift */; };
 		965FE96B1FDDA4EA0098BDD0 /* BaseMotionPreprocessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965FE96A1FDDA4EA0098BDD0 /* BaseMotionPreprocessor.swift */; };
-		965FE96D1FDDA6400098BDD0 /* BaseMotionAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965FE96C1FDDA6400098BDD0 /* BaseMotionAnimator.swift */; };
+		965FE96D1FDDA6400098BDD0 /* MotionCoreAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965FE96C1FDDA6400098BDD0 /* MotionCoreAnimator.swift */; };
 		965FE96F1FDEFA8B0098BDD0 /* Motion+Animate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965FE96E1FDEFA8B0098BDD0 /* Motion+Animate.swift */; };
 		96E409651F24F7370015A2B5 /* MotionAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E4093D1F24F7370015A2B5 /* MotionAnimator.swift */; };
 		96E409661F24F7370015A2B5 /* MotionAnimatorViewContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E4093E1F24F7370015A2B5 /* MotionAnimatorViewContext.swift */; };
@@ -91,7 +91,7 @@
 		965FE9661FDD99800098BDD0 /* Motion+Start.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Motion+Start.swift"; sourceTree = "<group>"; };
 		965FE9681FDDA1F20098BDD0 /* MotionViewOrderStrategy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionViewOrderStrategy.swift; sourceTree = "<group>"; };
 		965FE96A1FDDA4EA0098BDD0 /* BaseMotionPreprocessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseMotionPreprocessor.swift; sourceTree = "<group>"; };
-		965FE96C1FDDA6400098BDD0 /* BaseMotionAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseMotionAnimator.swift; sourceTree = "<group>"; };
+		965FE96C1FDDA6400098BDD0 /* MotionCoreAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionCoreAnimator.swift; sourceTree = "<group>"; };
 		965FE96E1FDEFA8B0098BDD0 /* Motion+Animate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Motion+Animate.swift"; sourceTree = "<group>"; };
 		96C98DD11E424AB000B22906 /* Motion.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Motion.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		96E4093D1F24F7370015A2B5 /* MotionAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionAnimator.swift; sourceTree = "<group>"; };
@@ -183,7 +183,7 @@
 			isa = PBXGroup;
 			children = (
 				96E4093D1F24F7370015A2B5 /* MotionAnimator.swift */,
-				965FE96C1FDDA6400098BDD0 /* BaseMotionAnimator.swift */,
+				965FE96C1FDDA6400098BDD0 /* MotionCoreAnimator.swift */,
 				96E4093E1F24F7370015A2B5 /* MotionAnimatorViewContext.swift */,
 				96E4093F1F24F7370015A2B5 /* MotionCoreAnimationViewContext.swift */,
 				96E409401F24F7370015A2B5 /* MotionHasInsertOrder.swift */,
@@ -332,7 +332,7 @@
 				965FE9631FDCCE030098BDD0 /* Motion+Complete.swift in Sources */,
 				96E4097D1F24F7370015A2B5 /* MotionPlugin.swift in Sources */,
 				96E409681F24F7370015A2B5 /* MotionHasInsertOrder.swift in Sources */,
-				965FE96D1FDDA6400098BDD0 /* BaseMotionAnimator.swift in Sources */,
+				965FE96D1FDDA6400098BDD0 /* MotionCoreAnimator.swift in Sources */,
 				96E4096E1F24F7370015A2B5 /* Motion+CG.swift in Sources */,
 				96E409851F24F7370015A2B5 /* MatchPreprocessor.swift in Sources */,
 				96E409861F24F7370015A2B5 /* MotionPreprocessor.swift in Sources */,

@@ -28,7 +28,7 @@
 
 import UIKit
 
-internal class MotionTransitionAnimator<T: MotionAnimatorViewContext>: BaseMotionAnimator, MotionHasInsertOrder {
+internal class MotionTransitionAnimator<T: MotionAnimatorViewContext>: MotionCoreAnimator, MotionHasInsertOrder {
     /// An index of views to their corresponding animator context.
     var viewToContexts = [UIView: T]()
 
@@ -114,8 +114,10 @@ internal class MotionTransitionAnimator<T: MotionAnimatorViewContext>: BaseMotio
         var duration: TimeInterval = 0
         
         for (_, v) in viewToContexts {
-            v.resume(at: elapsedTime, isReversed: isReversed)
-            duration = max(duration, v.duration)
+            if v.targetState.duration == nil {
+                v.duration = max(v.duration, v.snapshot.optimizedDuration(targetState: v.targetState) + elapsedTime)
+            }
+            duration = max(duration, v.resume(at: elapsedTime, isReversed: isReversed))
         }
         
         return duration
@@ -144,11 +146,11 @@ extension MotionTransitionAnimator {
      */
     fileprivate func animate(view: UIView, isAppearing: Bool) {
         let s = context.snapshotView(for: view)
-        let v = T(animator: self, snapshot: s, targetState: context[view]!)
+        let v = T(animator: self, snapshot: s, targetState: context[view]!, isAppearing: isAppearing)
         
         viewToContexts[view] = v
         
-        v.startAnimations(isAppearing: isAppearing)
+        v.startAnimations()
     }
 }
 

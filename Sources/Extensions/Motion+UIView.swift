@@ -284,6 +284,17 @@ internal extension UIView {
     }
     
     /**
+     Calculates the optimized duration for a view.
+     - Parameter targetState: A MotionTransitionState.
+     - Returns: A TimeInterval.
+     */
+    func optimizedDuration(targetState: MotionTransitionState) -> TimeInterval {
+        return optimizedDuration(position: targetState.position,
+                                     size: targetState.size,
+                                transform: targetState.transform)
+    }
+    
+    /**
      Takes a snapshot of a view usinag the UI graphics context.
      - Returns: A UIView with an embedded UIImageView.
      */

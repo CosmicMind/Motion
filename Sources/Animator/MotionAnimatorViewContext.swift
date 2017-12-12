@@ -30,17 +30,20 @@ import UIKit
 
 internal class MotionAnimatorViewContext {
     /// An optional reference to a MotionAnimator.
-    var animator: BaseMotionAnimator?
+    var animator: MotionCoreAnimator?
     
     /// A reference to the snapshot UIView.
     var snapshot: UIView
     
-    /// Animation duration time.
-    var duration: TimeInterval = 0
- 
     /// The animation target state.
     var targetState: MotionTransitionState
+    
+    /// A boolean indicating if the view is appearing.
+    var isAppearing: Bool
 
+    /// Animation duration time.
+    var duration: TimeInterval = 0
+    
     /// The computed current time of the snapshot layer.
     var currentTime: TimeInterval {
         return snapshot.layer.convertTime(CACurrentMediaTime(), from: nil)
@@ -56,11 +59,13 @@ internal class MotionAnimatorViewContext {
      - Parameter animator: A MotionAnimator.
      - Parameter snapshot: A UIView.
      - Parameter targetState: A MotionTransitionState.
+     - Parameter isAppearing: A Boolean.
      */
-    required init(animator: BaseMotionAnimator, snapshot: UIView, targetState: MotionTransitionState) {
+    required init(animator: MotionCoreAnimator, snapshot: UIView, targetState: MotionTransitionState, isAppearing: Bool) {
         self.animator = animator
         self.snapshot = snapshot
         self.targetState = targetState
+        self.isAppearing = isAppearing
     }
 
     /// Cleans the context.
@@ -86,8 +91,11 @@ internal class MotionAnimatorViewContext {
      - Parameter at elapsedTime: A TimeInterval.
      - Parameter isReversed: A boolean to reverse the animation 
      or not.
+     - Returns: A TimeInterval.
      */
-    func resume(at elapsedTime: TimeInterval, isReversed: Bool) {}
+    func resume(at elapsedTime: TimeInterval, isReversed: Bool) -> TimeInterval {
+        return 0
+    }
     
     /**
      Moves the animation to the given elapsed time.
@@ -106,5 +114,8 @@ internal class MotionAnimatorViewContext {
      - Parameter isAppearing: A boolean value whether the view
      is appearing or not.
      */
-    func startAnimations(isAppearing: Bool) {}
+    @discardableResult
+    func startAnimations() -> TimeInterval {
+        return 0
+    }
 }

@@ -264,22 +264,23 @@ internal extension UIView {
      - Parameter transform: An optional CATransform3D.
      - Returns: A TimeInterval.
      */
-    func optimizedDuration(fromPosition: CGPoint, toPosition: CGPoint?, size: CGSize?, transform: CATransform3D?) -> TimeInterval {
-        let toPos = toPosition ?? fromPosition
+    func optimizedDuration(position: CGPoint?, size: CGSize?, transform: CATransform3D?) -> TimeInterval {
+        let fromPos = (layer.presentation() ?? layer).position
+        let toPos = position ?? fromPos
         let fromSize = (layer.presentation() ?? layer).bounds.size
         let toSize = size ?? fromSize
         let fromTransform = (layer.presentation() ?? layer).transform
         let toTransform = transform ?? fromTransform
         
-        let realFromPos = CGPoint.zero.transform(fromTransform) + fromPosition
+        let realFromPos = CGPoint.zero.transform(fromTransform) + fromPos
         let realToPos = CGPoint.zero.transform(toTransform) + toPos
         
         let realFromSize = fromSize.transform(fromTransform)
         let realToSize = toSize.transform(toTransform)
         
-        let movePoints = realFromPos.distance(realToPos) + realFromSize.bottomRight.distance(realToSize.bottomRight)
+        let movePoints = (realFromPos.distance(realToPos) + realFromSize.bottomRight.distance(realToSize.bottomRight))
         
-        // Duration is 0.2 @ 0 to 0.375 @ 500
+        // duration is 0.2 @ 0 to 0.375 @ 500
         return 0.208 + Double(movePoints.clamp(0, 500)) / 3000
     }
     

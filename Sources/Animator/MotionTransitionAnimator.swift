@@ -28,12 +28,10 @@
 
 import UIKit
 
-internal class MotionTransitionAnimator<T: MotionAnimatorViewContext>: MotionCoreAnimator, MotionHasInsertOrder {
+internal class MotionTransitionAnimator<T: MotionAnimatorViewContext>: MotionCoreAnimator {
     /// An index of views to their corresponding animator context.
     var viewToContexts = [UIView: T]()
 
-    var insertToViewFirst = false
-    
     /// Cleans the contexts.
     override func clean() {
         for v in viewToContexts.values {
@@ -41,7 +39,6 @@ internal class MotionTransitionAnimator<T: MotionAnimatorViewContext>: MotionCor
         }
         
         viewToContexts.removeAll()
-        insertToViewFirst = false
     }
     
     /**
@@ -65,32 +62,41 @@ internal class MotionTransitionAnimator<T: MotionAnimatorViewContext>: MotionCor
      - Returns: A TimeInterval.
      */
     override func animate(fromViews: [UIView], toViews: [UIView]) -> TimeInterval {
-        var duration: TimeInterval = 0
+        var d: TimeInterval = 0
         
-        if insertToViewFirst {
-            for v in toViews {
-                animate(view: v, isAppearing: true)
-            }
+        for v in fromViews {
+            createViewContext(view: v, isAppearing: false)
+        }
+        
+        for v in toViews {
+            createViewContext(view: v, isAppearing: true)
+        }
+        
+        for v in viewToContexts.values {
+            if let duration = v.targetState.duration, duration != .infinity {
+                v.duration = duration
+                d = max(d, duration)
             
-            for v in fromViews {
-                animate(view: v, isAppearing: false)
-            }
-            
-        } else {
-            for v in fromViews {
-                animate(view: v, isAppearing: false)
-            }
-            
-            for v in toViews {
-                animate(view: v, isAppearing: true)
+            } else {
+                let duration = v.snapshot.optimizedDuration(targetState: v.targetState)
+                
+                if nil == v.targetState.duration {
+                    v.duration = duration
+                }
+                
+                d = max(d, duration)
             }
         }
         
         for v in viewToContexts.values {
-            duration = max(duration, v.duration)
+            if .infinity == v.targetState.duration {
+                v.duration = d
+            }
+            
+            d = max(d, v.startAnimations())
         }
         
-        return duration
+        return d
     }
     
     /**
@@ -114,7 +120,7 @@ internal class MotionTransitionAnimator<T: MotionAnimatorViewContext>: MotionCor
         var duration: TimeInterval = 0
         
         for (_, v) in viewToContexts {
-            if v.targetState.duration == nil {
+            if nil == v.targetState.duration {
                 v.duration = max(v.duration, v.snapshot.optimizedDuration(targetState: v.targetState) + elapsedTime)
             }
             duration = max(duration, v.resume(at: elapsedTime, isReversed: isReversed))
@@ -137,20 +143,15 @@ internal class MotionTransitionAnimator<T: MotionAnimatorViewContext>: MotionCor
     }
 }
 
-extension MotionTransitionAnimator {
+fileprivate extension MotionTransitionAnimator {
     /**
-     Animates a given view.
+     Creates a view context for a given view.
      - Parameter view: A UIView.
      - Parameter isAppearing: A boolean that determines whether the
      view is appearing.
      */
-    fileprivate func animate(view: UIView, isAppearing: Bool) {
-        let s = context.snapshotView(for: view)
-        let v = T(animator: self, snapshot: s, targetState: context[view]!, isAppearing: isAppearing)
-        
-        viewToContexts[view] = v
-        
-        v.startAnimations()
+    func createViewContext(view: UIView, isAppearing: Bool) {
+        viewToContexts[view] = T(animator: self, snapshot: context.snapshotView(for: view), targetState: context[view]!, isAppearing: isAppearing)
     }
 }
 

@@ -459,17 +459,6 @@ internal extension Motion {
             container?.backgroundColor = toView?.backgroundColor
         }
     }
-    
-    /// Updates the insertToViewFirst boolean for animators.
-    func updateInsertOrder() {
-        if fromOverFullScreen {
-            context.insertToViewFirst = true
-        }
-        
-        for v in animators {
-            (v as? MotionHasInsertOrder)?.insertToViewFirst = context.insertToViewFirst
-        }
-    }
 }
 
 internal extension Motion {

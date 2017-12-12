@@ -50,8 +50,7 @@ class DurationPreprocessor: BaseMotionPreprocessor {
     func optimizedDuration(for view: UIView) -> TimeInterval {
         let v = context[view]!
         
-        return view.optimizedDuration(fromPosition: context.container.convert(view.layer.position, from: view.superview),
-                                        toPosition: v.position,
+        return view.optimizedDuration(position: context.container.convert(view.layer.position, from: view.superview),
                                               size: v.size,
                                          transform: v.transform)
     }

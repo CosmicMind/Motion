@@ -28,7 +28,7 @@
 
 import UIKit
 
-class IgnoreSubviewTransitionsPreprocessor: BaseMotionPreprocessor {
+class IgnoreSubviewTransitionsPreprocessor: MotionCorePreprocessor {
     /**
      Processes the transitionary views.
      - Parameter fromViews: An Array of UIViews.
@@ -64,12 +64,12 @@ class IgnoreSubviewTransitionsPreprocessor: BaseMotionPreprocessor {
     }
 }
 
-extension IgnoreSubviewTransitionsPreprocessor {
+fileprivate extension IgnoreSubviewTransitionsPreprocessor {
     /**
      Clears the transition for a given view's subviews.
      - Parameter for view: A UIView.
      */
-    fileprivate func cleanSubviewTransitions(for view: UIView) {
+    func cleanSubviewTransitions(for view: UIView) {
         for v in view.subviews {
             context[v] = nil
             cleanSubviewTransitions(for: v)

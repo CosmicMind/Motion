@@ -45,6 +45,9 @@ public struct MotionTransitionState {
     /// The initial state that the transition will start at.
     internal var beginState: MotionTransitionStateWrapper?
     
+    
+    public var conditionalTransitions: [((MotionConditionalContext) -> Bool, [MotionTransition])]?
+    
     /// The start state if there is a match in the desition view controller.
     public var beginStateIfMatched: [MotionTransition]?
 

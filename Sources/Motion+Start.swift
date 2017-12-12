@@ -102,13 +102,12 @@ fileprivate extension Motion {
     
     /// Prepares the preprocessors.
     func preparePreprocessors() {
-        for x in [
-            IgnoreSubviewTransitionsPreprocessor(),
-            MatchPreprocessor(),
-            SourcePreprocessor(),
-            CascadePreprocessor(),
-            TransitionPreprocessor(motion: self),
-            DurationPreprocessor()] as [MotionPreprocessor] {
+        for x in [IgnoreSubviewTransitionsPreprocessor(),
+                  ConditionalPreprocessor(),
+                  TransitionPreprocessor(),
+                  MatchPreprocessor(),
+                  SourcePreprocessor(),
+                  CascadePreprocessor()] as [MotionPreprocessor] {
                 preprocessors.append(x)
         }
         

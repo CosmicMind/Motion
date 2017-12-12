@@ -60,7 +60,7 @@ public enum CascadeDirection {
     }
 }
 
-class CascadePreprocessor: BaseMotionPreprocessor {
+class CascadePreprocessor: MotionCorePreprocessor {
     /**
      Processes the transitionary views.
      - Parameter fromViews: An Array of UIViews.
@@ -91,10 +91,10 @@ class CascadePreprocessor: BaseMotionPreprocessor {
                 let delay = TimeInterval(i) * deltaTime + initialDelay
 
                 func applyDelay(view: UIView) {
-                    if context.transitionPairedView(for: view) == nil {
+                    if context.pairedView(for: view) == nil {
                         context[view]?.delay = delay
                     
-                    } else if delayMatchedViews, let paired = context.transitionPairedView(for: view) {
+                    } else if delayMatchedViews, let paired = context.pairedView(for: view) {
                         context[view]?.delay = finalDelay
                         context[paired]?.delay = finalDelay
                     }

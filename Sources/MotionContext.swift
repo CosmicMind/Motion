@@ -148,7 +148,7 @@ public extension MotionContext {
      source and destination view controllers.
      - Returns: An optional UIView.
      */
-    func transitionPairedView(for view: UIView) -> UIView? {
+    func pairedView(for view: UIView) -> UIView? {
         if let i = view.motionIdentifier {
             if view == sourceView(for: i) {
                 return destinationView(for: i)
@@ -316,7 +316,7 @@ public extension MotionContext {
             hide(view: view)
         }
         
-        if let pairedView = transitionPairedView(for: view), let pairedSnapshot = viewToSnapshot[pairedView] {
+        if let pairedView = pairedView(for: view), let pairedSnapshot = viewToSnapshot[pairedView] {
             let siblingViews = pairedView.superview!.subviews
             let nextSiblings = siblingViews[siblingViews.index(of: pairedView)! + 1..<siblingViews.count]
             

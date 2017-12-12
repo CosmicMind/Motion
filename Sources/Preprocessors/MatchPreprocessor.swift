@@ -28,7 +28,7 @@
 
 import UIKit
 
-class MatchPreprocessor: BaseMotionPreprocessor {
+class MatchPreprocessor: MotionCorePreprocessor {
     /**
      Processes the transitionary views.
      - Parameter fromViews: An Array of UIViews.
@@ -36,23 +36,17 @@ class MatchPreprocessor: BaseMotionPreprocessor {
      */
     override func process(fromViews: [UIView], toViews: [UIView]) {
         for tv in toViews {
-            guard let i = tv.motionIdentifier, let fv = context.sourceView(for: i) else { continue }
+            guard let motionIdentifier = tv.motionIdentifier, let fv = context.sourceView(for: motionIdentifier) else {
+                continue
+            }
             
             var tvState = context[tv] ?? MotionTransitionState()
             var fvState = context[fv] ?? MotionTransitionState()
             
-            if let v = tvState.beginStateIfMatched {
-                tvState.append(.beginWith(transitions: v))
-            }
+            // match is just a two-way source effect
+            tvState.motionIdentifier = motionIdentifier
+            fvState.motionIdentifier = motionIdentifier
             
-            if let v = fvState.beginStateIfMatched {
-                fvState.append(.beginWith(transitions: v))
-            }
-            
-            tvState.motionIdentifier = i
-            tvState.opacity = 0
-            
-            fvState.motionIdentifier = i
             fvState.arc = tvState.arc
             fvState.duration = tvState.duration
             fvState.timingFunction = tvState.timingFunction
@@ -62,20 +56,34 @@ class MatchPreprocessor: BaseMotionPreprocessor {
             let forceNonFade = tvState.nonFade || fvState.nonFade
             let isNonOpaque = !fv.isOpaque || fv.alpha < 1 || !tv.isOpaque || tv.alpha < 1
             
-            if !forceNonFade && isNonOpaque {
-                // Cross fade if from/toViews are not opaque.
+            if context.insertToViewFirst {
                 fvState.opacity = 0
                 
-            } else {
-                // No cross fade in this case, fromView is always displayed during the transition.
-                fvState.opacity = nil
+                if !forceNonFade && isNonOpaque {
+                    tvState.opacity = 0
                 
-                /**
-                 We dont want two shadows showing up. Therefore we disable toView's
-                 shadow when fromView is able to display its shadow.
-                 */
-                if !fv.layer.masksToBounds && fvState.displayShadow {
-                    tvState.displayShadow = false
+                } else {
+                    tvState.opacity = nil
+                    
+                    if !tv.layer.masksToBounds && tvState.displayShadow {
+                        fvState.displayShadow = false
+                    }
+                }
+                
+            } else {
+                tvState.opacity = 0
+                
+                if !forceNonFade && isNonOpaque {
+                    // cross fade if from/toViews are not opaque
+                    fvState.opacity = 0
+                } else {
+                    // no cross fade in this case, fromView is always displayed during the transition.
+                    fvState.opacity = nil
+                    
+                    // we dont want two shadows showing up. Therefore we disable toView's shadow when fromView is able to display its shadow
+                    if !fv.layer.masksToBounds && fvState.displayShadow {
+                        tvState.displayShadow = false
+                    }
                 }
             }
             

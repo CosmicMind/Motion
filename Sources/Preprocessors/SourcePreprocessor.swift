@@ -28,7 +28,7 @@
 
 import UIKit
 
-class SourcePreprocessor: BaseMotionPreprocessor {
+class SourcePreprocessor: MotionCorePreprocessor {
     /**
      Processes the transitionary views.
      - Parameter fromViews: An Array of UIViews.

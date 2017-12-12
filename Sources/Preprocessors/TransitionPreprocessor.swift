@@ -172,16 +172,7 @@ public enum MotionTransitionType {
     }
 }
 
-class TransitionPreprocessor: BaseMotionPreprocessor {
-    /**
-     An initializer that accepts a given Motion instance.
-     - Parameter motion: A Motion.
-     */
-    init(motion: Motion) {
-        super.init()
-        self.motion = motion
-    }
-
+class TransitionPreprocessor: MotionCorePreprocessor {
     /**
      Processes the transitionary views.
      - Parameter fromViews: An Array of UIViews.

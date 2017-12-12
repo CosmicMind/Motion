@@ -28,7 +28,7 @@
 
 import UIKit
 
-class MotionPlugin: BaseMotionPreprocessor, MotionAnimator {
+class MotionPlugin: MotionCorePreprocessor, MotionAnimator {
   /**
     Determines whether or not to receive `seekTo` callback on every frame.
    

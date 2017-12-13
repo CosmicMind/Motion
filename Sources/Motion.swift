@@ -220,9 +220,6 @@ public class Motion: NSObject, MotionProgressRunnerDelegate {
     /// Whether or not we are presenting the destination view controller.
     public internal(set) var isPresenting = true
     
-    /// Indicates whether the transition is animating or not.
-    public internal(set) var isAnimating = false
-    
     /**
      A view container used to hold all the animating views during a
      transition.
@@ -530,6 +527,7 @@ public extension Motion {
             return
         }
         
+        state = .notified
         isPresenting = true
         transitionContainer = view
         fromViewController = from
@@ -707,7 +705,7 @@ extension Motion: UIViewControllerAnimatedTransitioning {
     }
     
     public func animationEnded(_ transitionCompleted: Bool) {
-        isAnimating = !transitionCompleted
+        state = .possible
     }
 }
 
@@ -718,13 +716,24 @@ extension Motion: UIViewControllerTransitioningDelegate {
     }
     
     public func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        guard !isTransitioning else {
+            return nil
+        }
+        
+        state = .notified
         isPresenting = true
         fromViewController = fromViewController ?? presenting
         toViewController = toViewController ?? presented
+        
         return self
     }
     
     public func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        guard !isTransitioning else {
+            return nil
+        }
+        
+        state = .notified
         isPresenting = false
         fromViewController = fromViewController ?? dismissed
         return self
@@ -751,10 +760,16 @@ extension Motion: UIViewControllerInteractiveTransitioning {
 
 extension Motion: UINavigationControllerDelegate {
     public func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationControllerOperation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        guard !isTransitioning else {
+            return nil
+        }
+        
+        state = .notified
         isPresenting = .push == operation
         fromViewController = fromViewController ?? fromVC
         toViewController = toViewController ?? toVC
         isNavigationController = true
+        
         return self
     }
     
@@ -765,7 +780,11 @@ extension Motion: UINavigationControllerDelegate {
 
 extension Motion: UITabBarControllerDelegate {
     public func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
-        return !isAnimating
+        if isTransitioning {
+            cancel(isAnimated: false)
+        }
+        
+        return true
     }
     
     public func tabBarController(_ tabBarController: UITabBarController, interactionControllerFor animationController: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
@@ -773,7 +792,11 @@ extension Motion: UITabBarControllerDelegate {
     }
     
     public func tabBarController(_ tabBarController: UITabBarController, animationControllerForTransitionFrom fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        isAnimating = true
+        guard !isTransitioning else {
+            return nil
+        }
+        
+        state = .notified
         
         let fromVCIndex = tabBarController.childViewControllers.index(of: fromVC)!
         let toVCIndex = tabBarController.childViewControllers.index(of: toVC)!

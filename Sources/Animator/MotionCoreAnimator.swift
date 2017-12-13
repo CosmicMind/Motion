@@ -33,7 +33,7 @@ class MotionCoreAnimator: MotionAnimator {
     
     /// A reference to the MotionContext.
     public var context: MotionContext! {
-        return motion?.context
+        return motion.context
     }
     
     func clean() {}

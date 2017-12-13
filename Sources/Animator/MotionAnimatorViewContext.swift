@@ -93,6 +93,7 @@ internal class MotionAnimatorViewContext {
      or not.
      - Returns: A TimeInterval.
      */
+    @discardableResult
     func resume(at elapsedTime: TimeInterval, isReversed: Bool) -> TimeInterval {
         return 0
     }

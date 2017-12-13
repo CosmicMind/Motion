@@ -126,19 +126,19 @@ extension UIViewController {
         get {
             return transitioningDelegate is Motion
         }
+        
         set(value) {
             guard value != isMotionEnabled else {
                 return
             }
-
+            
             if value {
                 transitioningDelegate = Motion.shared
-
                 if let v = self as? UINavigationController {
                     previousNavigationDelegate = v.delegate
                     v.delegate = Motion.shared
                 }
-
+                
                 if let v = self as? UITabBarController {
                     previousTabBarDelegate = v.delegate
                     v.delegate = Motion.shared
@@ -146,11 +146,11 @@ extension UIViewController {
                 
             } else {
                 transitioningDelegate = nil
-
+                
                 if let v = self as? UINavigationController, v.delegate is Motion {
                     v.delegate = previousNavigationDelegate
                 }
-
+                
                 if let v = self as? UITabBarController, v.delegate is Motion {
                     v.delegate = previousTabBarDelegate
                 }

@@ -264,7 +264,8 @@ public class Motion: NSObject, MotionProgressRunnerDelegate {
     internal lazy var plugins = [MotionPlugin]()
     
     /// The matching fromViews to toViews based on the motionIdentifier value.
-    internal lazy var transitionPairs = [(fromViews: [UIView], toViews: [UIView])]()
+    internal var animatingFromViews = [UIView]()
+    internal var animatingToViews = [UIView]()
     
     /// Default animation type.
     internal var defaultAnimation = MotionTransitionType.auto
@@ -363,7 +364,13 @@ public extension Motion {
      - Parameter elapsedTime t: the current progress, must be between -1...1.
      */
     public func update(elapsedTime: TimeInterval) {
-        self.elapsedTime = elapsedTime
+        guard .animating == state else {
+            startingProgress = elapsedTime
+            return
+        }
+        
+        progressRunner.stop()
+        self.elapsedTime = Double(CGFloat(elapsedTime).clamp(0, 1))
     }
     
     /**
@@ -818,7 +825,7 @@ extension Motion {
      - Parameter execute: A block that is executed asynchronously on the main thread.
      */
     public class func async(_ execute: @escaping () -> Void) {
-        Motion.delay(0, execute: execute)
+        DispatchQueue.main.async(execute: execute)
     }
     
     /**
@@ -833,7 +840,7 @@ extension Motion {
         
         let delayed: MotionCancelBlock = {
             if !$0 {
-                DispatchQueue.main.async(execute: execute)
+                async(execute)
             }
             
             cancelable = nil

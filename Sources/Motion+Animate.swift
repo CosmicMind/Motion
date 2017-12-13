@@ -41,38 +41,33 @@ extension Motion {
             context.unhide(view: tv)
         }
         
-        for (fv, tv) in transitionPairs {
-            for v in fv {
-                context.hide(view: v)
-            }
-            
-            for v in tv {
-                context.hide(view: v)
-            }
+        for v in animatingFromViews {
+            context.hide(view: v)
+        }
+        
+        for v in animatingToViews {
+            context.hide(view: v)
         }
         
         var t: TimeInterval = 0
         var animatorWantsInteractive = false
         
         if context.insertToViewFirst {
-            for (fv, tv) in transitionPairs {
-                for v in tv {
-                    context.snapshotView(for: v)
-                }
-                
-                for v in fv {
-                    context.snapshotView(for: v)
-                }
+            for v in animatingToViews {
+                context.snapshotView(for: v)
             }
+            
+            for v in animatingFromViews {
+                context.snapshotView(for: v)
+            }
+            
         } else {
-            for (fv, tv) in transitionPairs {
-                for v in fv {
-                    context.snapshotView(for: v)
-                }
-                
-                for v in tv {
-                    context.snapshotView(for: v)
-                }
+            for v in animatingFromViews {
+                context.snapshotView(for: v)
+            }
+            
+            for v in animatingToViews {
+                context.snapshotView(for: v)
             }
         }
         
@@ -81,17 +76,26 @@ extension Motion {
         // Therefore we kick off the layout beforehand
         fromView?.layoutIfNeeded()
         
-        for (i, a) in animators.enumerated() {
-            let d = a.animate(fromViews: transitionPairs[i].0, toViews: transitionPairs[i].1)
+        for animator in animators {
+            let duration = animator.animate(fromViews: animatingFromViews.filter {
+                print(animator.canAnimate(view: $0, isAppearing: false))
+                return animator.canAnimate(view: $0, isAppearing: false)
+            }, toViews: animatingToViews.filter {
+                print(animator.canAnimate(view: $0, isAppearing: false))
+                return animator.canAnimate(view: $0, isAppearing: true)
+            })
             
-            if .infinity == d {
+            print("T", t, "DURATION", duration)
+            if .infinity == duration {
                 animatorWantsInteractive = true
             } else {
-                t = max(t, d)
+                t = max(t, duration)
             }
         }
         
         totalDuration = t
+        
+        print("T", t)
         
         if let forceFinishing = forceFinishing {
             complete(isFinishing: forceFinishing)

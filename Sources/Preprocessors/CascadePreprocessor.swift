@@ -33,29 +33,41 @@ public enum CascadeDirection {
     case bottomToTop
     case leftToRight
     case rightToLeft
-    case radial(center:CGPoint)
-    case inverseRadial(center:CGPoint)
+    case radial(center: CGPoint)
+    case inverseRadial(center: CGPoint)
   
     /// Based on the cascade direction a comparator is set.
     var comparator: (UIView, UIView) -> Bool {
         switch self {
         case .topToBottom:
-            return { return $0.frame.minY < $1.frame.minY }
+            return {
+                return $0.frame.minY < $1.frame.minY
+            }
     
         case .bottomToTop:
-            return { return $0.frame.maxY == $1.frame.maxY ? $0.frame.maxX > $1.frame.maxX : $0.frame.maxY > $1.frame.maxY }
+            return {
+                return $0.frame.maxY == $1.frame.maxY ? $0.frame.maxX > $1.frame.maxX : $0.frame.maxY > $1.frame.maxY
+            }
         
         case .leftToRight:
-            return { return $0.frame.minX < $1.frame.minX }
+            return {
+                return $0.frame.minX < $1.frame.minX
+            }
     
         case .rightToLeft:
-            return { return $0.frame.maxX > $1.frame.maxX }
+            return {
+                return $0.frame.maxX > $1.frame.maxX
+            }
     
         case .radial(let center):
-            return { return $0.center.distance(center) < $1.center.distance(center) }
+            return {
+                return $0.center.distance(center) < $1.center.distance(center)
+            }
     
         case .inverseRadial(let center):
-            return { return $0.center.distance(center) > $1.center.distance(center) }
+            return {
+                return $0.center.distance(center) > $1.center.distance(center)
+            }
         }
     }
 }
@@ -76,24 +88,26 @@ class CascadePreprocessor: MotionCorePreprocessor {
      - Parameter views: An Array of UIViews.
      */
     func process(views: [UIView]) {
-        for v in views {
-            guard let (deltaTime, direction, delayMatchedViews) = context[v]?.cascade else {
-                continue
+        for view in views {
+            guard let (deltaTime, direction, delayMatchedViews) = context[view]?.cascade else { continue }
+            
+            var parentView = view
+            if view is UITableView, let wrapperView = view.subviews.get(0) {
+                parentView = wrapperView
             }
-
-            let parentView = v is UITableView ? v.subviews.get(0) ?? v : v
+            
             let sortedSubviews = parentView.subviews.sorted(by: direction.comparator)
-
-            let initialDelay = context[v]!.delay
+            
+            let initialDelay = context[view]!.delay
             let finalDelay = TimeInterval(sortedSubviews.count) * deltaTime + initialDelay
-
+            
             for (i, subview) in sortedSubviews.enumerated() {
                 let delay = TimeInterval(i) * deltaTime + initialDelay
-
+                
                 func applyDelay(view: UIView) {
                     if context.pairedView(for: view) == nil {
                         context[view]?.delay = delay
-                    
+                        
                     } else if delayMatchedViews, let paired = context.pairedView(for: view) {
                         context[view]?.delay = finalDelay
                         context[paired]?.delay = finalDelay
@@ -103,7 +117,7 @@ class CascadePreprocessor: MotionCorePreprocessor {
                         applyDelay(view: subview)
                     }
                 }
-
+                
                 applyDelay(view: subview)
             }
         }

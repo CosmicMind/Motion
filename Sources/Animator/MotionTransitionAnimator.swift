@@ -123,6 +123,7 @@ internal class MotionTransitionAnimator<T: MotionAnimatorViewContext>: MotionCor
             if nil == v.targetState.duration {
                 v.duration = max(v.duration, v.snapshot.optimizedDuration(targetState: v.targetState) + elapsedTime)
             }
+            
             duration = max(duration, v.resume(at: elapsedTime, isReversed: isReversed))
         }
         

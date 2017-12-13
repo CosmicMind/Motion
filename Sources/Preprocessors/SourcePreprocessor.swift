@@ -51,7 +51,9 @@ class SourcePreprocessor: MotionCorePreprocessor {
             prepare(view: tv, for: fv)
         }
     }
+}
 
+fileprivate extension SourcePreprocessor {
     /**
      Prepares a given view for a target view.
      - Parameter view: A UIView.
@@ -112,7 +114,7 @@ class SourcePreprocessor: MotionCorePreprocessor {
         if view.layer.contentsScale != targetView.layer.contentsScale {
             state.contentsScale = targetView.layer.contentsScale
         }
-
+        
         context[view] = state
     }
 }

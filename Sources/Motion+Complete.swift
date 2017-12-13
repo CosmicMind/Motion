@@ -72,7 +72,8 @@ extension Motion {
             isNavigationController = false
             isTabBarController = false
             forceNonInteractive = false
-            transitionPairs.removeAll()
+            animatingToViews.removeAll()
+            animatingFromViews.removeAll()
             transitionObservers = nil
             transitionContainer = nil
             completionCallback = nil

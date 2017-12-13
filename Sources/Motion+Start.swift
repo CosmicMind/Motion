@@ -37,7 +37,7 @@ extension Motion {
         
         state = .starting
         
-        prepareToView()
+        prepareViewFrame()
         prepareViewControllers()
         prepareSnapshotView()
         preparePreprocessors()
@@ -47,7 +47,8 @@ extension Motion {
         prepareContainer()
         prepareContext()
         prepareViewHierarchy()
-        prepareTransitionPairs()
+        prepareAnimatingViews()
+        prepareToView()
         
         processPreprocessors()
         processAnimation()
@@ -55,8 +56,8 @@ extension Motion {
 }
 
 fileprivate extension Motion {
-    /// Prepares the toView instance.
-    func prepareToView() {
+    /// Prepares the views frames.
+    func prepareViewFrame() {
         guard let fv = fromView else {
             return
         }
@@ -87,7 +88,7 @@ fileprivate extension Motion {
         }
         
         fullScreenSnapshot = v.window?.snapshotView(afterScreenUpdates: false) ?? fromView?.snapshotView(afterScreenUpdates: false)
-        (v.window ?? transitionContainer)?.addSubview(fullScreenSnapshot)
+        (v.window ?? v)?.addSubview(fullScreenSnapshot)
         
         if let v = fromViewController?.motionStoredSnapshot {
             v.removeFromSuperview()
@@ -212,24 +213,28 @@ fileprivate extension Motion {
     }
     
     /// Prepares the transition fromView & toView pairs.
-    @objc
-    func prepareTransitionPairs() {
-        guard isTransitioning else {
-            return
+    func prepareAnimatingViews() {
+        animatingFromViews = context.fromViews.filter { (view) -> Bool in
+            for animator in animators {
+                if animator.canAnimate(view: view, isAppearing: false) {
+                    return true
+                }
+            }
+            return false
         }
         
-        for a in animators {
-            let fv = context.fromViews.filter { (view) -> Bool in
-                return a.canAnimate(view: view, isAppearing: false)
+        animatingToViews = context.toViews.filter { (view) -> Bool in
+            for animator in animators {
+                if animator.canAnimate(view: view, isAppearing: true) {
+                    return true
+                }
             }
-            
-            let tv = context.toViews.filter {
-                return a.canAnimate(view: $0, isAppearing: true)
-            }
-            
-            transitionPairs.append((fv, tv))
+            return false
         }
-        
+    }
+    
+    /// Prepares the to view.
+    func prepareToView() {
         guard let tv = toView else {
             return
         }
@@ -258,6 +263,7 @@ fileprivate extension Motion {
                 Motion.async { [weak self] in
                     self?.animate()
                 }
+                
             } else {
                 animate()
             }

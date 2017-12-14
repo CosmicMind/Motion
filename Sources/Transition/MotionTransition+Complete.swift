@@ -28,7 +28,7 @@
 
 import UIKit
 
-extension Motion {
+extension MotionTransition {
     /**
      Complete the transition.
      - Parameter after: A TimeInterval.
@@ -36,7 +36,7 @@ extension Motion {
      has completed.
      */
     func complete(after: TimeInterval, isFinishing: Bool) {
-        guard [MotionState.animating, .starting, .notified].contains(state) else {
+        guard [MotionTransitionState.animating, .starting, .notified].contains(state) else {
             return
         }
         

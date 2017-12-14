@@ -29,7 +29,7 @@
 import UIKit
 
 public struct MotionConditionalContext {
-    internal weak var motion: Motion!
+    internal weak var motion: MotionTransition!
     public weak var view: UIView!
     
     public private(set) var isAppearing: Bool
@@ -97,11 +97,11 @@ class ConditionalPreprocessor: MotionCorePreprocessor {
     
     func process(views: [UIView], isAppearing: Bool) {
         for v in views {
-            guard let conditionalTransitions = context[v]?.conditionalTransitions else {
+            guard let conditionalModifiers = context[v]?.conditionalModifiers else {
                 continue
             }
             
-            for (condition, transitions) in conditionalTransitions {
+            for (condition, transitions) in conditionalModifiers {
                 if condition(MotionConditionalContext(motion: motion, view: v, isAppearing: isAppearing)) {
                     context[v]!.append(contentsOf: transitions)
                 }

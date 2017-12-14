@@ -28,27 +28,27 @@
 
 import UIKit
 
-public class MotionTransition {
-    /// A reference to the callback that applies the MotionTransitionState.
-    internal let apply: (inout MotionTransitionState) -> Void
+public final class MotionModifier {
+    /// A reference to the callback that applies the MotionModifier.
+    internal let apply: (inout MotionTargetState) -> Void
     
     /**
      An initializer that accepts a given callback.
      - Parameter applyFunction: A given callback.
      */
-    init(applyFunction: @escaping (inout MotionTransitionState) -> Void) {
+    public init(applyFunction: @escaping (inout MotionTargetState) -> Void) {
         apply = applyFunction
     }
 }
 
-public extension MotionTransition {
+public extension MotionModifier {
     /**
      Animates the view with a matching motion identifier.
      - Parameter _ identifier: A String.
-     - Returns: A MotionTransition.
+     - Returns: A MotionModifier.
      */
-    static func motionIdentifier(_ identifier: String) -> MotionTransition {
-        return MotionTransition {
+    static func motionIdentifier(_ identifier: String) -> MotionModifier {
+        return MotionModifier {
             $0.motionIdentifier = identifier
         }
     }
@@ -58,10 +58,10 @@ public extension MotionTransition {
      given masksToBounds.
      - Parameter masksToBounds: A boolean value indicating the
      masksToBounds state.
-     - Returns: A MotionTransition.
+     - Returns: A MotionModifier.
      */
-    static func masksToBounds(_ masksToBounds: Bool) -> MotionTransition {
-        return MotionTransition {
+    static func masksToBounds(_ masksToBounds: Bool) -> MotionModifier {
+        return MotionModifier {
             $0.masksToBounds = masksToBounds
         }
     }
@@ -70,10 +70,10 @@ public extension MotionTransition {
      Animates the view's current background color to the
      given color.
      - Parameter color: A UIColor.
-     - Returns: A MotionTransition.
+     - Returns: A MotionModifier.
      */
-    static func background(color: UIColor) -> MotionTransition {
-        return MotionTransition {
+    static func background(color: UIColor) -> MotionModifier {
+        return MotionModifier {
             $0.backgroundColor = color.cgColor
         }
     }
@@ -82,10 +82,10 @@ public extension MotionTransition {
      Animates the view's current border color to the
      given color.
      - Parameter color: A UIColor.
-     - Returns: A MotionTransition.
+     - Returns: A MotionModifier.
      */
-    static func border(color: UIColor) -> MotionTransition {
-        return MotionTransition {
+    static func border(color: UIColor) -> MotionModifier {
+        return MotionModifier {
             $0.borderColor = color.cgColor
         }
     }
@@ -94,10 +94,10 @@ public extension MotionTransition {
      Animates the view's current border width to the
      given width.
      - Parameter width: A CGFloat.
-     - Returns: A MotionTransition.
+     - Returns: A MotionModifier.
      */
-    static func border(width: CGFloat) -> MotionTransition {
-        return MotionTransition {
+    static func border(width: CGFloat) -> MotionModifier {
+        return MotionModifier {
             $0.borderWidth = width
         }
     }
@@ -106,10 +106,10 @@ public extension MotionTransition {
      Animates the view's current corner radius to the
      given radius.
      - Parameter radius: A CGFloat.
-     - Returns: A MotionTransition.
+     - Returns: A MotionModifier.
      */
-    static func corner(radius: CGFloat) -> MotionTransition {
-        return MotionTransition {
+    static func corner(radius: CGFloat) -> MotionModifier {
+        return MotionModifier {
             $0.cornerRadius = radius
         }
     }
@@ -118,10 +118,10 @@ public extension MotionTransition {
      Animates the view's current transform (perspective, scale, rotate)
      to the given one.
      - Parameter _ transform: A CATransform3D.
-     - Returns: A MotionTransition.
+     - Returns: A MotionModifier.
      */
-    static func transform(_ transform: CATransform3D) -> MotionTransition {
-        return MotionTransition {
+    static func transform(_ transform: CATransform3D) -> MotionModifier {
+        return MotionModifier {
             $0.transform = transform
         }
     }
@@ -130,10 +130,10 @@ public extension MotionTransition {
      Animates the view's current perspective to the given one through
      a CATransform3D object.
      - Parameter _ perspective: A CGFloat.
-     - Returns: A MotionTransition.
+     - Returns: A MotionModifier.
      */
-    static func perspective(_ perspective: CGFloat) -> MotionTransition {
-        return MotionTransition {
+    static func perspective(_ perspective: CGFloat) -> MotionModifier {
+        return MotionModifier {
             var t = $0.transform ?? CATransform3DIdentity
             t.m34 = 1 / -perspective
             $0.transform = t
@@ -146,10 +146,10 @@ public extension MotionTransition {
      - Parameter x: A CGFloat.
      - Parameter y: A CGFloat.
      - Parameter z: A CGFloat.
-     - Returns: A MotionTransition.
+     - Returns: A MotionModifier.
      */
-    static func rotate(x: CGFloat = 0, y: CGFloat = 0, z: CGFloat = 0) -> MotionTransition {
-        return MotionTransition {
+    static func rotate(x: CGFloat = 0, y: CGFloat = 0, z: CGFloat = 0) -> MotionModifier {
+        return MotionModifier {
             var t = $0.transform ?? CATransform3DIdentity
             t = CATransform3DRotate(t, CGFloat(Double.pi) * x / 180, 1, 0, 0)
             t = CATransform3DRotate(t, CGFloat(Double.pi) * y / 180, 0, 1, 0)
@@ -161,18 +161,18 @@ public extension MotionTransition {
      Animates the view's current rotate to the given point.
      - Parameter _ point: A CGPoint.
      - Parameter z: A CGFloat, default is 0.
-     - Returns: A MotionTransition.
+     - Returns: A MotionModifier.
      */
-    static func rotate(_ point: CGPoint, z: CGFloat = 0) -> MotionTransition {
+    static func rotate(_ point: CGPoint, z: CGFloat = 0) -> MotionModifier {
         return .rotate(x: point.x, y: point.y, z: z)
     }
     
     /**
      Rotate 2d.
      - Parameter _ z: A CGFloat.
-     - Returns: A MotionTransition.
+     - Returns: A MotionModifier.
      */
-    static func rotate(_ z: CGFloat) -> MotionTransition {
+    static func rotate(_ z: CGFloat) -> MotionModifier {
         return .rotate(z: z)
     }
     
@@ -181,10 +181,10 @@ public extension MotionTransition {
      - Parameter x: A CGFloat.
      - Parameter y: A CGFloat.
      - Parameter z: A CGFloat.
-     - Returns: A MotionTransition.
+     - Returns: A MotionModifier.
      */
-    static func scale(x: CGFloat = 1, y: CGFloat = 1, z: CGFloat = 1) -> MotionTransition {
-        return MotionTransition {
+    static func scale(x: CGFloat = 1, y: CGFloat = 1, z: CGFloat = 1) -> MotionModifier {
+        return MotionModifier {
             $0.transform = CATransform3DScale($0.transform ?? CATransform3DIdentity, x, y, z)
         }
     }
@@ -192,9 +192,9 @@ public extension MotionTransition {
     /**
      Animates the view's current x & y scale to the given scale value.
      - Parameter _ xy: A CGFloat.
-     - Returns: A MotionTransition.
+     - Returns: A MotionModifier.
      */
-    static func scale(_ xy: CGFloat) -> MotionTransition {
+    static func scale(_ xy: CGFloat) -> MotionModifier {
         return .scale(x: xy, y: xy)
     }
     
@@ -204,10 +204,10 @@ public extension MotionTransition {
      - Parameter x: A CGFloat.
      - Parameter y: A CGFloat.
      - Parameter z: A CGFloat.
-     - Returns: A MotionTransition.
+     - Returns: A MotionModifier.
      */
-    static func translate(x: CGFloat = 0, y: CGFloat = 0, z: CGFloat = 0) -> MotionTransition {
-        return MotionTransition {
+    static func translate(x: CGFloat = 0, y: CGFloat = 0, z: CGFloat = 0) -> MotionModifier {
+        return MotionModifier {
             $0.transform = CATransform3DTranslate($0.transform ?? CATransform3DIdentity, x, y, z)
         }
     }
@@ -217,19 +217,19 @@ public extension MotionTransition {
      point value (x & y), and a z value.
      - Parameter _ point: A CGPoint.
      - Parameter z: A CGFloat, default is 0.
-     - Returns: A MotionTransition.
+     - Returns: A MotionModifier.
      */
-    static func translate(_ point: CGPoint, z: CGFloat = 0) -> MotionTransition {
+    static func translate(_ point: CGPoint, z: CGFloat = 0) -> MotionModifier {
         return .translate(x: point.x, y: point.y, z: z)
     }
     
     /**
      Animates the view's current position to the given point.
      - Parameter _ point: A CGPoint.
-     - Returns: A MotionTransition.
+     - Returns: A MotionModifier.
      */
-    static func position(_ point: CGPoint) -> MotionTransition {
-        return MotionTransition {
+    static func position(_ point: CGPoint) -> MotionModifier {
+        return MotionModifier {
             $0.position = point
         }
     }
@@ -238,30 +238,30 @@ public extension MotionTransition {
      Animates a view's current position to the given x and y values.
      - Parameter x: A CGloat.
      - Parameter y: A CGloat.
-     - Returns: A MotionTransition.
+     - Returns: A MotionModifier.
      */
-    static func position(x: CGFloat, y: CGFloat) -> MotionTransition {
+    static func position(x: CGFloat, y: CGFloat) -> MotionModifier {
         return .position(CGPoint(x: x, y: y))
     }
     
     /// Forces the view to not fade during a transition.
-    static var forceNonFade = MotionTransition {
+    static var forceNonFade = MotionModifier {
         $0.nonFade = true
     }
     
     /// Fades the view in during a transition.
-    static var fadeIn = MotionTransition.fade(1)
+    static var fadeIn = MotionModifier.fade(1)
     
     /// Fades the view out during a transition.
-    static var fadeOut = MotionTransition.fade(0)
+    static var fadeOut = MotionModifier.fade(0)
     
     /**
      Animates the view's current opacity to the given one.
      - Parameter to opacity: A Double.
-     - Returns: A MotionTransition.
+     - Returns: A MotionModifier.
      */
-    static func fade(_ opacity: Double) -> MotionTransition {
-        return MotionTransition {
+    static func fade(_ opacity: Double) -> MotionModifier {
+        return MotionModifier {
             $0.opacity = opacity
         }
     }
@@ -269,10 +269,10 @@ public extension MotionTransition {
     /**
      Animates the view's current zPosition to the given position.
      - Parameter _ position: An Int.
-     - Returns: A MotionTransition.
+     - Returns: A MotionModifier.
      */
-    static func zPosition(_ position: CGFloat) -> MotionTransition {
-        return MotionTransition {
+    static func zPosition(_ position: CGFloat) -> MotionModifier {
+        return MotionModifier {
             $0.zPosition = position
         }
     }
@@ -280,10 +280,10 @@ public extension MotionTransition {
     /**
      Animates the view's current size to the given one.
      - Parameter _ size: A CGSize.
-     - Returns: A MotionTransition.
+     - Returns: A MotionModifier.
      */
-    static func size(_ size: CGSize) -> MotionTransition {
-        return MotionTransition {
+    static func size(_ size: CGSize) -> MotionModifier {
+        return MotionModifier {
             $0.size = size
         }
     }
@@ -292,19 +292,19 @@ public extension MotionTransition {
      Animates the view's current size to the given width and height.
      - Parameter width: A CGFloat.
      - Parameter height: A CGFloat.
-     - Returns: A MotionTransition.
+     - Returns: A MotionModifier.
      */
-    static func size(width: CGFloat, height: CGFloat) -> MotionTransition {
+    static func size(width: CGFloat, height: CGFloat) -> MotionModifier {
         return .size(CGSize(width: width, height: height))
     }
     
     /**
      Animates the view's current shadow path to the given one.
      - Parameter path: A CGPath.
-     - Returns: A MotionTransition.
+     - Returns: A MotionModifier.
      */
-    static func shadow(path: CGPath) -> MotionTransition {
-        return MotionTransition {
+    static func shadow(path: CGPath) -> MotionModifier {
+        return MotionModifier {
             $0.shadowPath = path
         }
     }
@@ -312,10 +312,10 @@ public extension MotionTransition {
     /**
      Animates the view's current shadow color to the given one.
      - Parameter color: A UIColor.
-     - Returns: A MotionTransition.
+     - Returns: A MotionModifier.
      */
-    static func shadow(color: UIColor) -> MotionTransition {
-        return MotionTransition {
+    static func shadow(color: UIColor) -> MotionModifier {
+        return MotionModifier {
             $0.shadowColor = color.cgColor
         }
     }
@@ -323,10 +323,10 @@ public extension MotionTransition {
     /**
      Animates the view's current shadow offset to the given one.
      - Parameter offset: A CGSize.
-     - Returns: A MotionTransition.
+     - Returns: A MotionModifier.
      */
-    static func shadow(offset: CGSize) -> MotionTransition {
-        return MotionTransition {
+    static func shadow(offset: CGSize) -> MotionModifier {
+        return MotionModifier {
             $0.shadowOffset = offset
         }
     }
@@ -334,10 +334,10 @@ public extension MotionTransition {
     /**
      Animates the view's current shadow opacity to the given one.
      - Parameter opacity: A Float.
-     - Returns: A MotionTransition.
+     - Returns: A MotionModifier.
      */
-    static func shadow(opacity: Float) -> MotionTransition {
-        return MotionTransition {
+    static func shadow(opacity: Float) -> MotionModifier {
+        return MotionModifier {
             $0.shadowOpacity = opacity
         }
     }
@@ -345,10 +345,10 @@ public extension MotionTransition {
     /**
      Animates the view's current shadow radius to the given one.
      - Parameter radius: A CGFloat.
-     - Returns: A MotionTransition.
+     - Returns: A MotionModifier.
      */
-    static func shadow(radius: CGFloat) -> MotionTransition {
-        return MotionTransition {
+    static func shadow(radius: CGFloat) -> MotionModifier {
+        return MotionModifier {
             $0.shadowRadius = radius
         }
     }
@@ -356,10 +356,10 @@ public extension MotionTransition {
     /**
      Animates the view's contents rect to the given one.
      - Parameter rect: A CGRect.
-     - Returns: A MotionTransition.
+     - Returns: A MotionModifier.
      */
-    static func contents(rect: CGRect) -> MotionTransition {
-        return MotionTransition {
+    static func contents(rect: CGRect) -> MotionModifier {
+        return MotionModifier {
             $0.contentsRect = rect
         }
     }
@@ -367,10 +367,10 @@ public extension MotionTransition {
     /**
      Animates the view's contents scale to the given one.
      - Parameter scale: A CGFloat.
-     - Returns: A MotionTransition.
+     - Returns: A MotionModifier.
      */
-    static func contents(scale: CGFloat) -> MotionTransition {
-        return MotionTransition {
+    static func contents(scale: CGFloat) -> MotionModifier {
+        return MotionModifier {
             $0.contentsScale = scale
         }
     }
@@ -378,10 +378,10 @@ public extension MotionTransition {
     /**
      The duration of the view's animation.
      - Parameter _ duration: A TimeInterval.
-     - Returns: A MotionTransition.
+     - Returns: A MotionModifier.
      */
-    static func duration(_ duration: TimeInterval) -> MotionTransition {
-        return MotionTransition {
+    static func duration(_ duration: TimeInterval) -> MotionModifier {
+        return MotionModifier {
             $0.duration = duration
         }
     }
@@ -390,15 +390,15 @@ public extension MotionTransition {
      Sets the view's animation duration to the longest
      running animation within a transition.
      */
-    static var preferredDurationMatchesLongest = MotionTransition.duration(.infinity)
+    static var preferredDurationMatchesLongest = MotionModifier.duration(.infinity)
     
     /**
      Delays the animation of a given view.
      - Parameter _ time: TimeInterval.
-     - Returns: A MotionTransition.
+     - Returns: A MotionModifier.
      */
-    static func delay(_ time: TimeInterval) -> MotionTransition {
-        return MotionTransition {
+    static func delay(_ time: TimeInterval) -> MotionModifier {
+        return MotionModifier {
             $0.delay = time
         }
     }
@@ -406,10 +406,10 @@ public extension MotionTransition {
     /**
      Sets the view's timing function for the transition.
      - Parameter _ timingFunction: A CAMediaTimingFunction.
-     - Returns: A MotionTransition.
+     - Returns: A MotionModifier.
      */
-    static func timingFunction(_ timingFunction: CAMediaTimingFunction) -> MotionTransition {
-        return MotionTransition {
+    static func timingFunction(_ timingFunction: CAMediaTimingFunction) -> MotionModifier {
+        return MotionModifier {
             $0.timingFunction = timingFunction
         }
     }
@@ -419,11 +419,11 @@ public extension MotionTransition {
      given a stiffness and damping.
      - Parameter stiffness: A CGFlloat.
      - Parameter damping: A CGFloat.
-     - Returns: A MotionTransition.
+     - Returns: A MotionModifier.
      */
     @available(iOS 9, *)
-    static func spring(stiffness: CGFloat, damping: CGFloat) -> MotionTransition {
-        return MotionTransition {
+    static func spring(stiffness: CGFloat, damping: CGFloat) -> MotionModifier {
+        return MotionModifier {
             $0.spring = (stiffness, damping)
         }
     }
@@ -433,10 +433,10 @@ public extension MotionTransition {
      a curve in a downward direction, and a value of -1
      represents a curve in an upward direction.
      - Parameter intensity: A CGFloat.
-     - Returns: A MotionTransition.
+     - Returns: A MotionModifier.
      */
-    static func arc(intensity: CGFloat = 1) -> MotionTransition {
-        return MotionTransition {
+    static func arc(intensity: CGFloat = 1) -> MotionModifier {
+        return MotionModifier {
             $0.arc = intensity
         }
     }
@@ -447,10 +447,10 @@ public extension MotionTransition {
      - Parameter direction: A CascadeDirection.
      - Parameter animationDelayedUntilMatchedViews: A boolean indicating whether
      or not to delay the subview animation until all have started.
-     - Returns: A MotionTransition.
+     - Returns: A MotionModifier.
      */
-    static func cascade(delta: TimeInterval = 0.02, direction: CascadeDirection = .topToBottom, animationDelayedUntilMatchedViews: Bool = false) -> MotionTransition {
-        return MotionTransition {
+    static func cascade(delta: TimeInterval = 0.02, direction: CascadeDirection = .topToBottom, animationDelayedUntilMatchedViews: Bool = false) -> MotionModifier {
+        return MotionModifier {
             $0.cascade = (delta, direction, animationDelayedUntilMatchedViews)
         }
     }
@@ -459,46 +459,106 @@ public extension MotionTransition {
      Creates an overlay on the animating view with a given color and opacity.
      - Parameter color: A UIColor.
      - Parameter opacity: A CGFloat.
-     - Returns: A MotionTransition.
+     - Returns: A MotionModifier.
      */
-    static func overlay(color: UIColor, opacity: CGFloat) -> MotionTransition {
-        return MotionTransition {
+    static func overlay(color: UIColor, opacity: CGFloat) -> MotionModifier {
+        return MotionModifier {
             $0.overlay = (color.cgColor, opacity)
         }
     }
 }
 
-public extension MotionTransition {
+// conditional modifiers
+public extension MotionModifier {
+    /**
+     Apply modifiers when the condition is true.
+     - Parameter _ condition: A MotionConditionalContext.
+     - Returns: A Boolean.
+     */
+    static func when(_ condition: @escaping (MotionConditionalContext) -> Bool, _ modifiers: [MotionModifier]) -> MotionModifier {
+        
+        return MotionModifier {
+            if nil == $0.conditionalModifiers {
+                $0.conditionalModifiers = []
+            }
+            
+            $0.conditionalModifiers!.append((condition, modifiers))
+        }
+    }
+    
+    static func when(_ condition: @escaping (MotionConditionalContext) -> Bool, _ modifiers: MotionModifier...) -> MotionModifier {
+        return .when(condition, modifiers)
+    }
+    
+    /**
+     Apply modifiers when matched.
+     - Parameter _ modifiers: A list of modifiers.
+     - Returns: A MotionModifier.
+     */
+    static func whenMatched(_ modifiers: MotionModifier...) -> MotionModifier {
+        return .when({ $0.isMatched }, modifiers)
+    }
+    
+    /**
+     Apply modifiers when presenting.
+     - Parameter _ modifiers: A list of modifiers.
+     - Returns: A MotionModifier.
+     */
+    static func whenPresenting(_ modifiers: MotionModifier...) -> MotionModifier {
+        return .when({ $0.isPresenting }, modifiers)
+    }
+    
+    /**
+     Apply modifiers when dismissing.
+     - Parameter _ modifiers: A list of modifiers.
+     - Returns: A MotionModifier.
+     */
+    static func whenDismissing(_ modifiers: MotionModifier...) -> MotionModifier {
+        return .when({ !$0.isPresenting }, modifiers)
+    }
+    
+    /**
+     Apply modifiers when appearingg.
+     - Parameter _ modifiers: A list of modifiers.
+     - Returns: A MotionModifier.
+     */
+    static func whenAppearing(_ modifiers: MotionModifier...) -> MotionModifier {
+        return .when({ $0.isAppearing }, modifiers)
+    }
+    
+    /**
+     Apply modifiers when disappearing.
+     - Parameter _ modifiers: A list of modifiers.
+     - Returns: A MotionModifier.
+     */
+    static func whenDisappearing(_ modifiers: MotionModifier...) -> MotionModifier {
+        return .when({ !$0.isAppearing }, modifiers)
+    }
+}
+
+public extension MotionModifier {
     /**
      Apply transitions directly to the view at the start of the transition.
      The transitions supplied here won't be animated.
      For source views, transitions are set directly at the begining of the animation.
      For destination views, they replace the target state (final appearance).
      */
-    static func beginWith(transitions: [MotionTransition]) -> MotionTransition {
-        return MotionTransition {
+    static func beginWith(_ modifiers: [MotionModifier]) -> MotionModifier {
+        return MotionModifier {
             if $0.beginState == nil {
-                $0.beginState = MotionTransitionStateWrapper(state: [])
+                $0.beginState = []
             }
             
-            $0.beginState?.state.append(contentsOf: transitions)
+            $0.beginState?.append(contentsOf: modifiers)
         }
     }
     
-    /**
-     Apply transitions directly to the view at the start of the transition if the view is 
-     matched with another view. The transitions supplied here won't be animated.
-     For source views, transitions are set directly at the begining of the animation.
-     For destination views, they replace the target state (final appearance).
-     */
-    static func beginWithIfMatched(transitions: [MotionTransition]) -> MotionTransition {
-        return MotionTransition {
-            if $0.beginStateIfMatched == nil {
-                $0.beginStateIfMatched = []
-            }
-            
-            $0.beginStateIfMatched?.append(contentsOf: transitions)
-        }
+    static func beginWith(modifiers: [MotionModifier]) -> MotionModifier {
+        return .beginWith(modifiers)
+    }
+    
+    static func beginWith(_ modifiers: MotionModifier...) -> MotionModifier {
+        return .beginWith(modifiers)
     }
     
     /**
@@ -511,20 +571,20 @@ public extension MotionTransition {
      When a view is matched, this is automatically enabled.
      The `source` transition will also enable this.
      */
-    static var useGlobalCoordinateSpace = MotionTransition {
+    static var useGlobalCoordinateSpace = MotionModifier {
         $0.coordinateSpace = .global
     }
     
     /// Ignore all motion transition attributes for a view's direct subviews.
-    static var ignoreSubviewTransitions: MotionTransition = .ignoreSubviewTransitions()
+    static var ignoreSubviewTransitions: MotionModifier = .ignoreSubviewTransitions()
     
     /**
      Ignore all motion transition attributes for a view's subviews.
      - Parameter recursive: If false, will only ignore direct subviews' transitions. 
      default false.
      */
-    static func ignoreSubviewTransitions(recursive: Bool = false) -> MotionTransition {
-        return MotionTransition {
+    static func ignoreSubviewTransitions(recursive: Bool = false) -> MotionModifier {
+        return MotionModifier {
             $0.ignoreSubviewTransitions = recursive
         }
     }
@@ -537,12 +597,12 @@ public extension MotionTransition {
      
      This transition actually does nothing by itself since .useOptimizedSnapshot is the default.
      */
-    static var useOptimizedSnapshot = MotionTransition {
+    static var useOptimizedSnapshot = MotionModifier {
         $0.snapshotType = .optimized
     }
     
     /// Create a snapshot using snapshotView(afterScreenUpdates:).
-    static var useNormalSnapshot = MotionTransition {
+    static var useNormalSnapshot = MotionModifier {
         $0.snapshotType = .normal
     }
     
@@ -551,7 +611,7 @@ public extension MotionTransition {
      This is slower than .useNormalSnapshot but gives more accurate snapshots for some views 
      (eg. UIStackView).
      */
-    static var useLayerRenderSnapshot = MotionTransition {
+    static var useLayerRenderSnapshot = MotionModifier {
         $0.snapshotType = .layerRender
     }
     
@@ -560,7 +620,7 @@ public extension MotionTransition {
      This will mess up the view hierarchy, therefore, view controllers have to rebuild
      their view structure after the transition finishes.
      */
-    static var useNoSnapshot = MotionTransition {
+    static var useNoSnapshot = MotionModifier {
         $0.snapshotType = .noSnapshot
     }
     
@@ -568,7 +628,7 @@ public extension MotionTransition {
      Force the view to animate (Motion will create animation contexts & snapshots for them, so 
      that they can be interactive).
      */
-    static var forceAnimate = MotionTransition {
+    static var forceAnimate = MotionModifier {
         $0.forceAnimate = true
     }
     
@@ -577,7 +637,7 @@ public extension MotionTransition {
      a .scale transition. This is to help Motion animate layers that doesn't support bounds animations.
      This also gives better performance.
      */
-    static var useScaleBasedSizeChange = MotionTransition {
+    static var useScaleBasedSizeChange = MotionModifier {
         $0.useScaleBasedSizeChange = true
     }
 }

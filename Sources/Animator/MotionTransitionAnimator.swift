@@ -28,7 +28,7 @@
 
 import UIKit
 
-internal class MotionTransitionAnimator<T: MotionAnimatorViewContext>: MotionCoreAnimator {
+internal class MotionTargetStateAnimator<T: MotionAnimatorViewContext>: MotionCoreAnimator {
     /// An index of views to their corresponding animator context.
     var viewToContexts = [UIView: T]()
 
@@ -132,10 +132,10 @@ internal class MotionTransitionAnimator<T: MotionAnimatorViewContext>: MotionCor
     
     /**
      Applies the given state to the given view.
-     - Parameter state: A MotionTransitionState.
+     - Parameter state: A MotionModifier.
      - Parameter to view: A UIView.
      */
-    override func apply(state: MotionTransitionState, to view: UIView) {
+    override func apply(state: MotionTargetState, to view: UIView) {
         guard let v = viewToContexts[view] else {
             return
         }
@@ -144,7 +144,7 @@ internal class MotionTransitionAnimator<T: MotionAnimatorViewContext>: MotionCor
     }
 }
 
-fileprivate extension MotionTransitionAnimator {
+fileprivate extension MotionTargetStateAnimator {
     /**
      Creates a view context for a given view.
      - Parameter view: A UIView.

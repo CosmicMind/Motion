@@ -28,11 +28,11 @@
 
 import Foundation
 
-public protocol MotionTransitionObserver {
+public protocol MotionTargetStateObserver {
     /**
      Executed when the elapsed time changes during a transition.
-     - Parameter transitionObserver: A MotionTransitionObserver. 
+     - Parameter transitionObserver: A MotionTargetStateObserver. 
      - Parameter didUpdateWith elapsedTime: A TimeInterval.
      */
-    func motion(transitionObserver: MotionTransitionObserver, didUpdateWith elapsedTime: TimeInterval)
+    func motion(transitionObserver: MotionTargetStateObserver, didUpdateWith elapsedTime: TimeInterval)
 }

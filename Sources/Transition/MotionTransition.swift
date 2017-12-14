@@ -32,81 +32,81 @@ import UIKit
 public protocol MotionViewControllerDelegate {
     /**
      An optional delegation method that is executed motion will start the transition.
-     - Parameter motion: A Motion instance.
+     - Parameter motion: A MotionTransition instance.
      - Parameter willStartTransitionFrom viewController: A UIViewController.
      */
     @objc
-    optional func motionWillStartTransition(motion: Motion)
+    optional func motionWillStartTransition(motion: MotionTransition)
     
     /**
      An optional delegation method that is executed motion did end the transition.
-     - Parameter motion: A Motion instance.
+     - Parameter motion: A MotionTransition instance.
      - Parameter willStartTransitionFrom viewController: A UIViewController.
      */
     @objc
-    optional func motionDidEndTransition(motion: Motion)
+    optional func motionDidEndTransition(motion: MotionTransition)
     
     /**
      An optional delegation method that is executed motion did cancel the transition.
-     - Parameter motion: A Motion instance.
+     - Parameter motion: A MotionTransition instance.
      - Parameter willStartTransitionFrom viewController: A UIViewController.
      */
     @objc
-    optional func motionDidCancelTransition(motion: Motion)
+    optional func motionDidCancelTransition(motion: MotionTransition)
     
     /**
      An optional delegation method that is executed when the source
      view controller will start the transition.
-     - Parameter motion: A Motion instance.
+     - Parameter motion: A MotionTransition instance.
      - Parameter willStartTransitionFrom viewController: A UIViewController.
      */
     @objc
-    optional func motion(motion: Motion, willStartTransitionFrom viewController: UIViewController)
+    optional func motion(motion: MotionTransition, willStartTransitionFrom viewController: UIViewController)
     
     /**
      An optional delegation method that is executed when the source
      view controller did end the transition.
-     - Parameter motion: A Motion instance.
+     - Parameter motion: A MotionTransition instance.
      - Parameter willStartTransitionFrom viewController: A UIViewController.
      */
     @objc
-    optional func motion(motion: Motion, didEndTransitionFrom viewController: UIViewController)
+    optional func motion(motion: MotionTransition, didEndTransitionFrom viewController: UIViewController)
     
     /**
      An optional delegation method that is executed when the source
      view controller did cancel the transition.
-     - Parameter motion: A Motion instance.
+     - Parameter motion: A MotionTransition instance.
      - Parameter willStartTransitionFrom viewController: A UIViewController.
      */
     @objc
-    optional func motion(motion: Motion, didCancelTransitionFrom viewController: UIViewController)
+    optional func motion(motion: MotionTransition, didCancelTransitionFrom viewController: UIViewController)
     
     /**
      An optional delegation method that is executed when the destination
      view controller will start the transition.
-     - Parameter motion: A Motion instance.
+     - Parameter motion: A MotionTransition instance.
      - Parameter willStartTransitionFrom viewController: A UIViewController.
      */
     @objc
-    optional func motion(motion: Motion, willStartTransitionTo viewController: UIViewController)
+    optional func motion(motion: MotionTransition, willStartTransitionTo viewController: UIViewController)
     
     /**
      An optional delegation method that is executed when the destination
      view controller did end the transition.
-     - Parameter motion: A Motion instance.
+     - Parameter motion: A MotionTransition instance.
      - Parameter willStartTransitionFrom viewController: A UIViewController.
      */
     @objc
-    optional func motion(motion: Motion, didEndTransitionTo viewController: UIViewController)
+    optional func motion(motion: MotionTransition, didEndTransitionTo viewController: UIViewController)
     
     /**
      An optional delegation method that is executed when the destination
      view controller did cancel the transition.
-     - Parameter motion: A Motion instance.
+     - Parameter motion: A MotionTransition instance.
      - Parameter willStartTransitionFrom viewController: A UIViewController.
      */
     @objc
-    optional func motion(motion: Motion, didCancelTransitionTo viewController: UIViewController)
+    optional func motion(motion: MotionTransition, didCancelTransitionTo viewController: UIViewController)
 }
 
 /**
@@ -122,14 +122,130 @@ public protocol MotionViewControllerDelegate {
  func update(progress:Double)
  func end()
  func cancel()
- func apply(transitions: [MotionTransition], to view: UIView)
+ func apply(transitions: [MotionTargetState], to view: UIView)
  ```
  */
 import UIKit
 
-public class Motion: NSObject, MotionProgressRunnerDelegate {
+public class Motion: NSObject {
     /// Shared singleton object for controlling the transition
-    public static let shared = Motion()
+    public static let shared = MotionTransition()
+}
+
+public typealias MotionCancelBlock = (Bool) -> Void
+
+extension Motion {
+    /**
+     Executes a block of code asynchronously on the main thread.
+     - Parameter execute: A block that is executed asynchronously on the main thread.
+     */
+    public class func async(_ execute: @escaping () -> Void) {
+        DispatchQueue.main.async(execute: execute)
+    }
+    
+    /**
+     Executes a block of code after a time delay.
+     - Parameter _ time: A delay time.
+     - Parameter execute: A block that is executed once delay has passed.
+     - Returns: An optional MotionCancelBlock.
+     */
+    @discardableResult
+    public class func delay(_ time: TimeInterval, execute: @escaping () -> Void) -> MotionCancelBlock? {
+        var cancelable: MotionCancelBlock?
+        
+        let delayed: MotionCancelBlock = {
+            if !$0 {
+                async(execute)
+            }
+            
+            cancelable = nil
+        }
+        
+        cancelable = delayed
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + time) {
+            cancelable?(false)
+        }
+        
+        return cancelable
+    }
+    
+    /**
+     Cancels the delayed MotionCancelBlock.
+     - Parameter delayed completion: An MotionCancelBlock.
+     */
+    public class func cancel(delayed completion: MotionCancelBlock) {
+        completion(true)
+    }
+    
+    /**
+     Disables the default animations set on CALayers.
+     - Parameter animations: A callback that wraps the animations to disable.
+     */
+    public class func disable(_ animations: (() -> Void)) {
+        animate(duration: 0, animations: animations)
+    }
+    
+    /**
+     Runs an animation with a specified duration.
+     - Parameter duration: An animation duration time.
+     - Parameter animations: An animation block.
+     - Parameter timingFunction: A CAMediaTimingFunction.
+     - Parameter completion: A completion block that is executed once
+     the animations have completed.
+     */
+    public class func animate(duration: CFTimeInterval, timingFunction: CAMediaTimingFunction = .easeInOut, animations: (() -> Void), completion: (() -> Void)? = nil) {
+        CATransaction.begin()
+        CATransaction.setAnimationDuration(duration)
+        CATransaction.setCompletionBlock(completion)
+        CATransaction.setAnimationTimingFunction(timingFunction)
+        animations()
+        CATransaction.commit()
+    }
+    
+    /**
+     Creates a CAAnimationGroup.
+     - Parameter animations: An Array of CAAnimation objects.
+     - Parameter timingFunction: A CAMediaTimingFunction.
+     - Parameter duration: An animation duration time for the group.
+     - Returns: A CAAnimationGroup.
+     */
+    public class func animate(group animations: [CAAnimation], timingFunction: CAMediaTimingFunction = .easeInOut, duration: CFTimeInterval = 0.5) -> CAAnimationGroup {
+        let group = CAAnimationGroup()
+        group.fillMode = MotionAnimationFillModeToValue(mode: .both)
+        group.isRemovedOnCompletion = false
+        group.animations = animations
+        group.duration = duration
+        group.timingFunction = timingFunction
+        return group
+    }
+}
+
+public enum MotionTransitionState: Int {
+    /// Motion is able to start a new transition.
+    case possible
+    
+    /// UIKit has notified Motion about a pending transition.
+    /// Motion hasn't started preparation.
+    case notified
+    
+    /// Motion's `start` method has been called. Preparing the animation.
+    case starting
+    
+    /// Motions's `animate` method has been called. Animation has started.
+    case animating
+    
+    /// Motions's `complete` method has been called. Transition has ended or has
+    /// been cancelled. Motion is cleaning up.
+    case completing
+}
+
+open class MotionTransition: NSObject {
+    /// Default animation type.
+    internal var defaultAnimation = MotionTransitionAnimationType.auto
+    
+    /// The color of the transitioning container.
+    internal var containerBackgroundColor = UIColor.black
     
     /// A boolean indicating if the user may interact with the
     /// view controller while in transition.
@@ -138,44 +254,98 @@ public class Motion: NSObject, MotionProgressRunnerDelegate {
     /// A reference to the MotionViewOrderStrategy.
     public var viewOrderStrategy = MotionViewOrderStrategy.auto
     
-    /// Plugins that are enabled during the transition.
-    internal static var enabledPlugins = [MotionPlugin.Type]()
+    /// State of the transition.
+    public internal(set) var state = MotionTransitionState.possible {
+        didSet {
+            guard .notified != state, .starting != state else {
+                return
+            }
+            
+            beginCallback?(.animating == state)
+            beginCallback = nil
+        }
+    }
     
-    /// A reference to a fullscreen snapshot.
-    internal var fullScreenSnapshot: UIView!
+    /// A boolean indicating whether a transition is active.
+    public var isTransitioning: Bool {
+        return state != .possible
+    }
     
-    /// A reference to the MotionContext.
-    public internal(set) var context: MotionContext!
+    /// Whether or not we are presenting the destination view controller.
+    public internal(set) var isPresenting = true
     
     /// A boolean indicating whether the transition interactive or not.
     public var isInteractive: Bool {
         return !progressRunner.isRunning
     }
     
+    /**
+     A view container used to hold all the animating views during a
+     transition.
+     */
+    public internal(set) var container: UIView!
+    
+    /// UIKit's supplied transition container.
+    internal var transitionContainer: UIView?
+    
+    /// An optional begin callbcak.
+    internal var beginCallback: ((Bool) -> Void)?
+    
+    /// An optional completion callback.
+    internal var completionCallback: ((Bool) -> Void)?
+    
+    /// A boolean indicating if the transition has finished.
+    internal var isFinishing = true
+    
+    /// An Array of MotionPreprocessors used during a transition.
+    internal lazy var preprocessors = [MotionPreprocessor]()
+    
+    /// An Array of MotionAnimators used during a transition.
+    internal lazy var animators = [MotionAnimator]()
+    
+    /// An Array of MotionPlugins used during a transition.
+    internal lazy var plugins = [MotionPlugin]()
+    
+    /// The matching fromViews to toViews based on the motionIdentifier value.
+    internal var animatingFromViews = [UIView]()
+    internal var animatingToViews = [UIView]()
+    
+    /// Plugins that are enabled during the transition.
+    internal static var enabledPlugins = [MotionPlugin.Type]()
+    
     /// Source view controller.
     public internal(set) var fromViewController: UIViewController?
-    
-    /// Destination view controller.
-    public internal(set) var toViewController: UIViewController?
     
     /// A reference to the fromView, fromViewController.view.
     internal var fromView: UIView? {
         return fromViewController?.view
     }
     
+    /// Destination view controller.
+    public internal(set) var toViewController: UIViewController?
+    
     /// A reference to the toView, toViewController.view.
     internal var toView: UIView? {
         return toViewController?.view
     }
     
-    /// The color of the transitioning container.
-    internal var containerBackgroundColor: UIColor?
+    /// An Array of observers that are updated during a transition.
+    internal var transitionObservers: [MotionTargetStateObserver]?
+    
+    /// Max duration used by MotionAnimators and MotionPlugins.
+    public internal(set) var totalDuration: TimeInterval = 0
     
     /**
      A UIViewControllerContextTransitioning object provided by UIKit, which
      might be nil when isTransitioning. This happens when calling motionReplaceViewController
      */
     internal weak var transitionContext: UIViewControllerContextTransitioning?
+    
+    /// A reference to the MotionContext.
+    public internal(set) var context: MotionContext!
+    
+    /// A reference to a fullscreen snapshot.
+    internal var fullScreenSnapshot: UIView?
     
     /// Progress of the current transition. 0 if no transition is happening.
     public internal(set) var elapsedTime: TimeInterval = 0 {
@@ -196,79 +366,12 @@ public class Motion: NSObject, MotionProgressRunnerDelegate {
         }
     }
     
-    /// State of the transition.
-    public internal(set) var state = MotionState.possible {
-        didSet {
-            guard .notified != state else {
-                return
-            }
-            
-            guard .starting != state else {
-                return
-            }
-            
-            beginCallback?(.animating == state)
-            beginCallback = nil
-        }
-    }
-    
-    /// A boolean indicating whether a transition is active.
-    public var isTransitioning: Bool {
-        return state != .possible
-    }
-    
-    /// Whether or not we are presenting the destination view controller.
-    public internal(set) var isPresenting = true
-    
-    /**
-     A view container used to hold all the animating views during a
-     transition.
-     */
-    public internal(set) var container: UIView!
-    
-    /// UIKit's supplied transition container.
-    internal var transitionContainer: UIView?
-    
-    /// An optional begin callbcak.
-    internal var beginCallback: ((Bool) -> Void)?
-    
-    /// An optional completion callback.
-    internal var completionCallback: ((Bool) -> Void)?
-    
-    /// An Array of observers that are updated during a transition.
-    internal var transitionObservers: [MotionTransitionObserver]?
-    
-    /// Max duration used by MotionAnimators and MotionPlugins.
-    public internal(set) var totalDuration: TimeInterval = 0
-    
-    /// The currently running animation duration.
-    internal var currentAnimationDuration: TimeInterval = 0
-    
     /// A reference to a MotionProgressRunner.
     lazy var progressRunner: MotionProgressRunner = {
         let runner = MotionProgressRunner()
         runner.delegate = self
         return runner
     }()
-    
-    /// A boolean indicating if the transition has finished.
-    internal var isFinishing = true
-    
-    /// An Array of MotionPreprocessors used during a transition.
-    internal lazy var preprocessors = [MotionPreprocessor]()
-    
-    /// An Array of MotionAnimators used during a transition.
-    internal lazy var animators = [MotionAnimator]()
-    
-    /// An Array of MotionPlugins used during a transition.
-    internal lazy var plugins = [MotionPlugin]()
-    
-    /// The matching fromViews to toViews based on the motionIdentifier value.
-    internal var animatingFromViews = [UIView]()
-    internal var animatingToViews = [UIView]()
-    
-    /// Default animation type.
-    internal var defaultAnimation = MotionTransitionType.auto
     
     /**
      By default, Motion will always appear to be interactive to UIKit. This forces it to appear non-interactive.
@@ -314,13 +417,19 @@ public class Motion: NSObject, MotionProgressRunnerDelegate {
     }
 }
 
-public extension Motion {
+extension MotionTransition: MotionProgressRunnerDelegate {
+    func update(elapsedTime: TimeInterval) {
+        self.elapsedTime = elapsedTime
+    }
+}
+
+extension MotionTransition {
     /**
      Receive callbacks on each animation frame.
      Observers will be cleaned when a transition completes.
-     - Parameter observer: A MotionTransitionObserver.
+     - Parameter observer: A MotionTargetStateObserver.
      */
-    func addTransitionObserver(observer: MotionTransitionObserver) {
+    func addTransitionObserver(observer: MotionTargetStateObserver) {
         if nil == transitionObservers {
             transitionObservers = []
         }
@@ -329,7 +438,7 @@ public extension Motion {
     }
 }
 
-private extension Motion {
+fileprivate extension MotionTransition {
     /// Updates the transition observers.
     func updateTransitionObservers() {
         guard let observers = transitionObservers else {
@@ -358,44 +467,19 @@ private extension Motion {
     }
 }
 
-public extension Motion {
+public extension MotionTransition {
     /**
      Updates the elapsed time for the interactive transition.
      - Parameter elapsedTime t: the current progress, must be between -1...1.
      */
-    public func update(elapsedTime: TimeInterval) {
+    public func update(_ percentageComplete: TimeInterval) {
         guard .animating == state else {
-            startingProgress = elapsedTime
+            startingProgress = percentageComplete
             return
         }
         
         progressRunner.stop()
-        self.elapsedTime = Double(CGFloat(elapsedTime).clamp(0, 1))
-    }
-    
-    /**
-     Finish the interactive transition.
-     Will stop the interactive transition and animate from the
-     current state to the **end** state
-     - Parameter isAnimated: A boolean indicating if the completion is animated.
-     */
-    public func end(isAnimated: Bool = true) {
-        guard isTransitioning else {
-            return
-        }
-        
-        guard isAnimated else {
-            complete(isFinishing: true)
-            return
-        }
-        
-        var t: TimeInterval = 0
-        
-        for a in animators {
-            t = max(t, a.resume(at: elapsedTime * totalDuration, isReversed: false))
-        }
-        
-        complete(after: t, isFinishing: true)
+        elapsedTime = Double(CGFloat(percentageComplete).clamp(0, 1))
     }
     
     /**
@@ -436,36 +520,28 @@ public extension Motion {
      Motion.shared.apply([.position(x:50, y:50)], to: view)
      
      will set the view's position to 50, 50
-     - Parameter transitions: An Array of MotionTransitions.
+     - Parameter modifiers: An Array of MotionModifier.
      - Parameter to view: A UIView.
      */
-    public func apply(transitions: [MotionTransition], to view: UIView) {
-        guard isTransitioning else {
+    public func apply(modifiers: [MotionModifier], to view: UIView) {
+        guard .animating == state else {
             return
         }
         
-        let s = MotionTransitionState(transitions: transitions)
-        let v = context.pairedView(for: view) ?? view
+        let targetState = MotionTargetState(modifiers: modifiers)
+        if let otherView = context.pairedView(for: view) {
+            for animator in animators {
+                animator.apply(state: targetState, to: otherView)
+            }
+        }
         
-        for a in animators {
-            a.apply(state: s, to: v)
+        for animator in self.animators {
+            animator.apply(state: targetState, to: view)
         }
     }
 }
 
-internal extension Motion {
-    /// Updates the container background color.
-    func updateContainerBackgroundColor() {
-        if let v = containerBackgroundColor {
-            container?.backgroundColor = v
-            
-        } else if !toOverFullScreen && !fromOverFullScreen {
-            container?.backgroundColor = toView?.backgroundColor
-        }
-    }
-}
-
-internal extension Motion {
+internal extension MotionTransition {
     /**
      Checks if a given plugin is enabled.
      - Parameter plugin: A MotionPlugin.Type.
@@ -497,7 +573,7 @@ internal extension Motion {
     }
 }
 
-public extension Motion {
+public extension MotionTransition {
     /// Turn off built-in animations for the next transition.
     func disableDefaultAnimationForNextTransition() {
         defaultAnimation = .none
@@ -505,23 +581,23 @@ public extension Motion {
     
     /**
      Set the default animation for the next transition. This may override the
-     root-view's motionTransitions during the transition.
-     - Parameter animation: A MotionTransitionType.
+     root-view's motionModifiers during the transition.
+     - Parameter animation: A MotionTransitionAnimationType.
      */
-    func setAnimationForNextTransition(_ animation: MotionTransitionType) {
+    func setAnimationForNextTransition(_ animation: MotionTransitionAnimationType) {
         defaultAnimation = animation
     }
     
     /**
      Set the container background color for the next transition.
-     - Parameter _ color: An optional UIColor.
+     - Parameter _ color: A UIColor.
      */
-    func setContainerBackgroundColorForNextTransition(_ color: UIColor?) {
+    func setContainerBackgroundColorForNextTransition(_ color: UIColor) {
         containerBackgroundColor = color
     }
 }
 
-public extension Motion {
+public extension MotionTransition {
     /**
      A helper transition function.
      - Parameter from: A UIViewController.
@@ -545,7 +621,7 @@ public extension Motion {
     }
 }
 
-internal extension Motion {
+internal extension MotionTransition {
     /**
      Processes the start transition delegation methods.
      - Parameter fromViewController: An optional UIViewController.
@@ -661,7 +737,7 @@ internal extension Motion {
     }
 }
 
-internal extension Motion {
+internal extension MotionTransition {
     /**
      Helper for processing the MotionViewControllerDelegate.
      - Parameter viewController: A UIViewController of type `T`.
@@ -684,7 +760,7 @@ internal extension Motion {
     }
 }
 
-extension Motion: UIViewControllerAnimatedTransitioning {
+extension MotionTransition: UIViewControllerAnimatedTransitioning {
     /**
      The animation method that is used to coordinate the transition.
      - Parameter using transitionContext: A UIViewControllerContextTransitioning.
@@ -716,7 +792,7 @@ extension Motion: UIViewControllerAnimatedTransitioning {
     }
 }
 
-extension Motion: UIViewControllerTransitioningDelegate {
+extension MotionTransition: UIViewControllerTransitioningDelegate {
     /// A reference to the interactive transitioning instance.
     var interactiveTransitioning: UIViewControllerInteractiveTransitioning? {
         return forceNonInteractive ? nil : self
@@ -755,7 +831,7 @@ extension Motion: UIViewControllerTransitioningDelegate {
     }
 }
 
-extension Motion: UIViewControllerInteractiveTransitioning {
+extension MotionTransition: UIViewControllerInteractiveTransitioning {
     public var wantsInteractiveStart: Bool {
         return true
     }
@@ -765,7 +841,7 @@ extension Motion: UIViewControllerInteractiveTransitioning {
     }
 }
 
-extension Motion: UINavigationControllerDelegate {
+extension MotionTransition: UINavigationControllerDelegate {
     public func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationControllerOperation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         guard !isTransitioning else {
             return nil
@@ -785,7 +861,7 @@ extension Motion: UINavigationControllerDelegate {
     }
 }
 
-extension Motion: UITabBarControllerDelegate {
+extension MotionTransition: UITabBarControllerDelegate {
     public func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
         if isTransitioning {
             cancel(isAnimated: false)
@@ -817,91 +893,3 @@ extension Motion: UITabBarControllerDelegate {
     }
 }
 
-public typealias MotionCancelBlock = (Bool) -> Void
-
-extension Motion {
-    /**
-     Executes a block of code asynchronously on the main thread.
-     - Parameter execute: A block that is executed asynchronously on the main thread.
-     */
-    public class func async(_ execute: @escaping () -> Void) {
-        DispatchQueue.main.async(execute: execute)
-    }
-    
-    /**
-     Executes a block of code after a time delay.
-     - Parameter _ time: A delay time.
-     - Parameter execute: A block that is executed once delay has passed.
-     - Returns: An optional MotionCancelBlock.
-     */
-    @discardableResult
-    public class func delay(_ time: TimeInterval, execute: @escaping () -> Void) -> MotionCancelBlock? {
-        var cancelable: MotionCancelBlock?
-        
-        let delayed: MotionCancelBlock = {
-            if !$0 {
-                async(execute)
-            }
-            
-            cancelable = nil
-        }
-        
-        cancelable = delayed
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + time) {
-            cancelable?(false)
-        }
-        
-        return cancelable
-    }
-    
-    /**
-     Cancels the delayed MotionCancelBlock.
-     - Parameter delayed completion: An MotionCancelBlock.
-     */
-    public class func cancel(delayed completion: MotionCancelBlock) {
-        completion(true)
-    }
-    
-    /**
-     Disables the default animations set on CALayers.
-     - Parameter animations: A callback that wraps the animations to disable.
-     */
-    public class func disable(_ animations: (() -> Void)) {
-        animate(duration: 0, animations: animations)
-    }
-    
-    /**
-     Runs an animation with a specified duration.
-     - Parameter duration: An animation duration time.
-     - Parameter animations: An animation block.
-     - Parameter timingFunction: A CAMediaTimingFunction.
-     - Parameter completion: A completion block that is executed once
-     the animations have completed.
-     */
-    public class func animate(duration: CFTimeInterval, timingFunction: CAMediaTimingFunction = .easeInOut, animations: (() -> Void), completion: (() -> Void)? = nil) {
-        CATransaction.begin()
-        CATransaction.setAnimationDuration(duration)
-        CATransaction.setCompletionBlock(completion)
-        CATransaction.setAnimationTimingFunction(timingFunction)
-        animations()
-        CATransaction.commit()
-    }
-    
-    /**
-     Creates a CAAnimationGroup.
-     - Parameter animations: An Array of CAAnimation objects.
-     - Parameter timingFunction: A CAMediaTimingFunction.
-     - Parameter duration: An animation duration time for the group.
-     - Returns: A CAAnimationGroup.
-     */
-    public class func animate(group animations: [CAAnimation], timingFunction: CAMediaTimingFunction = .easeInOut, duration: CFTimeInterval = 0.5) -> CAAnimationGroup {
-        let group = CAAnimationGroup()
-        group.fillMode = MotionAnimationFillModeToValue(mode: .both)
-        group.isRemovedOnCompletion = false
-        group.animations = animations
-        group.duration = duration
-        group.timingFunction = timingFunction
-        return group
-    }
-}

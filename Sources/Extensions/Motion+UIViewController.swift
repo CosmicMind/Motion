@@ -32,13 +32,13 @@ fileprivate var AssociatedInstanceKey: UInt8 = 0
 
 fileprivate struct AssociatedInstance {
     /// A reference to the modal animation.
-    var modalTransitionType: MotionTransitionType
+    var modalTransitionType: MotionTransitionAnimationType
 
     /// A reference to the navigation animation.
-    var navigationTransitionType: MotionTransitionType
+    var navigationTransitionType: MotionTransitionAnimationType
 
     /// A reference to the tabBar animation.
-    var tabBarTransitionType: MotionTransitionType
+    var tabBarTransitionType: MotionTransitionAnimationType
 
     /// A reference to the stored snapshot.
     var storedSnapshot: UIView?
@@ -75,7 +75,7 @@ extension UIViewController {
     }
 
     /// Default motion animation type for presenting & dismissing modally.
-    public var motionTransitionType: MotionTransitionType {
+    public var motionTransitionType: MotionTransitionAnimationType {
         get {
             return associatedInstance.modalTransitionType
         }
@@ -161,7 +161,7 @@ extension UIViewController {
 
 extension UINavigationController {
     /// Default motion animation type for push and pop within the navigation controller.
-    public var motionNavigationTransitionType: MotionTransitionType {
+    public var motionNavigationTransitionType: MotionTransitionAnimationType {
         get {
             return associatedInstance.navigationTransitionType
         }
@@ -173,7 +173,7 @@ extension UINavigationController {
 
 extension UITabBarController {
     /// Default motion animation type for switching tabs within the tab bar controller.
-    public var motionTabBarTransitionType: MotionTransitionType {
+    public var motionTabBarTransitionType: MotionTransitionAnimationType {
         get {
             return associatedInstance.tabBarTransitionType
         }

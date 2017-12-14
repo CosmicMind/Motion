@@ -29,7 +29,7 @@
 import UIKit
 
 class MotionCoreAnimator: MotionAnimator {
-    weak public var motion: Motion!
+    weak public var motion: MotionTransition!
     
     /// A reference to the MotionContext.
     public var context: MotionContext! {
@@ -52,7 +52,7 @@ class MotionCoreAnimator: MotionAnimator {
         return 0
     }
     
-    func apply(state: MotionTransitionState, to view: UIView) {}
+    func apply(state: MotionTargetState, to view: UIView) {}
 }
 
 

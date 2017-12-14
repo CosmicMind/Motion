@@ -28,7 +28,7 @@
 
 import UIKit
 
-extension Motion {
+extension MotionTransition {
     /// Starts the transition animation.
     func start() {
         guard .notified == state else {
@@ -55,7 +55,7 @@ extension Motion {
     }
 }
 
-fileprivate extension Motion {
+fileprivate extension MotionTransition {
     /// Prepares the views frames.
     func prepareViewFrame() {
         guard let fv = fromView else {
@@ -119,10 +119,10 @@ fileprivate extension Motion {
     
     /// Prepares the animators.
     func prepareAnimators() {
-        animators.append(MotionTransitionAnimator<MotionCoreAnimationViewContext>())
+        animators.append(MotionTargetStateAnimator<MotionCoreAnimationViewContext>())
         
         if #available(iOS 10, tvOS 10, *) {
-            animators.append(MotionTransitionAnimator<MotionViewPropertyViewContext>())
+            animators.append(MotionTargetStateAnimator<MotionViewPropertyViewContext>())
         }
         
         for v in animators {
@@ -132,7 +132,7 @@ fileprivate extension Motion {
     
     /// Prepares the plugins.
     func preparePlugins() {
-        for x in Motion.enabledPlugins.map({
+        for x in MotionTransition.enabledPlugins.map({
             return $0.init()
         }) {
             plugins.append(x)
@@ -162,7 +162,7 @@ fileprivate extension Motion {
         container = UIView(frame: transitionContainer?.bounds ?? .zero)
         
         if !toOverFullScreen && !fromOverFullScreen {
-            updateContainerBackgroundColor()
+            container.backgroundColor = containerBackgroundColor
         }
         
         transitionContainer?.addSubview(container)
@@ -243,7 +243,7 @@ fileprivate extension Motion {
     }
 }
 
-fileprivate extension Motion {
+fileprivate extension MotionTransition {
     /// Executes the preprocessors' process function.
     func processPreprocessors() {
         for v in preprocessors {

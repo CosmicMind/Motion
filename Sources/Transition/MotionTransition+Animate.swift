@@ -28,7 +28,7 @@
 
 import UIKit
 
-extension Motion {
+extension MotionTransition {
     /// Starts the transition animation.
     func animate() {
         guard .starting == state else {
@@ -85,7 +85,6 @@ extension Motion {
                 return animator.canAnimate(view: $0, isAppearing: true)
             })
             
-            print("T", t, "DURATION", duration)
             if .infinity == duration {
                 animatorWantsInteractive = true
             } else {
@@ -95,12 +94,10 @@ extension Motion {
         
         totalDuration = t
         
-        print("T", t)
-        
         if let forceFinishing = forceFinishing {
             complete(isFinishing: forceFinishing)
         } else if let startingProgress = startingProgress {
-           update(elapsedTime: startingProgress)
+           update(startingProgress)
         } else if animatorWantsInteractive {
             update(elapsedTime: 0)
         } else {

@@ -125,27 +125,32 @@ class MotionPlugin: MotionCorePreprocessor, MotionAnimator {
        - state: the target state to override
        - view: the view to override
    */
-  open func apply(state: MotionTransitionState, to view: UIView) {}
+  open func apply(state: MotionTargetState, to view: UIView) {}
 }
 
 // methods for enable/disable the current plugin
 extension MotionPlugin {
-  public static var isEnabled: Bool {
-    get {
-      return Motion.isEnabled(plugin: self)
+    /// A boolean indicating whether plugins are available.
+    public static var isEnabled: Bool {
+        get {
+            return MotionTransition.isEnabled(plugin: self)
+        }
+        set(value) {
+            if value {
+                enable()
+            } else {
+                disable()
+            }
+        }
     }
-    set {
-      if newValue {
-        enable()
-      } else {
-        disable()
-      }
+
+    /// Enable plugins.
+    public static func enable() {
+        MotionTransition.enable(plugin: self)
     }
-  }
-  public static func enable() {
-    Motion.enable(plugin: self)
-  }
-  public static func disable() {
-    Motion.disable(plugin: self)
-  }
+
+    /// Disable plugins.
+    public static func disable() {
+        MotionTransition.disable(plugin: self)
+    }
 }

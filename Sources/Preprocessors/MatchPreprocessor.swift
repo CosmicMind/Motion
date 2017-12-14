@@ -40,8 +40,8 @@ class MatchPreprocessor: MotionCorePreprocessor {
                 continue
             }
             
-            var tvState = context[tv] ?? MotionTransitionState()
-            var fvState = context[fv] ?? MotionTransitionState()
+            var tvState = context[tv] ?? MotionTargetState()
+            var fvState = context[fv] ?? MotionTargetState()
             
             // match is just a two-way source effect
             tvState.motionIdentifier = motionIdentifier

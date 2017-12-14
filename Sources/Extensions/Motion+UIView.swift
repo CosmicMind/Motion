@@ -43,8 +43,8 @@ fileprivate struct AssociatedInstance {
     /// An optional reference to the motion animations.
     fileprivate var animations: [MotionAnimation]?
     
-    /// An optional reference to the motion transition animations.
-    fileprivate var transitions: [MotionTransition]?
+    /// An optional reference to the motion animation modifiers.
+    fileprivate var modifiers: [MotionModifier]?
     
     /// An alpha value.
     fileprivate var alpha: CGFloat?
@@ -55,7 +55,7 @@ fileprivate extension UIView {
     fileprivate var associatedInstance: AssociatedInstance {
         get {
             return AssociatedObject.get(base: self, key: &AssociatedInstanceKey) {
-                return AssociatedInstance(isEnabled: true, isEnabledForSubviews: true, identifier: nil, animations: nil, transitions: nil, alpha: 1)
+                return AssociatedInstance(isEnabled: true, isEnabledForSubviews: true, identifier: nil, animations: nil, modifiers: nil, alpha: 1)
             }
         }
         set(value) {
@@ -136,30 +136,30 @@ public extension UIView {
     }
     
     /**
-     A function that accepts a list of MotionTransition values.
-     - Parameter transitions: A list of MotionTransition values.
+     A function that accepts a list of MotionTargetState values.
+     - Parameter transitions: A list of MotionTargetState values.
      */
-    func transition(_ transitions: MotionTransition...) {
-        transition(transitions)
+    func transition(_ modifiers: MotionModifier...) {
+        transition(modifiers)
     }
     
     /**
-     A function that accepts an Array of MotionTransition values.
-     - Parameter transitions: An Array of MotionTransition values.
+     A function that accepts an Array of MotionTargetState values.
+     - Parameter transitions: An Array of MotionTargetState values.
      */
-    func transition(_ transitions: [MotionTransition]) {
-        motionTransitions = transitions
+    func transition(_ modifiers: [MotionModifier]) {
+        motionModifiers = modifiers
     }
 }
 
 internal extension UIView {
     /// The animations to run while in transition.
-    var motionTransitions: [MotionTransition]? {
+    var motionModifiers: [MotionModifier]? {
         get {
-            return associatedInstance.transitions
+            return associatedInstance.modifiers
         }
         set(value) {
-            associatedInstance.transitions = value
+            associatedInstance.modifiers = value
         }
     }
     
@@ -286,10 +286,10 @@ internal extension UIView {
     
     /**
      Calculates the optimized duration for a view.
-     - Parameter targetState: A MotionTransitionState.
+     - Parameter targetState: A MotionTargetState.
      - Returns: A TimeInterval.
      */
-    func optimizedDuration(targetState: MotionTransitionState) -> TimeInterval {
+    func optimizedDuration(targetState: MotionTargetState) -> TimeInterval {
         return optimizedDuration(position: targetState.position,
                                      size: targetState.size,
                                 transform: targetState.transform)

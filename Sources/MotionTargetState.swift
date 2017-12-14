@@ -28,29 +28,12 @@
 
 import UIKit
 
-internal class MotionTransitionStateWrapper {
-    /// A reference to a MotionTransitionState.
-    internal var state: MotionTransitionState
-    
-    /**
-     An initializer that accepts a given MotionTransitionState.
-     - Parameter state: A MotionTransitionState.
-     */
-    internal init(state: MotionTransitionState) {
-        self.state = state
-    }
-}
-
-public struct MotionTransitionState {
+public struct MotionTargetState {
     /// The initial state that the transition will start at.
-    internal var beginState: MotionTransitionStateWrapper?
+    internal var beginState: [MotionModifier]?
     
+    public var conditionalModifiers: [((MotionConditionalContext) -> Bool, [MotionModifier])]?
     
-    public var conditionalTransitions: [((MotionConditionalContext) -> Bool, [MotionTransition])]?
-    
-    /// The start state if there is a match in the desition view controller.
-    public var beginStateIfMatched: [MotionTransition]?
-
     /// A reference to the position.
     public var position: CGPoint?
     
@@ -154,29 +137,29 @@ public struct MotionTransitionState {
     public var custom: [String: Any]?
 
     /**
-     An initializer that accepts an Array of MotionTransitions.
-     - Parameter transitions: An Array of MotionTransitions.
+     An initializer that accepts an Array of MotionTargetStates.
+     - Parameter transitions: An Array of MotionTargetStates.
      */
-    init(transitions: [MotionTransition]) {
-        append(contentsOf: transitions)
+    init(modifiers: [MotionModifier]) {
+        append(contentsOf: modifiers)
     }
 }
 
-extension MotionTransitionState {
+extension MotionTargetState {
     /**
-     Adds a MotionTransition to the current state.
-     - Parameter _ element: A MotionTransition.
+     Adds a MotionTargetState to the current state.
+     - Parameter _ modifier: A MotionTargetState.
      */
-    public mutating func append(_ element: MotionTransition) {
-        element.apply(&self)
+    public mutating func append(_ modifier: MotionModifier) {
+        modifier.apply(&self)
     }
     
     /**
-     Adds an Array of MotionTransitions to the current state.
-     - Parameter contentsOf elements: An Array of MotionTransitions.
+     Adds an Array of MotionTargetStates to the current state.
+     - Parameter contentsOf modifiers: An Array of MotionTargetStates.
      */
-    public mutating func append(contentsOf elements: [MotionTransition]) {
-        for v in elements {
+    public mutating func append(contentsOf modifiers: [MotionModifier]) {
+        for v in modifiers {
             v.apply(&self)
         }
     }
@@ -200,12 +183,12 @@ extension MotionTransitionState {
     }
 }
 
-extension MotionTransitionState: ExpressibleByArrayLiteral {
+extension MotionTargetState: ExpressibleByArrayLiteral {
     /**
      An initializer implementing the ExpressibleByArrayLiteral protocol.
-     - Parameter arrayLiteral elements: A list of MotionTransitions.
+     - Parameter arrayLiteral elements: A list of MotionTargetStates.
      */
-    public init(arrayLiteral elements: MotionTransition...) {
+    public init(arrayLiteral elements: MotionModifier...) {
         append(contentsOf: elements)
     }
 }

@@ -30,7 +30,7 @@ import UIKit
 
 public protocol MotionAnimator: class {
     /// A reference to Motion.
-    weak var motion: Motion! { get set }
+    weak var motion: MotionTransition! { get set }
     
     /// Cleans the contexts.
     func clean()
@@ -68,8 +68,8 @@ public protocol MotionAnimator: class {
     
     /**
      Applies the given state to the given view.
-     - Parameter state: A MotionTransitionState.
+     - Parameter state: A MotionModifier.
      - Parameter to view: A UIView.
      */
-    func apply(state: MotionTransitionState, to view: UIView)
+    func apply(state: MotionTargetState, to view: UIView)
 }

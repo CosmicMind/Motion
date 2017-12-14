@@ -36,7 +36,7 @@ internal class MotionAnimatorViewContext {
     var snapshot: UIView
     
     /// The animation target state.
-    var targetState: MotionTransitionState
+    var targetState: MotionTargetState
     
     /// A boolean indicating if the view is appearing.
     var isAppearing: Bool
@@ -58,10 +58,10 @@ internal class MotionAnimatorViewContext {
      An initializer. 
      - Parameter animator: A MotionAnimator.
      - Parameter snapshot: A UIView.
-     - Parameter targetState: A MotionTransitionState.
+     - Parameter targetState: A MotionModifier.
      - Parameter isAppearing: A Boolean.
      */
-    required init(animator: MotionCoreAnimator, snapshot: UIView, targetState: MotionTransitionState, isAppearing: Bool) {
+    required init(animator: MotionCoreAnimator, snapshot: UIView, targetState: MotionTargetState, isAppearing: Bool) {
         self.animator = animator
         self.snapshot = snapshot
         self.targetState = targetState
@@ -77,11 +77,11 @@ internal class MotionAnimatorViewContext {
      A class function that determines if a view can be animated
      to a given state.
      - Parameter view: A UIView.
-     - Parameter state: A MotionTransitionState.
+     - Parameter state: A MotionModifier.
      - Parameter isAppearing: A boolean that determines whether the
      view is appearing.
      */
-    class func canAnimate(view: UIView, state: MotionTransitionState, isAppearing: Bool) -> Bool {
+    class func canAnimate(view: UIView, state: MotionTargetState, isAppearing: Bool) -> Bool {
         return false
     }
 
@@ -106,9 +106,9 @@ internal class MotionAnimatorViewContext {
 
     /**
      Applies the given state to the target state.
-     - Parameter state: A MotionTransitionState.
+     - Parameter state: A MotionModifier.
      */
-    func apply(state: MotionTransitionState) {}
+    func apply(state: MotionTargetState) {}
     
     /**
      Starts the animations with an appearing boolean flag.

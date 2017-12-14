@@ -45,7 +45,7 @@ public class MotionContext {
     internal var viewToAlphas = [UIView: CGFloat]()
     
     /// A reference of view to transition target state.
-    internal var viewToTargetState = [UIView: MotionTransitionState]()
+    internal var viewToTargetState = [UIView: MotionTargetState]()
     
     /// A reference of the superview to the subviews snapshots.
     internal var superviewToNoSnapshotSubviewMap = [UIView: [(Int, UIView)]]()
@@ -94,14 +94,21 @@ internal extension MotionContext {
         for v in views {
             v.layer.removeAllAnimations()
             
-            if container.convert(v.bounds, from: v).intersects(container.bounds) {
-                if let i = v.motionIdentifier {
-                    identifierMap[i] = v
+            let targetState: MotionTargetState?
+            
+            if let modifiers = v.motionModifiers {
+                targetState = MotionTargetState(modifiers: modifiers)
+            
+            } else {
+                targetState = nil
+            }
+            
+            if true == targetState?.forceAnimate || container.convert(v.bounds, from: v).intersects(container.bounds) {
+                if let motionIdentifier = v.motionIdentifier {
+                    identifierMap[motionIdentifier] = v
                 }
-                
-                if let i = v.motionTransitions {
-                    viewToTargetState[v] = MotionTransitionState(transitions: i)
-                }
+            
+                viewToTargetState[v] = targetState
             }
         }
     }
@@ -110,11 +117,11 @@ internal extension MotionContext {
 public extension MotionContext {
     /**
      A subscript that takes a given view and retrieves a
-     MotionTransitionState if one exists.
+     MotionModifier if one exists.
      - Parameter view: A UIView.
-     - Returns: An optional MotionTransitionState.
+     - Returns: An optional MotionTargetState.
      */
-    subscript(view: UIView) -> MotionTransitionState? {
+    subscript(view: UIView) -> MotionTargetState? {
         get {
             return viewToTargetState[view]
         }

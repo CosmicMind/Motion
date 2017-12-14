@@ -30,7 +30,7 @@ import UIKit
 
 internal class MotionCoreAnimationViewContext: MotionAnimatorViewContext {
     /// The transition states.
-    fileprivate var transitionStates = [String: (Any?, Any?)]()
+    fileprivate var state = [String: (Any?, Any?)]()
     
     /// A reference to the animation timing function.
     fileprivate var timingFunction = CAMediaTimingFunction.standard
@@ -51,7 +51,7 @@ internal class MotionCoreAnimationViewContext: MotionAnimatorViewContext {
         overlayLayer = nil
     }
     
-    override class func canAnimate(view: UIView, state: MotionTransitionState, isAppearing: Bool) -> Bool {
+    override class func canAnimate(view: UIView, state: MotionTargetState, isAppearing: Bool) -> Bool {
         return  nil != state.position           ||
                 nil != state.size               ||
                 nil != state.transform          ||
@@ -70,13 +70,13 @@ internal class MotionCoreAnimationViewContext: MotionAnimatorViewContext {
                        state.forceAnimate
     }
     
-    override func apply(state: MotionTransitionState) {
+    override func apply(state: MotionTargetState) {
         let targetState = viewState(targetState: state)
         
         for (key, targetValue) in targetState {
-            if nil == transitionStates[key] {
+            if nil == state[key] {
                 let current = currentValue(for: key)
-                transitionStates[key] = (current, current)
+                state[key] = (current, current)
             }
             
             let oldAnimations = animations
@@ -87,8 +87,8 @@ internal class MotionCoreAnimationViewContext: MotionAnimatorViewContext {
     }
 
     override func resume(at elapsedTime: TimeInterval, isReversed: Bool) -> TimeInterval {
-        for (key, (fromValue, toValue)) in transitionStates {
-            transitionStates[key] = (currentValue(for: key), isReversed ? fromValue : toValue)
+        for (key, (fromValue, toValue)) in state {
+            state[key] = (currentValue(for: key), isReversed ? fromValue : toValue)
         }
         
         if isReversed {
@@ -125,28 +125,31 @@ internal class MotionCoreAnimationViewContext: MotionAnimatorViewContext {
     }
 
     override func startAnimations() -> TimeInterval {
-        if let beginState = targetState.beginState?.state {
+        if let beginStateModifiers = targetState.beginState {
+            let beginState = MotionTargetState(modifiers: beginStateModifiers)
+            
             let appeared = viewState(targetState: beginState)
+            
             for (k, v) in appeared {
                 snapshot.layer.setValue(v, forKeyPath: k)
             }
             
-            if let (k, v) = beginState.overlay {
+            if let (color, opacity) = beginState.overlay {
                 let overlay = getOverlayLayer()
-                overlay.backgroundColor = k
-                overlay.opacity = Float(v)
+                overlay.backgroundColor = color
+                overlay.opacity = Float(opacity)
             }
         }
-
+        
         let disappeared = viewState(targetState: targetState)
-        for (k, v) in disappeared {
-            let isAppearingState = currentValue(for: k)
-            let toValue = isAppearing ? isAppearingState : v
-            let fromValue = !isAppearing ? isAppearingState : v
-            
-            transitionStates[k] = (fromValue, toValue)
+        
+        for (k, disappearedState) in disappeared {
+            let appearingState = currentValue(for: k)
+            let toValue = isAppearing ? appearingState : disappearedState
+            let fromValue = !isAppearing ? appearingState : disappearedState
+            state[k] = (fromValue, toValue)
         }
-
+        
         return animate(delay: targetState.delay, duration: duration)
     }
 }
@@ -416,7 +419,7 @@ fileprivate extension MotionCoreAnimationViewContext {
         
         animations = []
         
-        for (key, (fromValue, toValue)) in transitionStates {
+        for (key, (fromValue, toValue)) in state {
             let neededTime = animate(key: key, beginTime: currentTime + delay, duration: duration, fromValue: fromValue, toValue: toValue)
             timeUntilStop = max(timeUntilStop, neededTime)
         }
@@ -426,10 +429,10 @@ fileprivate extension MotionCoreAnimationViewContext {
     
     /**
      Constructs a map of key paths to animation state values.
-     - Parameter targetState state: A MotionTransitionState.
+     - Parameter targetState state: A MotionModifier.
      - Returns: A map of key paths to animation values.
      */
-    func viewState(targetState ts: MotionTransitionState) -> [String: Any?] {
+    func viewState(targetState ts: MotionTargetState) -> [String: Any?] {
         var ts = ts
         var values = [String: Any?]()
         

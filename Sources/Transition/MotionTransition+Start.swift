@@ -88,7 +88,10 @@ fileprivate extension MotionTransition {
         }
         
         fullScreenSnapshot = v.window?.snapshotView(afterScreenUpdates: false) ?? fromView?.snapshotView(afterScreenUpdates: false)
-        (v.window ?? v)?.addSubview(fullScreenSnapshot)
+        
+        if let snapshot = fullScreenSnapshot {
+            (v.window ?? v)?.addSubview(snapshot)
+        }
         
         if let v = fromViewController?.motionStoredSnapshot {
             v.removeFromSuperview()

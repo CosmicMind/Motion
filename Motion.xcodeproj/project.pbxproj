@@ -25,6 +25,9 @@
 		965FE9881FE304E70098BDD0 /* MotionTransition+Start.swift in Headers */ = {isa = PBXBuildFile; fileRef = 965FE9661FDD99800098BDD0 /* MotionTransition+Start.swift */; settings = {ATTRIBUTES = (Public, ); }; };
 		965FE9891FE304E70098BDD0 /* MotionTransition+Animate.swift in Headers */ = {isa = PBXBuildFile; fileRef = 965FE96E1FDEFA8B0098BDD0 /* MotionTransition+Animate.swift */; settings = {ATTRIBUTES = (Public, ); }; };
 		965FE98A1FE304E70098BDD0 /* MotionTransition+Complete.swift in Headers */ = {isa = PBXBuildFile; fileRef = 965FE9621FDCCE030098BDD0 /* MotionTransition+Complete.swift */; settings = {ATTRIBUTES = (Public, ); }; };
+		965FE98D1FE334E10098BDD0 /* MotionTransition+UIViewControllerTransitioningDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965FE98C1FE334E10098BDD0 /* MotionTransition+UIViewControllerTransitioningDelegate.swift */; };
+		965FE9911FE43DA60098BDD0 /* MotionTransition+UITabBarControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965FE9901FE43DA60098BDD0 /* MotionTransition+UITabBarControllerDelegate.swift */; };
+		965FE9931FE43DE10098BDD0 /* MotionTransition+UINavigationControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965FE9921FE43DE10098BDD0 /* MotionTransition+UINavigationControllerDelegate.swift */; };
 		96E409651F24F7370015A2B5 /* MotionAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E4093D1F24F7370015A2B5 /* MotionAnimator.swift */; };
 		96E409661F24F7370015A2B5 /* MotionAnimatorViewContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E4093E1F24F7370015A2B5 /* MotionAnimatorViewContext.swift */; };
 		96E409671F24F7370015A2B5 /* MotionCoreAnimationViewContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E4093F1F24F7370015A2B5 /* MotionCoreAnimationViewContext.swift */; };
@@ -98,6 +101,9 @@
 		965FE96E1FDEFA8B0098BDD0 /* MotionTransition+Animate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MotionTransition+Animate.swift"; sourceTree = "<group>"; };
 		965FE9761FE0976F0098BDD0 /* ConditionalPreprocessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConditionalPreprocessor.swift; sourceTree = "<group>"; };
 		965FE9791FE1D83D0098BDD0 /* MotionTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionTransition.swift; sourceTree = "<group>"; };
+		965FE98C1FE334E10098BDD0 /* MotionTransition+UIViewControllerTransitioningDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MotionTransition+UIViewControllerTransitioningDelegate.swift"; sourceTree = "<group>"; };
+		965FE9901FE43DA60098BDD0 /* MotionTransition+UITabBarControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MotionTransition+UITabBarControllerDelegate.swift"; sourceTree = "<group>"; };
+		965FE9921FE43DE10098BDD0 /* MotionTransition+UINavigationControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MotionTransition+UINavigationControllerDelegate.swift"; sourceTree = "<group>"; };
 		96C98DD11E424AB000B22906 /* Motion.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Motion.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		96E4093D1F24F7370015A2B5 /* MotionAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionAnimator.swift; sourceTree = "<group>"; };
 		96E4093E1F24F7370015A2B5 /* MotionAnimatorViewContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionAnimatorViewContext.swift; sourceTree = "<group>"; };
@@ -142,6 +148,9 @@
 				965FE9661FDD99800098BDD0 /* MotionTransition+Start.swift */,
 				965FE96E1FDEFA8B0098BDD0 /* MotionTransition+Animate.swift */,
 				965FE9621FDCCE030098BDD0 /* MotionTransition+Complete.swift */,
+				965FE98C1FE334E10098BDD0 /* MotionTransition+UIViewControllerTransitioningDelegate.swift */,
+				965FE9901FE43DA60098BDD0 /* MotionTransition+UITabBarControllerDelegate.swift */,
+				965FE9921FE43DE10098BDD0 /* MotionTransition+UINavigationControllerDelegate.swift */,
 			);
 			path = Transition;
 			sourceTree = "<group>";
@@ -345,8 +354,10 @@
 				965FE9631FDCCE030098BDD0 /* MotionTransition+Complete.swift in Sources */,
 				96E4097D1F24F7370015A2B5 /* MotionPlugin.swift in Sources */,
 				965FE96D1FDDA6400098BDD0 /* MotionCoreAnimator.swift in Sources */,
+				965FE9911FE43DA60098BDD0 /* MotionTransition+UITabBarControllerDelegate.swift in Sources */,
 				96E4096E1F24F7370015A2B5 /* Motion+CG.swift in Sources */,
 				96E409851F24F7370015A2B5 /* MatchPreprocessor.swift in Sources */,
+				965FE9931FE43DE10098BDD0 /* MotionTransition+UINavigationControllerDelegate.swift in Sources */,
 				96E409861F24F7370015A2B5 /* MotionPreprocessor.swift in Sources */,
 				96E409821F24F7370015A2B5 /* CascadePreprocessor.swift in Sources */,
 				96E4096C1F24F7370015A2B5 /* Motion+CALayer.swift in Sources */,
@@ -365,6 +376,7 @@
 				96E4097E1F24F7370015A2B5 /* MotionSnapshotType.swift in Sources */,
 				965FE9691FDDA1F20098BDD0 /* MotionViewOrderStrategy.swift in Sources */,
 				965FE97A1FE1D83D0098BDD0 /* MotionTransition.swift in Sources */,
+				965FE98D1FE334E10098BDD0 /* MotionTransition+UIViewControllerTransitioningDelegate.swift in Sources */,
 				96E409871F24F7370015A2B5 /* SourcePreprocessor.swift in Sources */,
 				96E409701F24F7370015A2B5 /* Motion+UIKit.swift in Sources */,
 				965FE9771FE0976F0098BDD0 /* ConditionalPreprocessor.swift in Sources */,

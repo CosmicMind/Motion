@@ -74,9 +74,9 @@ internal class MotionCoreAnimationViewContext: MotionAnimatorViewContext {
         let targetState = viewState(targetState: state)
         
         for (key, targetValue) in targetState {
-            if nil == state[key] {
+            if nil == self.state[key] {
                 let current = currentValue(for: key)
-                state[key] = (current, current)
+                self.state[key] = (current, current)
             }
             
             let oldAnimations = animations

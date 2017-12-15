@@ -53,7 +53,7 @@ public enum MotionTransitionAnimationType {
     indirect case selectBy(presenting: MotionTransitionAnimationType, dismissing: MotionTransitionAnimationType)
 
     /**
-     Sets the presenting and dismissing transitions.
+     Sets the presenting and dismissing modifiers.
      - Parameter presenting: A MotionTransitionAnimationType.
      - Returns: A MotionTransitionAnimationType.
     */
@@ -253,7 +253,7 @@ class TransitionPreprocessor: MotionCorePreprocessor {
             
             context[tv]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: true)),
                                              .shadow(opacity: 0),
-                                             .beginWith(transitions: shadowState),
+                                             .beginWith(modifiers: shadowState),
                                              .timingFunction(.deceleration)])
 
             context[fv]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: false) / 3),
@@ -265,7 +265,7 @@ class TransitionPreprocessor: MotionCorePreprocessor {
 
             context[fv]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: false)),
                                              .shadow(opacity: 0),
-                                             .beginWith(transitions: shadowState)])
+                                             .beginWith(modifiers: shadowState)])
 
             context[tv]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: true) / 3),
                                              .overlay(color: .black, opacity: 0.1)])
@@ -285,7 +285,7 @@ class TransitionPreprocessor: MotionCorePreprocessor {
             
             context[tv]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: true)),
                                              .shadow(opacity: 0),
-                                             .beginWith(transitions: shadowState),
+                                             .beginWith(modifiers: shadowState),
                                              .timingFunction(.deceleration)])
 
             context[fv]!.append(contentsOf: [.overlay(color: .black, opacity: 0.1),
@@ -296,7 +296,7 @@ class TransitionPreprocessor: MotionCorePreprocessor {
 
             context[fv]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: false)),
                                              .shadow(opacity: 0),
-                                             .beginWith(transitions: shadowState)])
+                                             .beginWith(modifiers: shadowState)])
 
             context[tv]!.append(contentsOf: [.overlay(color: .black, opacity: 0.1)])
 
@@ -305,7 +305,7 @@ class TransitionPreprocessor: MotionCorePreprocessor {
             
             context[tv]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: true)),
                                              .shadow(opacity: 0),
-                                             .beginWith(transitions: shadowState),
+                                             .beginWith(modifiers: shadowState),
                                              .timingFunction(.deceleration)])
 
             context[fv]!.append(contentsOf: [.scale(0.7),
@@ -317,7 +317,7 @@ class TransitionPreprocessor: MotionCorePreprocessor {
 
             context[fv]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: false)),
                                              .shadow(opacity: 0),
-                                             .beginWith(transitions: shadowState)])
+                                             .beginWith(modifiers: shadowState)])
 
             context[tv]!.append(contentsOf: [.scale(0.7),
                                              .overlay(color: .black, opacity: 0.1)])

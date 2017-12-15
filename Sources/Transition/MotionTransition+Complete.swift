@@ -45,9 +45,9 @@ extension MotionTransition {
             return
         }
         
-        let totalTime = after / (isFinishing ? max((1 - elapsedTime), 0.01) : max(elapsedTime, 0.01))
+        let totalTime = after / (isFinishing ? max((1 - progress), 0.01) : max(progress, 0.01))
         
-        progressRunner.start(timePassed: elapsedTime * totalTime, totalTime: totalTime, reverse: !isFinishing)
+        progressRunner.start(timePassed: progress * totalTime, totalTime: totalTime, reverse: !isFinishing)
     }
     
     /**
@@ -84,7 +84,7 @@ extension MotionTransition {
             animators.removeAll()
             plugins.removeAll()
             context = nil
-            elapsedTime = 0
+            progress = 0
             totalDuration = 0
             state = .possible
         }

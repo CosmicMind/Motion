@@ -40,12 +40,27 @@ extension MotionTransition {
         prepareViewFrame()
         prepareViewControllers()
         prepareSnapshotView()
+        preparePlugins()
         preparePreprocessors()
         prepareAnimators()
-        preparePlugins()
+        
+        for v in plugins {
+            preprocessors.append(v)
+            animators.append(v)
+        }
+        
         prepareTransitionContainer()
         prepareContainer()
         prepareContext()
+        
+        for v in preprocessors {
+            v.motion = self
+        }
+        
+        for v in animators {
+            v.motion = self
+        }
+        
         prepareViewHierarchy()
         prepareAnimatingViews()
         prepareToView()
@@ -83,14 +98,10 @@ fileprivate extension MotionTransition {
     
     /// Prepares the snapshot view, which hides any flashing that may occur.
     func prepareSnapshotView() {
-        guard let v = transitionContainer else {
-            return
-        }
-        
-        fullScreenSnapshot = v.window?.snapshotView(afterScreenUpdates: false) ?? fromView?.snapshotView(afterScreenUpdates: false)
+        fullScreenSnapshot = transitionContainer?.window?.snapshotView(afterScreenUpdates: false) ?? fromView?.snapshotView(afterScreenUpdates: false)
         
         if let snapshot = fullScreenSnapshot {
-            (v.window ?? v)?.addSubview(snapshot)
+            (transitionContainer?.window ?? transitionContainer)?.addSubview(snapshot)
         }
         
         if let v = fromViewController?.motionStoredSnapshot {
@@ -104,60 +115,35 @@ fileprivate extension MotionTransition {
         }
     }
     
+    /// Prepares the plugins.
+    func preparePlugins() {
+        plugins = MotionTransition.enabledPlugins.map {
+            return $0.init()
+        }
+    }
+    
     /// Prepares the preprocessors.
     func preparePreprocessors() {
-        for x in [IgnoreSubviewTransitionsPreprocessor(),
-                  ConditionalPreprocessor(),
-                  TransitionPreprocessor(),
-                  MatchPreprocessor(),
-                  SourcePreprocessor(),
-                  CascadePreprocessor()] as [MotionPreprocessor] {
-                preprocessors.append(x)
-        }
-        
-        for v in preprocessors {
-            v.motion = self
-        }
+        preprocessors = [IgnoreSubviewTransitionsPreprocessor(),
+                         ConditionalPreprocessor(),
+                         TransitionPreprocessor(),
+                         MatchPreprocessor(),
+                         SourcePreprocessor(),
+                         CascadePreprocessor()]
     }
     
     /// Prepares the animators.
     func prepareAnimators() {
-        animators.append(MotionTargetStateAnimator<MotionCoreAnimationViewContext>())
+        animators = [MotionTargetStateAnimator<MotionCoreAnimationViewContext>()]
         
         if #available(iOS 10, tvOS 10, *) {
             animators.append(MotionTargetStateAnimator<MotionViewPropertyViewContext>())
-        }
-        
-        for v in animators {
-            v.motion = self
-        }
-    }
-    
-    /// Prepares the plugins.
-    func preparePlugins() {
-        for x in MotionTransition.enabledPlugins.map({
-            return $0.init()
-        }) {
-            plugins.append(x)
-        }
-        
-        for plugin in plugins {
-            preprocessors.append(plugin)
-            animators.append(plugin)
         }
     }
     
     /// Prepares the transition container.
     func prepareTransitionContainer() {
-        guard let v = transitionContainer else {
-            return
-        }
-        
-        v.isUserInteractionEnabled = false
-        
-        // a view to hold all the animating views
-        container = UIView(frame: v.bounds)
-        v.addSubview(container!)
+        transitionContainer?.isUserInteractionEnabled = false
     }
     
     /// Prepares the view that holds all the animating views.
@@ -193,24 +179,16 @@ fileprivate extension MotionTransition {
         tv.updateConstraintsIfNeeded()
         tv.setNeedsLayout()
         tv.layoutIfNeeded()
+        
+        context.set(fromViews: fv.flattenedViewHierarchy, toViews: tv.flattenedViewHierarchy)
     }
     
     /// Prepares the view hierarchy.
     func prepareViewHierarchy() {
-        guard let fv = fromView else {
-            return
-        }
-        
-        guard let tv = toView else {
-            return
-        }
-        
-        context.set(fromViews: fv.flattenedViewHierarchy, toViews: tv.flattenedViewHierarchy)
-        
-        if (viewOrderStrategy == .auto &&
+        if (.auto == viewOrderStrategy &&
             !isPresenting &&
             !isTabBarController) ||
-            viewOrderStrategy == .sourceViewOnTop {
+            .sourceViewOnTop == viewOrderStrategy {
             context.insertToViewFirst = true
         }
     }
@@ -226,6 +204,8 @@ fileprivate extension MotionTransition {
             return false
         }
         
+        print("FROM PREPARED", animatingFromViews)
+        
         animatingToViews = context.toViews.filter { (view) -> Bool in
             for animator in animators {
                 if animator.canAnimate(view: view, isAppearing: true) {
@@ -234,6 +214,8 @@ fileprivate extension MotionTransition {
             }
             return false
         }
+        
+        print("TO PREPARED", animatingFromViews)
     }
     
     /// Prepares the to view.

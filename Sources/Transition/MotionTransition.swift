@@ -119,7 +119,7 @@ public protocol MotionViewControllerDelegate {
  #### Use the following methods for controlling the interactive transition:
  
  ```swift
- func update(progress:Double)
+ func update(progress: Double)
  func end()
  func cancel()
  func apply(transitions: [MotionTargetState], to view: UIView)
@@ -348,7 +348,7 @@ open class MotionTransition: NSObject {
     internal var fullScreenSnapshot: UIView?
     
     /// Progress of the current transition. 0 if no transition is happening.
-    public internal(set) var elapsedTime: TimeInterval = 0 {
+    public internal(set) var progress: TimeInterval = 0 {
         didSet {
             guard .animating == state else {
                 return
@@ -362,7 +362,7 @@ open class MotionTransition: NSObject {
                 updatePlugins()
             }
             
-            transitionContext?.updateInteractiveTransition(CGFloat(elapsedTime))
+            transitionContext?.updateInteractiveTransition(CGFloat(progress))
         }
     }
     
@@ -418,8 +418,8 @@ open class MotionTransition: NSObject {
 }
 
 extension MotionTransition: MotionProgressRunnerDelegate {
-    func update(elapsedTime: TimeInterval) {
-        self.elapsedTime = elapsedTime
+    func update(progress: TimeInterval) {
+        self.progress = progress
     }
 }
 
@@ -446,13 +446,13 @@ fileprivate extension MotionTransition {
         }
         
         for v in observers {
-            v.motion(transitionObserver: v, didUpdateWith: elapsedTime)
+            v.motion(transitionObserver: v, didUpdateWith: progress)
         }
     }
     
     /// Updates the animators.
     func updateAnimators() {
-        let t = elapsedTime * totalDuration
+        let t = progress * totalDuration
         for a in animators {
             a.seek(to: t)
         }
@@ -460,83 +460,9 @@ fileprivate extension MotionTransition {
     
     /// Updates the plugins.
     func updatePlugins() {
-        let t = elapsedTime * totalDuration
+        let t = progress * totalDuration
         for p in plugins where p.requirePerFrameCallback {
             p.seek(to: t)
-        }
-    }
-}
-
-public extension MotionTransition {
-    /**
-     Updates the elapsed time for the interactive transition.
-     - Parameter elapsedTime t: the current progress, must be between -1...1.
-     */
-    public func update(_ percentageComplete: TimeInterval) {
-        guard .animating == state else {
-            startingProgress = percentageComplete
-            return
-        }
-        
-        progressRunner.stop()
-        elapsedTime = Double(CGFloat(percentageComplete).clamp(0, 1))
-    }
-    
-    /**
-     Cancel the interactive transition.
-     Will stop the interactive transition and animate from the
-     current state to the **begining** state
-     - Parameter isAnimated: A boolean indicating if the completion is animated.
-     */
-    public func cancel(isAnimated: Bool = true) {
-        guard isTransitioning else {
-            return
-        }
-        
-        guard isAnimated else {
-            complete(isFinishing: false)
-            return
-        }
-        
-        var d: TimeInterval = 0
-        
-        for a in animators {
-            var t = elapsedTime
-            if t < 0 {
-                t = -t
-            }
-            
-            d = max(d, a.resume(at: t * totalDuration, isReversed: true))
-        }
-        
-        complete(after: d, isFinishing: false)
-    }
-    
-    /**
-     Override transition animations during an interactive animation.
-     
-     For example:
-     
-     Motion.shared.apply([.position(x:50, y:50)], to: view)
-     
-     will set the view's position to 50, 50
-     - Parameter modifiers: An Array of MotionModifier.
-     - Parameter to view: A UIView.
-     */
-    public func apply(modifiers: [MotionModifier], to view: UIView) {
-        guard .animating == state else {
-            return
-        }
-        
-        let targetState = MotionTargetState(modifiers: modifiers)
-        if let otherView = context.pairedView(for: view) {
-            for animator in animators {
-                animator.apply(state: targetState, to: otherView)
-            }
-        }
-        
-        for animator in self.animators {
-            animator.apply(state: targetState, to: view)
         }
     }
 }
@@ -594,30 +520,6 @@ public extension MotionTransition {
      */
     func setContainerBackgroundColorForNextTransition(_ color: UIColor) {
         containerBackgroundColor = color
-    }
-}
-
-public extension MotionTransition {
-    /**
-     A helper transition function.
-     - Parameter from: A UIViewController.
-     - Parameter to: A UIViewController.
-     - Parameter in view: A UIView.
-     - Parameter completion: An optional completion handler.
-     */
-    func transition(from: UIViewController, to: UIViewController, in view: UIView, completion: ((Bool) -> Void)? = nil) {
-        guard !isTransitioning else {
-            return
-        }
-        
-        state = .notified
-        isPresenting = true
-        transitionContainer = view
-        fromViewController = from
-        toViewController = to
-        completionCallback = completion
-        
-        start()
     }
 }
 

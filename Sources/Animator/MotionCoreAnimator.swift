@@ -46,9 +46,9 @@ class MotionCoreAnimator: MotionAnimator {
         return 0
     }
     
-    func seek(to elapsedTime: TimeInterval) {}
+    func seek(to progress: TimeInterval) {}
     
-    func resume(at elapsedTime: TimeInterval, isReversed: Bool) -> TimeInterval {
+    func resume(at progress: TimeInterval, isReversed: Bool) -> TimeInterval {
         return 0
     }
     

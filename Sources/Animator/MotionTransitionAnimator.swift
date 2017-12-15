@@ -101,30 +101,30 @@ internal class MotionTargetStateAnimator<T: MotionAnimatorViewContext>: MotionCo
     
     /**
      Moves the view's animation to the given elapsed time.
-     - Parameter to elapsedTime: A TimeInterval.
+     - Parameter to progress: A TimeInterval.
      */
-    override func seek(to elapsedTime: TimeInterval) {
+    override func seek(to progress: TimeInterval) {
         for v in viewToContexts.values {
-            v.seek(to: elapsedTime)
+            v.seek(to: progress)
         }
     }
     
     /**
      Resumes the animation with a given elapsed time and
      optional reversed boolean.
-     - Parameter at elapsedTime: A TimeInterval.
+     - Parameter at progress: A TimeInterval.
      - Parameter isReversed: A boolean to reverse the animation
      or not.
      */
-    override func resume(at elapsedTime: TimeInterval, isReversed: Bool) -> TimeInterval {
+    override func resume(at progress: TimeInterval, isReversed: Bool) -> TimeInterval {
         var duration: TimeInterval = 0
         
         for (_, v) in viewToContexts {
             if nil == v.targetState.duration {
-                v.duration = max(v.duration, v.snapshot.optimizedDuration(targetState: v.targetState) + elapsedTime)
+                v.duration = max(v.duration, v.snapshot.optimizedDuration(targetState: v.targetState) + progress)
             }
             
-            duration = max(duration, v.resume(at: elapsedTime, isReversed: isReversed))
+            duration = max(duration, v.resume(at: progress, isReversed: isReversed))
         }
         
         return duration

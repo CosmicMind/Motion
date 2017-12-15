@@ -26,13 +26,37 @@
  * THE SOFTWARE.
  */
 
-import Foundation
+import UIKit
 
-public protocol MotionTargetStateObserver {
+extension MotionTransition {
     /**
-     Executed when the elapsed time changes during a transition.
-     - Parameter transitionObserver: A MotionTargetStateObserver. 
-     - Parameter didUpdateWith progress: A TimeInterval.
+     A helper transition function.
+     - Parameter from: A UIViewController.
+     - Parameter to: A UIViewController.
+     - Parameter in view: A UIView.
+     - Parameter completion: An optional completion handler.
      */
-    func motion(transitionObserver: MotionTargetStateObserver, didUpdateWith progress: TimeInterval)
+    public func transition(from: UIViewController, to: UIViewController, in view: UIView, completion: ((Bool) -> Void)? = nil) {
+        guard !isTransitioning else {
+            return
+        }
+        
+        state = .notified
+        isPresenting = true
+        transitionContainer = view
+        fromViewController = from
+        toViewController = to
+        
+        completionCallback = { [weak self] in
+            guard let `self` = self else {
+                return
+            }
+            
+            completion?($0)
+            
+            self.state = .possible
+        }
+        
+        start()
+    }
 }

@@ -29,7 +29,7 @@
 import UIKit
 
 protocol MotionProgressRunnerDelegate: class {
-    func update(elapsedTime: TimeInterval)
+    func update(progress: TimeInterval)
     func complete(isFinishing: Bool)
 }
 
@@ -61,7 +61,7 @@ class MotionProgressRunner {
             return
         }
         
-        delegate?.update(elapsedTime: timePassed / duration)
+        delegate?.update(progress: timePassed / duration)
     }
     
     func start(timePassed: TimeInterval, totalTime: TimeInterval, reverse: Bool) {

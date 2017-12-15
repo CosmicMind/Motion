@@ -43,7 +43,7 @@ internal class MotionViewPropertyViewContext: MotionAnimatorViewContext {
         return view is UIVisualEffectView && nil != state.opacity
     }
 
-    override func resume(at elapsedTime: TimeInterval, isReversed: Bool) -> TimeInterval {
+    override func resume(at progress: TimeInterval, isReversed: Bool) -> TimeInterval {
         guard let visualEffectView = snapshot as? UIVisualEffectView else {
             return 0
         }
@@ -65,9 +65,9 @@ internal class MotionViewPropertyViewContext: MotionAnimatorViewContext {
         return duration
     }
 
-    override func seek(to elapsedTime: TimeInterval) {
+    override func seek(to progress: TimeInterval) {
         viewPropertyAnimator?.pauseAnimation()
-        viewPropertyAnimator?.fractionComplete = CGFloat(elapsedTime / duration)
+        viewPropertyAnimator?.fractionComplete = CGFloat(progress / duration)
     }
 
     override func clean() {

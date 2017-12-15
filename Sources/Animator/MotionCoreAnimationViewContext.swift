@@ -86,26 +86,26 @@ internal class MotionCoreAnimationViewContext: MotionAnimatorViewContext {
         }
     }
 
-    override func resume(at elapsedTime: TimeInterval, isReversed: Bool) -> TimeInterval {
+    override func resume(at progress: TimeInterval, isReversed: Bool) -> TimeInterval {
         for (key, (fromValue, toValue)) in state {
             state[key] = (currentValue(for: key), isReversed ? fromValue : toValue)
         }
         
         if isReversed {
-            if elapsedTime > targetState.delay + duration {
-                let backDelay = elapsedTime - (targetState.delay + duration)
+            if progress > targetState.delay + duration {
+                let backDelay = progress - (targetState.delay + duration)
                 return animate(delay: backDelay, duration: duration)
                 
-            } else if elapsedTime > targetState.delay {
-                return animate(delay: 0, duration: duration - elapsedTime - targetState.delay)
+            } else if progress > targetState.delay {
+                return animate(delay: 0, duration: duration - progress - targetState.delay)
             }
             
         } else {
-            if elapsedTime <= targetState.delay {
-                return animate(delay: targetState.delay - elapsedTime, duration: duration)
+            if progress <= targetState.delay {
+                return animate(delay: targetState.delay - progress, duration: duration)
             
-            } else if elapsedTime <= targetState.delay + duration {
-                let timePassedDelay = elapsedTime - targetState.delay
+            } else if progress <= targetState.delay + duration {
+                let timePassedDelay = progress - targetState.delay
                 return animate(delay: 0, duration: duration - timePassedDelay)
             }
         }
@@ -113,8 +113,8 @@ internal class MotionCoreAnimationViewContext: MotionAnimatorViewContext {
         return 0
     }
 
-    override func seek(to elapsedTime: TimeInterval) {
-        let timeOffset = CGFloat(elapsedTime - targetState.delay)
+    override func seek(to progress: TimeInterval) {
+        let timeOffset = CGFloat(progress - targetState.delay)
         
         for (layer, key, anim) in animations {
             anim.speed = 0

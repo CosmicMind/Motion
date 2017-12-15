@@ -53,18 +53,18 @@ public protocol MotionAnimator: class {
     
     /**
      Moves the view's animation to the given elapsed time.
-     - Parameter to elapsedTime: A TimeInterval.
+     - Parameter to progress: A TimeInterval.
      */
-    func seek(to elapsedTime: TimeInterval)
+    func seek(to progress: TimeInterval)
     
     /**
      Resumes the animation with a given elapsed time and
      optional reversed boolean.
-     - Parameter at elapsedTime: A TimeInterval.
+     - Parameter at progress: A TimeInterval.
      - Parameter isReversed: A boolean to reverse the animation
      or not.
      */
-    func resume(at elapsedTime: TimeInterval, isReversed: Bool) -> TimeInterval
+    func resume(at progress: TimeInterval, isReversed: Bool) -> TimeInterval
     
     /**
      Applies the given state to the given view.

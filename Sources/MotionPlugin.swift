@@ -101,9 +101,9 @@ class MotionPlugin: MotionCorePreprocessor, MotionAnimator {
    This method is called when an interactive animation is in place
    The plugin should pause the animation, and seek to the given progress
    - Parameters:
-     - elapsedTime: time of the animation to seek to.
+     - progress: time of the animation to seek to.
    */
-  open func seek(to elapsedTime: TimeInterval) {}
+  open func seek(to progress: TimeInterval) {}
 
   /**
    For supporting interactive animation only.
@@ -111,10 +111,10 @@ class MotionPlugin: MotionCorePreprocessor, MotionAnimator {
    This method is called when an interactive animation is ended
    The plugin should resume the animation.
    - Parameters:
-   - elapsedTime: will be the same value since last `seekTo`
+   - progress: will be the same value since last `seekTo`
    - reverse: a boolean value indicating whether or not the animation should reverse
    */
-  open func resume(at elapsedTime: TimeInterval, isReversed: Bool) -> TimeInterval { return 0 }
+  open func resume(at progress: TimeInterval, isReversed: Bool) -> TimeInterval { return 0 }
 
   /**
    For supporting interactive animation only.

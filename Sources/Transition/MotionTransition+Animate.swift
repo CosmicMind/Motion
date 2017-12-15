@@ -75,13 +75,10 @@ extension MotionTransition {
         // We don't want fromView to layout after our animation starts.
         // Therefore we kick off the layout beforehand
         fromView?.layoutIfNeeded()
-        
         for animator in animators {
             let duration = animator.animate(fromViews: animatingFromViews.filter {
-                print(animator.canAnimate(view: $0, isAppearing: false))
                 return animator.canAnimate(view: $0, isAppearing: false)
             }, toViews: animatingToViews.filter {
-                print(animator.canAnimate(view: $0, isAppearing: false))
                 return animator.canAnimate(view: $0, isAppearing: true)
             })
             
@@ -99,7 +96,7 @@ extension MotionTransition {
         } else if let startingProgress = startingProgress {
            update(startingProgress)
         } else if animatorWantsInteractive {
-            update(elapsedTime: 0)
+            update(0)
         } else {
             complete(after: totalDuration, isFinishing: true)
         }

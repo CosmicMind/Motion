@@ -35,8 +35,8 @@ class IgnoreSubviewTransitionsPreprocessor: MotionCorePreprocessor {
      - Parameter toViews: An Array of UIViews.
      */
     override func process(fromViews: [UIView], toViews: [UIView]) {
-        process(views:fromViews)
-        process(views:toViews)
+        process(views: fromViews)
+        process(views: toViews)
     }
 
     /**
@@ -49,7 +49,11 @@ class IgnoreSubviewTransitionsPreprocessor: MotionCorePreprocessor {
                 continue
             }
             
-            let parentView = v is UITableView ? v.subviews.get(0) ?? v : v
+            var parentView = v
+            
+            if v is UITableView, let wrapperView = v.subviews.get(0) {
+                parentView = wrapperView
+            }
 
             guard recursive else {
                 for subview in parentView.subviews {

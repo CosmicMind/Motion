@@ -88,24 +88,27 @@ class CascadePreprocessor: MotionCorePreprocessor {
      - Parameter views: An Array of UIViews.
      */
     func process(views: [UIView]) {
-        for view in views {
-            guard let (deltaTime, direction, delayMatchedViews) = context[view]?.cascade else { continue }
+        for v in views {
+            guard let (deltaTime, direction, delayMatchedViews) = context[v]?.cascade else {
+                continue
+            }
             
-            var parentView = view
-            if view is UITableView, let wrapperView = view.subviews.get(0) {
+            var parentView = v
+            
+            if v is UITableView, let wrapperView = v.subviews.get(0) {
                 parentView = wrapperView
             }
             
             let sortedSubviews = parentView.subviews.sorted(by: direction.comparator)
             
-            let initialDelay = context[view]!.delay
+            let initialDelay = context[v]!.delay
             let finalDelay = TimeInterval(sortedSubviews.count) * deltaTime + initialDelay
             
             for (i, subview) in sortedSubviews.enumerated() {
                 let delay = TimeInterval(i) * deltaTime + initialDelay
                 
                 func applyDelay(view: UIView) {
-                    if context.pairedView(for: view) == nil {
+                    if nil == context.pairedView(for: view) {
                         context[view]?.delay = delay
                         
                     } else if delayMatchedViews, let paired = context.pairedView(for: view) {

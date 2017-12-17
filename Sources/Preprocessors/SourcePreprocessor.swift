@@ -36,7 +36,7 @@ class SourcePreprocessor: MotionCorePreprocessor {
      */
     override func process(fromViews: [UIView], toViews: [UIView]) {
         for fv in fromViews {
-            guard let i = context[fv]?.motionIdentifier, let tv = context.destinationView(for: i) else {
+            guard let motionIdentifier = context[fv]?.motionIdentifier, let tv = context.destinationView(for: motionIdentifier) else {
                 continue
             }
             
@@ -61,6 +61,8 @@ fileprivate extension SourcePreprocessor {
      */
     func prepare(view: UIView, for targetView: UIView) {
         let targetPos = context.container.convert(targetView.layer.position, from: targetView.superview!)
+        let targetTransform = context.container.layer.flatTransformTo(layer: targetView.layer)
+        
         var state = context[view]!
 
         /**
@@ -68,23 +70,19 @@ fileprivate extension SourcePreprocessor {
          converted from the global container
          */
         state.coordinateSpace = .global
+        
+        state.position = targetPos
+        state.transform = targetTransform
 
         // Remove incompatible options.
-        state.position = targetPos
-        state.transform = nil
         state.size = nil
-        state.cornerRadius = nil
-
+        
         if view.bounds.size != targetView.bounds.size {
             state.size = targetView.bounds.size
         }
 
         if view.layer.cornerRadius != targetView.layer.cornerRadius {
             state.cornerRadius = targetView.layer.cornerRadius
-        }
-        
-        if view.layer.transform != targetView.layer.transform {
-            state.transform = targetView.layer.transform
         }
         
         if view.layer.shadowColor != targetView.layer.shadowColor {

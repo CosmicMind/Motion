@@ -182,12 +182,12 @@ class TransitionPreprocessor: MotionCorePreprocessor {
         guard let m = motion else {
             return
         }
-
-        guard let fv = m.fromView else {
+        
+        guard let tv = m.toView else {
             return
         }
 
-        guard let tv = m.toView else {
+        guard let fv = m.fromView else {
             return
         }
 
@@ -224,10 +224,10 @@ class TransitionPreprocessor: MotionCorePreprocessor {
                 defaultAnimation = .none
 
             } else if isNavigationController {
-                defaultAnimation = isPresenting ? .push(direction:.left) : .pull(direction:.right)
+                defaultAnimation = isPresenting ? .push(direction: .left) : .pull(direction: .right)
 
             } else if isTabBarController {
-                defaultAnimation = isPresenting ? .slide(direction:.left) : .slide(direction:.right)
+                defaultAnimation = isPresenting ? .slide(direction: .left) : .slide(direction: .right)
 
             } else {
                 defaultAnimation = .fade

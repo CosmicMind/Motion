@@ -294,9 +294,6 @@ open class MotionTransition: NSObject {
     /// An optional completion callback.
     internal var completionCallback: ((Bool) -> Void)?
     
-    /// A boolean indicating if the transition has finished.
-    internal var isFinishing = true
-    
     /// An Array of MotionPreprocessors used during a transition.
     internal lazy var preprocessors = [MotionPreprocessor]()
     
@@ -329,23 +326,14 @@ open class MotionTransition: NSObject {
         return toViewController?.view
     }
     
+    /// A reference to the MotionContext.
+    public internal(set) var context: MotionContext!
+    
     /// An Array of observers that are updated during a transition.
     internal var transitionObservers: [MotionTargetStateObserver]?
     
     /// Max duration used by MotionAnimators and MotionPlugins.
     public internal(set) var totalDuration: TimeInterval = 0
-    
-    /**
-     A UIViewControllerContextTransitioning object provided by UIKit, which
-     might be nil when isTransitioning. This happens when calling motionReplaceViewController
-     */
-    internal weak var transitionContext: UIViewControllerContextTransitioning?
-    
-    /// A reference to the MotionContext.
-    public internal(set) var context: MotionContext!
-    
-    /// A reference to a fullscreen snapshot.
-    internal var fullScreenSnapshot: UIView?
     
     /// Progress of the current transition. 0 if no transition is happening.
     public internal(set) var progress: TimeInterval = 0 {
@@ -374,6 +362,15 @@ open class MotionTransition: NSObject {
     }()
     
     /**
+     A UIViewControllerContextTransitioning object provided by UIKit, which
+     might be nil when isTransitioning. This happens when calling motionReplaceViewController
+     */
+    internal weak var transitionContext: UIViewControllerContextTransitioning?
+    
+    /// A reference to a fullscreen snapshot.
+    internal var fullScreenSnapshot: UIView?
+    
+    /**
      By default, Motion will always appear to be interactive to UIKit. This forces it to appear non-interactive.
      Used when doing a motionReplaceViewController within a UINavigationController, to fix a bug with
      UINavigationController.setViewControllers not able to handle interactive transitions.
@@ -393,22 +390,14 @@ open class MotionTransition: NSObject {
         return isNavigationController || isTabBarController
     }
     
-    /// Indicates whether the from view controller is full screen.
-    internal var fromOverFullScreen: Bool {
-        guard let v = fromViewController else {
-            return false
-        }
-        
-        return !isContainerController && (.overFullScreen == v.modalPresentationStyle || .overCurrentContext == v.modalPresentationStyle)
-    }
-    
     /// Indicates whether the to view controller is full screen.
     internal var toOverFullScreen: Bool {
-        guard let v = toViewController else {
-            return false
-        }
-        
-        return !isContainerController && (.overFullScreen == v.modalPresentationStyle || .overCurrentContext == v.modalPresentationStyle)
+        return !isContainerController && (toViewController?.modalPresentationStyle == .overFullScreen || toViewController?.modalPresentationStyle == .overCurrentContext)
+    }
+    
+    /// Indicates whether the from view controller is full screen.
+    internal var fromOverFullScreen: Bool {
+        return !isContainerController && (fromViewController?.modalPresentationStyle == .overFullScreen || fromViewController?.modalPresentationStyle == .overCurrentContext)
     }
     
     /// An initializer.
@@ -453,16 +442,16 @@ fileprivate extension MotionTransition {
     /// Updates the animators.
     func updateAnimators() {
         let t = progress * totalDuration
-        for a in animators {
-            a.seek(to: t)
+        for v in animators {
+            v.seek(to: t)
         }
     }
     
     /// Updates the plugins.
     func updatePlugins() {
         let t = progress * totalDuration
-        for p in plugins where p.requirePerFrameCallback {
-            p.seek(to: t)
+        for v in plugins where v.requirePerFrameCallback {
+            v.seek(to: t)
         }
     }
 }

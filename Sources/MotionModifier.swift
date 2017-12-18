@@ -44,12 +44,12 @@ public final class MotionModifier {
 public extension MotionModifier {
     /**
      Animates the view with a matching motion identifier.
-     - Parameter _ identifier: A String.
+     - Parameter _ motionIdentifier: A String.
      - Returns: A MotionModifier.
      */
-    static func motionIdentifier(_ identifier: String) -> MotionModifier {
+    static func source(_ motionIdentifier: String) -> MotionModifier {
         return MotionModifier {
-            $0.motionIdentifier = identifier
+            $0.motionIdentifier = motionIdentifier
         }
     }
     
@@ -150,10 +150,9 @@ public extension MotionModifier {
      */
     static func rotate(x: CGFloat = 0, y: CGFloat = 0, z: CGFloat = 0) -> MotionModifier {
         return MotionModifier {
-            var t = $0.transform ?? CATransform3DIdentity
-            t = CATransform3DRotate(t, CGFloat(Double.pi) * x / 180, 1, 0, 0)
-            t = CATransform3DRotate(t, CGFloat(Double.pi) * y / 180, 0, 1, 0)
-            $0.transform = CATransform3DRotate(t, CGFloat(Double.pi) * z / 180, 0, 0, 1)
+            $0.transform = CATransform3DRotate($0.transform ?? CATransform3DIdentity, x, 1, 0, 0)
+            $0.transform = CATransform3DRotate($0.transform!, y, 0, 1, 0)
+            $0.transform = CATransform3DRotate($0.transform!, z, 0, 0, 1)
         }
     }
     
@@ -261,6 +260,17 @@ public extension MotionModifier {
      - Returns: A MotionModifier.
      */
     static func fade(_ opacity: Double) -> MotionModifier {
+        return MotionModifier {
+            $0.opacity = opacity
+        }
+    }
+    
+    /**
+     Animates the view's current opacity to the given one.
+     - Parameter _ opacity: A Double.
+     - Returns: A MotionModifier.
+     */
+    static func opacity(_ opacity: Double) -> MotionModifier {
         return MotionModifier {
             $0.opacity = opacity
         }
@@ -390,7 +400,9 @@ public extension MotionModifier {
      Sets the view's animation duration to the longest
      running animation within a transition.
      */
-    static var preferredDurationMatchesLongest = MotionModifier.duration(.infinity)
+    static var durationMatchLongest = MotionModifier {
+        $0.duration = .infinity
+    }
     
     /**
      Delays the animation of a given view.
@@ -545,7 +557,7 @@ public extension MotionModifier {
      */
     static func beginWith(_ modifiers: [MotionModifier]) -> MotionModifier {
         return MotionModifier {
-            if $0.beginState == nil {
+            if nil == $0.beginState {
                 $0.beginState = []
             }
             

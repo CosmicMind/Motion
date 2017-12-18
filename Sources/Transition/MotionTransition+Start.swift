@@ -134,10 +134,10 @@ fileprivate extension MotionTransition {
     
     /// Prepares the animators.
     func prepareAnimators() {
-        animators = [MotionTargetStateAnimator<MotionCoreAnimationViewContext>()]
+        animators = [MotionCoreAnimator<MotionCoreAnimationViewContext>()]
         
         if #available(iOS 10, tvOS 10, *) {
-            animators.append(MotionTargetStateAnimator<MotionViewPropertyViewContext>())
+            animators.append(MotionCoreAnimator<MotionViewPropertyViewContext>())
         }
     }
     

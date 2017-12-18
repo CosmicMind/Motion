@@ -33,7 +33,6 @@
 		96E409651F24F7370015A2B5 /* MotionAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E4093D1F24F7370015A2B5 /* MotionAnimator.swift */; };
 		96E409661F24F7370015A2B5 /* MotionAnimatorViewContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E4093E1F24F7370015A2B5 /* MotionAnimatorViewContext.swift */; };
 		96E409671F24F7370015A2B5 /* MotionCoreAnimationViewContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E4093F1F24F7370015A2B5 /* MotionCoreAnimationViewContext.swift */; };
-		96E409691F24F7370015A2B5 /* MotionTransitionAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E409411F24F7370015A2B5 /* MotionTransitionAnimator.swift */; };
 		96E4096A1F24F7370015A2B5 /* MotionViewPropertyViewContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E409421F24F7370015A2B5 /* MotionViewPropertyViewContext.swift */; };
 		96E4096B1F24F7370015A2B5 /* Motion+Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E409441F24F7370015A2B5 /* Motion+Array.swift */; };
 		96E4096C1F24F7370015A2B5 /* Motion+CALayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E409451F24F7370015A2B5 /* Motion+CALayer.swift */; };
@@ -64,7 +63,6 @@
 		96E409891F24F7570015A2B5 /* MotionAnimator.swift in Headers */ = {isa = PBXBuildFile; fileRef = 96E4093D1F24F7370015A2B5 /* MotionAnimator.swift */; settings = {ATTRIBUTES = (Public, ); }; };
 		96E4098A1F24F7570015A2B5 /* MotionAnimatorViewContext.swift in Headers */ = {isa = PBXBuildFile; fileRef = 96E4093E1F24F7370015A2B5 /* MotionAnimatorViewContext.swift */; settings = {ATTRIBUTES = (Public, ); }; };
 		96E4098B1F24F7570015A2B5 /* MotionCoreAnimationViewContext.swift in Headers */ = {isa = PBXBuildFile; fileRef = 96E4093F1F24F7370015A2B5 /* MotionCoreAnimationViewContext.swift */; settings = {ATTRIBUTES = (Public, ); }; };
-		96E4098D1F24F7570015A2B5 /* MotionTransitionAnimator.swift in Headers */ = {isa = PBXBuildFile; fileRef = 96E409411F24F7370015A2B5 /* MotionTransitionAnimator.swift */; settings = {ATTRIBUTES = (Public, ); }; };
 		96E4098E1F24F7570015A2B5 /* MotionViewPropertyViewContext.swift in Headers */ = {isa = PBXBuildFile; fileRef = 96E409421F24F7370015A2B5 /* MotionViewPropertyViewContext.swift */; settings = {ATTRIBUTES = (Public, ); }; };
 		96E4098F1F24F7570015A2B5 /* Motion+Array.swift in Headers */ = {isa = PBXBuildFile; fileRef = 96E409441F24F7370015A2B5 /* Motion+Array.swift */; settings = {ATTRIBUTES = (Public, ); }; };
 		96E409901F24F7570015A2B5 /* Motion+CALayer.swift in Headers */ = {isa = PBXBuildFile; fileRef = 96E409451F24F7370015A2B5 /* Motion+CALayer.swift */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -112,7 +110,6 @@
 		96E4093D1F24F7370015A2B5 /* MotionAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionAnimator.swift; sourceTree = "<group>"; };
 		96E4093E1F24F7370015A2B5 /* MotionAnimatorViewContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionAnimatorViewContext.swift; sourceTree = "<group>"; };
 		96E4093F1F24F7370015A2B5 /* MotionCoreAnimationViewContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionCoreAnimationViewContext.swift; sourceTree = "<group>"; };
-		96E409411F24F7370015A2B5 /* MotionTransitionAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionTransitionAnimator.swift; sourceTree = "<group>"; };
 		96E409421F24F7370015A2B5 /* MotionViewPropertyViewContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionViewPropertyViewContext.swift; sourceTree = "<group>"; };
 		96E409441F24F7370015A2B5 /* Motion+Array.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Motion+Array.swift"; sourceTree = "<group>"; };
 		96E409451F24F7370015A2B5 /* Motion+CALayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Motion+CALayer.swift"; sourceTree = "<group>"; };
@@ -210,7 +207,6 @@
 				965FE96C1FDDA6400098BDD0 /* MotionCoreAnimator.swift */,
 				96E4093E1F24F7370015A2B5 /* MotionAnimatorViewContext.swift */,
 				96E4093F1F24F7370015A2B5 /* MotionCoreAnimationViewContext.swift */,
-				96E409411F24F7370015A2B5 /* MotionTransitionAnimator.swift */,
 				96E409421F24F7370015A2B5 /* MotionViewPropertyViewContext.swift */,
 			);
 			path = Animator;
@@ -257,7 +253,6 @@
 				96E409891F24F7570015A2B5 /* MotionAnimator.swift in Headers */,
 				96E4098A1F24F7570015A2B5 /* MotionAnimatorViewContext.swift in Headers */,
 				96E4098B1F24F7570015A2B5 /* MotionCoreAnimationViewContext.swift in Headers */,
-				96E4098D1F24F7570015A2B5 /* MotionTransitionAnimator.swift in Headers */,
 				96E4098E1F24F7570015A2B5 /* MotionViewPropertyViewContext.swift in Headers */,
 				96E4098F1F24F7570015A2B5 /* Motion+Array.swift in Headers */,
 				96E409901F24F7570015A2B5 /* Motion+CALayer.swift in Headers */,
@@ -370,7 +365,6 @@
 				96E409781F24F7370015A2B5 /* MotionCAAnimation.swift in Sources */,
 				96E409811F24F7370015A2B5 /* MotionTargetState.swift in Sources */,
 				96E409801F24F7370015A2B5 /* MotionTransitionObserver.swift in Sources */,
-				96E409691F24F7370015A2B5 /* MotionTransitionAnimator.swift in Sources */,
 				96E409651F24F7370015A2B5 /* MotionAnimator.swift in Sources */,
 				96E409671F24F7370015A2B5 /* MotionCoreAnimationViewContext.swift in Sources */,
 				96E4096D1F24F7370015A2B5 /* Motion+CAMediaTimingFunction.swift in Sources */,

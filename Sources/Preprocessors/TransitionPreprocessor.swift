@@ -336,8 +336,8 @@ class TransitionPreprocessor: MotionCorePreprocessor {
                 }
             #endif
 
-            context[tv]!.append(.preferredDurationMatchesLongest)
-            context[fv]!.append(.preferredDurationMatchesLongest)
+            context[tv]!.append(.durationMatchLongest)
+            context[fv]!.append(.durationMatchLongest)
 
         case .zoom:
             context.insertToViewFirst = true

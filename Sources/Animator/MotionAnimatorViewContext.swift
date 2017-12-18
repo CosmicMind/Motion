@@ -30,7 +30,7 @@ import UIKit
 
 internal class MotionAnimatorViewContext {
     /// An optional reference to a MotionAnimator.
-    var animator: MotionCoreAnimator?
+    var animator: MotionAnimator?
     
     /// A reference to the snapshot UIView.
     var snapshot: UIView
@@ -51,7 +51,7 @@ internal class MotionAnimatorViewContext {
     
     /// A container view for the transition.
     var container: UIView? {
-        return animator?.context.container
+        return animator?.motion.context.container
     }
 
     /**
@@ -61,7 +61,7 @@ internal class MotionAnimatorViewContext {
      - Parameter targetState: A MotionModifier.
      - Parameter isAppearing: A Boolean.
      */
-    required init(animator: MotionCoreAnimator, snapshot: UIView, targetState: MotionTargetState, isAppearing: Bool) {
+    required init(animator: MotionAnimator, snapshot: UIView, targetState: MotionTargetState, isAppearing: Bool) {
         self.animator = animator
         self.snapshot = snapshot
         self.targetState = targetState

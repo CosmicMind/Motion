@@ -29,9 +29,6 @@
 import UIKit
 
 public class MotionContext {
-    /// Inserts the toViews first.
-    internal var insertToViewFirst = false
-    
     /// A reference of motion identifiers to source views.
     internal var motionIdentifierToSourceView = [String: UIView]()
     
@@ -49,6 +46,9 @@ public class MotionContext {
     
     /// A reference of the superview to the subviews snapshots.
     internal var superviewToNoSnapshotSubviewMap = [UIView: [(Int, UIView)]]()
+    
+    /// Inserts the toViews first.
+    internal var insertToViewFirst = false
     
     /// A reference to the default coordinate space for transitions.
     internal var defaultCoordinateSpace = MotionCoordinateSpace.local
@@ -81,8 +81,8 @@ internal extension MotionContext {
         self.fromViews = fromViews
         self.toViews = toViews
         
-        map(views: fromViews, identifierMap: &motionIdentifierToSourceView)
-        map(views: toViews, identifierMap: &motionIdentifierToDestinationView)
+        process(views: fromViews, identifierMap: &motionIdentifierToSourceView)
+        process(views: toViews, identifierMap: &motionIdentifierToDestinationView)
     }
     
     /**
@@ -90,7 +90,7 @@ internal extension MotionContext {
      - Parameter views: An Array of UIViews.
      - Parameter identifierMap: A Dicionary of String to UIView pairs.
      */
-    func map(views: [UIView], identifierMap: inout [String: UIView]) {
+    func process(views: [UIView], identifierMap: inout [String: UIView]) {
         for v in views {
             v.layer.removeAllAnimations()
             
@@ -156,12 +156,12 @@ public extension MotionContext {
      - Returns: An optional UIView.
      */
     func pairedView(for view: UIView) -> UIView? {
-        if let i = view.motionIdentifier {
-            if view == sourceView(for: i) {
-                return destinationView(for: i)
+        if let motionIdentifier = view.motionIdentifier {
+            if view == sourceView(for: motionIdentifier) {
+                return destinationView(for: motionIdentifier)
             
-            } else if view == destinationView(for: i) {
-                return sourceView(for: i)
+            } else if view == destinationView(for: motionIdentifier) {
+                return sourceView(for: motionIdentifier)
             }
         }
         
@@ -186,7 +186,7 @@ public extension MotionContext {
         case .local:
             containerView = view
             
-            while containerView != container, viewToSnapshot[containerView] == nil, let superview = containerView.superview {
+            while containerView != container, nil == viewToSnapshot[containerView], let superview = containerView.superview {
                 containerView = superview
             }
             
@@ -365,8 +365,8 @@ public extension MotionContext {
     /// Restores the transition subview map with its superview.
     func clean() {
         for (superview, subviews) in superviewToNoSnapshotSubviewMap {
-            for (index, view) in subviews.reversed() {
-                superview.insertSubview(view, at: index)
+            for (k, v) in subviews.reversed() {
+                superview.insertSubview(v, at: k)
             }
         }
     }
@@ -434,9 +434,11 @@ internal extension MotionContext {
 
     /// Removes all snapshots that are not using .useNoSnapshot.
     func removeAllSnapshots() {
-        for (k, v) in viewToSnapshot {
-            if k != v {
-                v.removeFromSuperview()
+        for (view, snapshot) in viewToSnapshot {
+            if view != snapshot {
+                snapshot.removeFromSuperview()
+            } else {
+                view.layer.removeAllAnimations()
             }
         }
     }
@@ -446,8 +448,12 @@ internal extension MotionContext {
      - Parameter rootView: A UIVIew.
      */
     func removeSnapshots(rootView: UIView) {
-        if let v = viewToSnapshot[rootView], v != rootView {
-            v.removeFromSuperview()
+        if let snapshot = viewToSnapshot[rootView] {
+            if rootView != snapshot {
+                snapshot.removeFromSuperview()
+            } else {
+                rootView.layer.removeAllAnimations()
+            }
         }
         
         for v in rootView.subviews {

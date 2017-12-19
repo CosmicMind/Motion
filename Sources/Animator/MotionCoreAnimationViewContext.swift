@@ -118,7 +118,7 @@ internal class MotionCoreAnimationViewContext: MotionAnimatorViewContext {
         
         for (layer, key, anim) in animations {
             anim.speed = 0
-            anim.timeOffset = CFTimeInterval(timeOffset.clamp(0, CGFloat(anim.duration) - 0.001))
+            anim.timeOffset = CFTimeInterval(timeOffset.clamp(0, CGFloat(anim.duration - 0.001)))
             layer.removeAnimation(forKey: key)
             layer.add(anim, forKey: key)
         }
@@ -360,8 +360,6 @@ fileprivate extension MotionCoreAnimationViewContext {
             addAnimation(anim, for: overlayKey, to: getOverlayLayer())
             
         } else {
-            snapshot.layer.add(anim, forKey: key)
-            
             switch key {
             case "cornerRadius", "contentsRect", "contentsScale":
                 addAnimation(anim, for: key, to: snapshot.layer)
@@ -375,21 +373,18 @@ fileprivate extension MotionCoreAnimationViewContext {
                 }
                 
             case "bounds.size":
-                guard let fs = (fromValue as? NSValue)?.cgSizeValue else {
-                    return 0
+                guard let fromSize = (fromValue as? NSValue)?.cgSizeValue, let toSize = (toValue as? NSValue)?.cgSizeValue else {
+                    addAnimation(anim, for: key, to: snapshot.layer)
+                    break
                 }
                 
-                guard let ts = (toValue as? NSValue)?.cgSizeValue else {
-                    return 0
-                }
-                
-                setSize(view: snapshot, newSize: fs)
+                setSize(view: snapshot, newSize: fromSize)
                 uiViewBasedAnimate(duration: anim.duration, delay: beginTime - currentTime) { [weak self] in
                     guard let `self` = self else {
                         return
                     }
                     
-                    self.setSize(view: self.snapshot, newSize: ts)
+                    self.setSize(view: self.snapshot, newSize: toSize)
                 }
                 
             default:

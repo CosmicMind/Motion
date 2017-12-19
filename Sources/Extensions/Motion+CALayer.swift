@@ -29,6 +29,7 @@ import UIKit
 extension CALayer: CAAnimationDelegate {}
 
 internal extension CALayer {
+    /// Swizzle the `add(_:forKey:) selector.
     internal static var motionAddedAnimations: [(CALayer, String, CAAnimation)]? = {
         let swizzling: (AnyClass, Selector, Selector) -> Void = { forClass, originalSelector, swizzledSelector in
             if let originalMethod = class_getInstanceMethod(forClass, originalSelector), let swizzledMethod = class_getInstanceMethod(forClass, swizzledSelector) {

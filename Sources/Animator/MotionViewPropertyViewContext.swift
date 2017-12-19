@@ -83,7 +83,7 @@ internal class MotionViewPropertyViewContext: MotionAnimatorViewContext {
         }
         
         let appearedEffect = visualEffectView.effect
-        let disappearedEffect = targetState.opacity == 0 ? nil : visualEffectView.effect
+        let disappearedEffect = 0 == targetState.opacity ? nil : visualEffectView.effect
         
         startEffect = isAppearing ? disappearedEffect : appearedEffect
         endEffect = isAppearing ? appearedEffect : disappearedEffect

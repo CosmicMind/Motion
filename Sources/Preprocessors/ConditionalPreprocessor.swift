@@ -47,11 +47,11 @@ public struct MotionConditionalContext {
     }
     
     public var isMatched: Bool {
-        return matchedView != nil
+        return nil != matchedView
     }
     
     public var isAncestorViewMatched: Bool {
-        return matchedAncestorView != nil
+        return nil != matchedAncestorView
     }
     
     public var matchedView: UIView? {
@@ -101,9 +101,9 @@ class ConditionalPreprocessor: MotionCorePreprocessor {
                 continue
             }
             
-            for (condition, transitions) in conditionalModifiers {
+            for (condition, modifiers) in conditionalModifiers {
                 if condition(MotionConditionalContext(motion: motion, view: v, isAppearing: isAppearing)) {
-                    context[v]!.append(contentsOf: transitions)
+                    context[v]!.append(contentsOf: modifiers)
                 }
             }
         }

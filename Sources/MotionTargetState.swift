@@ -29,6 +29,9 @@
 import UIKit
 
 public struct MotionTargetState {
+    /// The identifier value to match source and destination views.
+    public var motionIdentifier: String?
+    
     /// The initial state that the transition will start at.
     internal var beginState: [MotionModifier]?
     
@@ -105,9 +108,6 @@ public struct MotionTargetState {
 
     /// The arc curve value.
     public var arc: CGFloat?
-    
-    /// The identifier value to match source and destination views.
-    public var motionIdentifier: String?
     
     /// The cascading animation settings.
     public var cascade: (TimeInterval, CascadeDirection, Bool)?

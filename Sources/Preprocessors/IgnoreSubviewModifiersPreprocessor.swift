@@ -63,20 +63,20 @@ class IgnoreSubviewTransitionsPreprocessor: MotionCorePreprocessor {
                 continue
             }
             
-            cleanSubviewTransitions(for: parentView)
+            cleanSubviewModifiers(for: parentView)
         }
     }
 }
 
 fileprivate extension IgnoreSubviewTransitionsPreprocessor {
     /**
-     Clears the transition for a given view's subviews.
+     Clears the modifiers for a given view's subviews.
      - Parameter for view: A UIView.
      */
-    func cleanSubviewTransitions(for view: UIView) {
+    func cleanSubviewModifiers(for view: UIView) {
         for v in view.subviews {
             context[v] = nil
-            cleanSubviewTransitions(for: v)
+            cleanSubviewModifiers(for: v)
         }
     }
 }

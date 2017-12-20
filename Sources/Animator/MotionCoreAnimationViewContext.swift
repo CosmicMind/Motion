@@ -277,6 +277,7 @@ fileprivate extension MotionCoreAnimationViewContext {
                 }
             } else {
                 let sizeRatio = oldSize / newSize
+                
                 for v in view.subviews {
                     let center = v.center
                     let size = v.bounds.size

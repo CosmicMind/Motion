@@ -44,7 +44,7 @@ class SourcePreprocessor: MotionCorePreprocessor {
         }
         
         for tv in toViews {
-            guard let i = context[tv]?.motionIdentifier, let fv = context.sourceView(for: i) else {
+            guard let motionIdentifier = context[tv]?.motionIdentifier, let fv = context.sourceView(for: motionIdentifier) else {
                 continue
             }
             

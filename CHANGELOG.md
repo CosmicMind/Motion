@@ -1,3 +1,7 @@
+## 1.3.0
+
+* Reworked Motion internals.
+
 ## 1.2.5
 
 * `UIViewController.motionModalTransitionType` renamed to `UIViewController.motionTransitionType`.

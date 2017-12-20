@@ -133,25 +133,26 @@ extension UIViewController {
             }
             
             if value {
-                transitioningDelegate = Motion.shared
+                transitioningDelegate = MotionTransition.shared
+                
                 if let v = self as? UINavigationController {
                     previousNavigationDelegate = v.delegate
-                    v.delegate = Motion.shared
+                    v.delegate = MotionTransition.shared
                 }
                 
                 if let v = self as? UITabBarController {
                     previousTabBarDelegate = v.delegate
-                    v.delegate = Motion.shared
+                    v.delegate = MotionTransition.shared
                 }
                 
             } else {
                 transitioningDelegate = nil
                 
-                if let v = self as? UINavigationController, v.delegate is Motion {
+                if let v = self as? UINavigationController, v.delegate is MotionTransition {
                     v.delegate = previousNavigationDelegate
                 }
                 
-                if let v = self as? UITabBarController, v.delegate is Motion {
+                if let v = self as? UITabBarController, v.delegate is MotionTransition {
                     v.delegate = previousTabBarDelegate
                 }
             }
@@ -270,7 +271,7 @@ extension UIViewController {
             // UIKit's UIViewController.dismiss will jump to target.presentedViewController then perform the dismiss.
             // We overcome this behavior by inserting a snapshot into target.presentedViewController
             // And also force Hero to use the current VC as the fromViewController
-            Motion.shared.fromViewController = fvc
+            MotionTransition.shared.fromViewController = fvc
             
             let snapshotView = fvc.view.snapshotView(afterScreenUpdates: true)!
             let targetSuperview = tvc.presentedViewController!.view!
@@ -291,7 +292,9 @@ extension UIViewController {
      - Parameter with next: A UIViewController.
      */
     public func motionReplaceViewController(with next: UIViewController) {
-        guard !Motion.shared.isTransitioning else {
+        let motion = next.transitioningDelegate as? MotionTransition ?? MotionTransition.shared
+        
+        guard !motion.isTransitioning else {
             print("motionReplaceViewController cancelled because Motion was doing a transition. Use Motion.shared.cancel(animated: false) or Motion.shared.end(animated: false) to stop the transition first before calling motionReplaceViewController.")
             return
         }
@@ -305,19 +308,19 @@ extension UIViewController {
             }
 
             if nc.isMotionEnabled {
-                Motion.shared.forceNonInteractive = true
+                motion.forceNonInteractive = true
             }
 
             nc.setViewControllers(v, animated: true)
         } else if let container = view.superview {
             let presentingVC = presentingViewController
 
-            Motion.shared.transition(from: self, to: next, in: container) { [weak self] (isFinishing) in
+            motion.transition(from: self, to: next, in: container) { [weak self] (isFinishing) in
                 guard isFinishing else {
                     return
                 }
 
-                UIApplication.shared.keyWindow?.addSubview(next.view)
+                next.view.window?.addSubview(next.view)
 
                 guard let pvc = presentingVC else {
                     UIApplication.shared.keyWindow?.rootViewController = next

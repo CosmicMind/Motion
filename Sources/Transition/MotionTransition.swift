@@ -125,14 +125,9 @@ public protocol MotionViewControllerDelegate {
  func apply(transitions: [MotionTargetState], to view: UIView)
  ```
  */
-import UIKit
-
-public class Motion: NSObject {
-    /// Shared singleton object for controlling the transition
-    public static let shared = MotionTransition()
-}
-
 public typealias MotionCancelBlock = (Bool) -> Void
+
+public class Motion: NSObject {}
 
 extension Motion {
     /**
@@ -241,6 +236,9 @@ public enum MotionTransitionState: Int {
 }
 
 open class MotionTransition: NSObject {
+    /// Shared singleton object for controlling the transition
+    public static let shared = MotionTransition()
+    
     /// Default animation type.
     internal var defaultAnimation = MotionTransitionAnimationType.auto
     

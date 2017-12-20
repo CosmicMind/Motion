@@ -53,14 +53,6 @@ extension MotionTransition {
         prepareContainer()
         prepareContext()
         
-        for v in preprocessors {
-            v.motion = self
-        }
-        
-        for v in animators {
-            v.motion = self
-        }
-        
         prepareViewHierarchy()
         prepareAnimatingViews()
         prepareToView()
@@ -100,8 +92,8 @@ fileprivate extension MotionTransition {
     func prepareSnapshotView() {
         fullScreenSnapshot = transitionContainer?.window?.snapshotView(afterScreenUpdates: false) ?? fromView?.snapshotView(afterScreenUpdates: false)
         
-        if let snapshot = fullScreenSnapshot {
-            (transitionContainer?.window ?? transitionContainer)?.addSubview(snapshot)
+        if let v = fullScreenSnapshot {
+            (transitionContainer?.window ?? transitionContainer)?.addSubview(v)
         }
         
         if let v = fromViewController?.motionStoredSnapshot {
@@ -143,7 +135,7 @@ fileprivate extension MotionTransition {
     
     /// Prepares the transition container.
     func prepareTransitionContainer() {
-        transitionContainer?.isUserInteractionEnabled = false
+        transitionContainer?.isUserInteractionEnabled = isUserInteractionEnabled
     }
     
     /// Prepares the view that holds all the animating views.
@@ -161,11 +153,19 @@ fileprivate extension MotionTransition {
     func prepareContext() {
         context = MotionContext(container: container)
         
-        guard let fv = fromView else {
-            return
+        for v in preprocessors {
+            v.motion = self
+        }
+        
+        for v in animators {
+            v.motion = self
         }
         
         guard let tv = toView else {
+            return
+        }
+        
+        guard let fv = fromView else {
             return
         }
         
@@ -185,11 +185,13 @@ fileprivate extension MotionTransition {
     
     /// Prepares the view hierarchy.
     func prepareViewHierarchy() {
-        if (.auto == viewOrderStrategy &&
-            !isPresenting &&
-            !isTabBarController) ||
+        if (.auto == viewOrderStrategy && !isPresenting && !isTabBarController) ||
             .sourceViewOnTop == viewOrderStrategy {
             context.insertToViewFirst = true
+        }
+        
+        for v in preprocessors {
+            v.process(fromViews: context.fromViews, toViews: context.toViews)
         }
     }
     
@@ -204,8 +206,6 @@ fileprivate extension MotionTransition {
             return false
         }
         
-        print("FROM PREPARED", animatingFromViews)
-        
         animatingToViews = context.toViews.filter { (view) -> Bool in
             for animator in animators {
                 if animator.canAnimate(view: view, isAppearing: true) {
@@ -214,8 +214,6 @@ fileprivate extension MotionTransition {
             }
             return false
         }
-        
-        print("TO PREPARED", animatingFromViews)
     }
     
     /// Prepares the to view.

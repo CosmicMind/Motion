@@ -402,6 +402,27 @@ open class MotionTransition: NSObject {
     internal override init() {
         super.init()
     }
+    
+    /**
+     Complete the transition.
+     - Parameter after: A TimeInterval.
+     - Parameter isFinishing: A Boolean indicating if the transition
+     has completed.
+     */
+    func complete(after: TimeInterval, isFinishing: Bool) {
+        guard [MotionTransitionState.animating, .starting, .notified].contains(state) else {
+            return
+        }
+        
+        if after <= 1.0 / 120 {
+            complete(isFinishing: isFinishing)
+            return
+        }
+        
+        let duration = after / (isFinishing ? max((1 - progress), 0.01) : max(progress, 0.01))
+        
+        progressRunner.start(progress: progress * duration, duration: duration, isReversed: !isFinishing)
+    }
 }
 
 extension MotionTransition: MotionProgressRunnerDelegate {
@@ -529,12 +550,12 @@ internal extension MotionTransition {
         tvc.beginAppearanceTransition(true, animated: true)
         
         processForMotionDelegate(viewController: fvc) { [weak self] in
-            guard let s = self else {
+            guard let `self` = self else {
                 return
             }
             
-            $0.motion?(motion: s, willStartTransitionTo: tvc)
-            $0.motionWillStartTransition?(motion: s)
+            $0.motion?(motion: self, willStartTransitionTo: tvc)
+            $0.motionWillStartTransition?(motion: self)
         }
         
         processForMotionDelegate(viewController: tvc) { [weak self] in
@@ -566,21 +587,21 @@ internal extension MotionTransition {
         fvc.endAppearanceTransition()
         
         processForMotionDelegate(viewController: fvc) { [weak self] in
-            guard let s = self else {
+            guard let `self` = self else {
                 return
             }
             
-            $0.motion?(motion: s, didEndTransitionTo: tvc)
-            $0.motionDidEndTransition?(motion: s)
+            $0.motion?(motion: self, didEndTransitionTo: tvc)
+            $0.motionDidEndTransition?(motion: self)
         }
         
         processForMotionDelegate(viewController: tvc) { [weak self] in
-            guard let s = self else {
+            guard let `self` = self else {
                 return
             }
             
-            $0.motion?(motion: s, didEndTransitionFrom: fvc)
-            $0.motionDidEndTransition?(motion: s)
+            $0.motion?(motion: self, didEndTransitionFrom: fvc)
+            $0.motionDidEndTransition?(motion: self)
         }
         
         transitionContext?.finishInteractiveTransition()
@@ -605,21 +626,21 @@ internal extension MotionTransition {
         fvc.endAppearanceTransition()
         
         processForMotionDelegate(viewController: fvc) { [weak self] in
-            guard let s = self else {
+            guard let `self` = self else {
                 return
             }
             
-            $0.motion?(motion: s, didCancelTransitionTo: tvc)
-            $0.motionDidCancelTransition?(motion: s)
+            $0.motion?(motion: self, didCancelTransitionTo: tvc)
+            $0.motionDidCancelTransition?(motion: self)
         }
         
         processForMotionDelegate(viewController: tvc) { [weak self] in
-            guard let s = self else {
+            guard let `self` = self else {
                 return
             }
             
-            $0.motion?(motion: s, didCancelTransitionFrom: fvc)
-            $0.motionDidCancelTransition?(motion: s)
+            $0.motion?(motion: self, didCancelTransitionFrom: fvc)
+            $0.motionDidCancelTransition?(motion: self)
         }
         
         transitionContext?.finishInteractiveTransition()

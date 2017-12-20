@@ -31,27 +31,6 @@ import UIKit
 extension MotionTransition {
     /**
      Complete the transition.
-     - Parameter after: A TimeInterval.
-     - Parameter isFinishing: A Boolean indicating if the transition
-     has completed.
-     */
-    func complete(after: TimeInterval, isFinishing: Bool) {
-        guard [MotionTransitionState.animating, .starting, .notified].contains(state) else {
-            return
-        }
-        
-        if after <= 1.0 / 120 {
-            complete(isFinishing: isFinishing)
-            return
-        }
-        
-        let totalTime = after / (isFinishing ? max((1 - progress), 0.01) : max(progress, 0.01))
-        
-        progressRunner.start(timePassed: progress * totalTime, totalTime: totalTime, reverse: !isFinishing)
-    }
-    
-    /**
-     Complete the transition.
      - Parameter isFinishing: A Boolean indicating if the transition
      has completed.
      */

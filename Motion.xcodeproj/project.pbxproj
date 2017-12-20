@@ -145,6 +145,7 @@
 		965FE9781FE1D8120098BDD0 /* Transition */ = {
 			isa = PBXGroup;
 			children = (
+				965FE9641FDCCE910098BDD0 /* MotionProgressRunner.swift */,
 				965FE9791FE1D83D0098BDD0 /* MotionTransition.swift */,
 				965FE9661FDD99800098BDD0 /* MotionTransition+Start.swift */,
 				965FE96E1FDEFA8B0098BDD0 /* MotionTransition+Animate.swift */,
@@ -181,7 +182,6 @@
 				96E409BC1F24FC300015A2B5 /* LICENSE */,
 				96E4094F1F24F7370015A2B5 /* Motion.h */,
 				965FE9681FDDA1F20098BDD0 /* MotionViewOrderStrategy.swift */,
-				965FE9641FDCCE910098BDD0 /* MotionProgressRunner.swift */,
 				96E409511F24F7370015A2B5 /* MotionAnimation.swift */,
 				96E409521F24F7370015A2B5 /* MotionAnimationState.swift */,
 				96E409531F24F7370015A2B5 /* MotionCAAnimation.swift */,

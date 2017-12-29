@@ -1,3 +1,7 @@
+## 1.3.1
+
+* Updated isMotionEnabled check, as it was determined incorrectly. 
+
 ## 1.3.0
 
 * Reworked Motion internals.

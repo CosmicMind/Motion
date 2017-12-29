@@ -124,9 +124,8 @@ extension UIViewController {
     @IBInspectable
     public var isMotionEnabled: Bool {
         get {
-            return transitioningDelegate is Motion
+            return transitioningDelegate is MotionTransition
         }
-        
         set(value) {
             guard value != isMotionEnabled else {
                 return

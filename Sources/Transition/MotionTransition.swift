@@ -546,9 +546,6 @@ internal extension MotionTransition {
             return
         }
         
-        fvc.beginAppearanceTransition(false, animated: true)
-        tvc.beginAppearanceTransition(true, animated: true)
-        
         processForMotionDelegate(viewController: fvc) { [weak self] in
             guard let `self` = self else {
                 return
@@ -582,9 +579,6 @@ internal extension MotionTransition {
         guard let tvc = toViewController else {
             return
         }
-        
-        tvc.endAppearanceTransition()
-        fvc.endAppearanceTransition()
         
         processForMotionDelegate(viewController: fvc) { [weak self] in
             guard let `self` = self else {
@@ -621,9 +615,6 @@ internal extension MotionTransition {
         guard let tvc = toViewController else {
             return
         }
-        
-        tvc.endAppearanceTransition()
-        fvc.endAppearanceTransition()
         
         processForMotionDelegate(viewController: fvc) { [weak self] in
             guard let `self` = self else {

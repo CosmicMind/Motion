@@ -1,3 +1,7 @@
+## 1.3.2
+
+* Fixed unbalanced calls in Motion transitions.
+
 ## 1.3.1
 
 * Updated isMotionEnabled check, as it was determined incorrectly. 

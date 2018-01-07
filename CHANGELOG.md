@@ -1,3 +1,7 @@
+## 1.3.3
+
+* [issue-24](https://github.com/CosmicMind/Motion/issues/24): Fixed regression where view lifecycle functions were not being called.
+
 ## 1.3.2
 
 * Fixed unbalanced calls in Motion transitions.

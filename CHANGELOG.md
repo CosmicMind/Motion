@@ -1,3 +1,7 @@
+## 1.3.4
+
+* [issue-1022](https://github.com/CosmicMind/Material/issues/1022): Fixed alpha issue, where alpha was being set to 1 and not respecting the initial set alpha value.
+
 ## 1.3.3
 
 * [issue-24](https://github.com/CosmicMind/Motion/issues/24): Fixed regression where view lifecycle functions were not being called.

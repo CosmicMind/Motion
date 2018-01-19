@@ -55,7 +55,7 @@ fileprivate extension UIView {
     fileprivate var associatedInstance: AssociatedInstance {
         get {
             return AssociatedObject.get(base: self, key: &AssociatedInstanceKey) {
-                return AssociatedInstance(isEnabled: true, isEnabledForSubviews: true, identifier: nil, animations: nil, modifiers: nil, alpha: 1)
+                return AssociatedInstance(isEnabled: true, isEnabledForSubviews: true, identifier: nil, animations: nil, modifiers: nil, alpha: nil)
             }
         }
         set(value) {

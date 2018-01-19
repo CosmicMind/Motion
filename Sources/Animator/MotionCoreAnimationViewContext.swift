@@ -40,7 +40,11 @@ internal class MotionCoreAnimationViewContext: MotionAnimatorViewContext {
     
     /// Layer which holds the content.
     fileprivate var contentLayer: CALayer? {
-        return snapshot.layer.sublayers?.get(0)
+        let firstLayer = snapshot.layer.sublayers?.get(0)
+        if firstLayer?.bounds == snapshot.bounds {
+            return firstLayer
+        }
+        return nil
     }
     
     /// Layer which holds the overlay.
@@ -316,7 +320,8 @@ fileprivate extension MotionCoreAnimationViewContext {
                     anim.damping = damping
                     self.addAnimation(anim, for: key, to: layer)
                 } else {
-                    self.animations.append((layer, key, anim))
+                    layer.removeAnimation(forKey: key)
+                    addAnimation(anim, for: key, to: layer)
                 }
             }
             
@@ -324,11 +329,16 @@ fileprivate extension MotionCoreAnimationViewContext {
             CATransaction.begin()
             CATransaction.setAnimationTimingFunction(timingFunction)
             UIView.animate(withDuration: duration, delay: delay, options: [], animations: animations, completion: nil)
-            CATransaction.commit()
-            
+
             let addedAnimations = CALayer.motionAddedAnimations!
             CALayer.motionAddedAnimations = nil
-            self.animations.append(contentsOf: addedAnimations)
+            
+            for (layer, key, anim) in addedAnimations {
+                layer.removeAnimation(forKey: key)
+                self.addAnimation(anim, for: key, to: layer)
+            }
+            
+            CATransaction.commit()
         }
     }
     
@@ -339,8 +349,9 @@ fileprivate extension MotionCoreAnimationViewContext {
      - Parameter to layer: A CALayer.
      */
     func addAnimation(_ animation: CAAnimation, for key: String, to layer: CALayer) {
-        animations.append((layer, key, animation))
-        layer.add(animation, forKey: key)
+        let motionAnimationKey = "motion.\(key)"
+        animations.append((layer, motionAnimationKey, animation))
+        layer.add(animation, forKey: motionAnimationKey)
     }
     
     /**

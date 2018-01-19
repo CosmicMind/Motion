@@ -44,10 +44,13 @@ internal extension CALayer {
     
     @objc
     dynamic func motionAdd(anim: CAAnimation, forKey: String?) {
-        let copiedAnim = anim.copy() as! CAAnimation
-        copiedAnim.delegate = nil // having delegate resulted some weird animation behavior
-        CALayer.motionAddedAnimations?.append((self, forKey!, copiedAnim))
-        motionAdd(anim: anim, forKey: forKey)
+        if nil == CALayer.motionAddedAnimations {
+            motionAdd(anim: anim, forKey: forKey)
+        } else {
+            let copiedAnim = anim.copy() as! CAAnimation
+            copiedAnim.delegate = nil // having delegate resulted some weird animation behavior
+            CALayer.motionAddedAnimations?.append((self, forKey!, copiedAnim))
+        }
     }
     
     /// Retrieves all currently running animations for the layer.
@@ -76,6 +79,17 @@ internal extension CALayer {
         }
         
         return t
+    }
+    
+    /// Removes all Motion animations.
+    func removeAllMotionAnimations() {
+        guard let keys = animationKeys() else {
+            return
+        }
+        
+        for animationKey in keys where animationKey.hasPrefix("motion.") {
+            removeAnimation(forKey: animationKey)
+        }
     }
 }
 

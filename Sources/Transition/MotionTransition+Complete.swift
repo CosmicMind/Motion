@@ -125,6 +125,12 @@ extension MotionTransition {
         
         completionCallback?(isFinishing)
         
+        if isFinishing {
+            toViewController?.tabBarController?.tabBar.layer.removeAllAnimations()
+        } else {
+            fromViewController?.tabBarController?.tabBar.layer.removeAllAnimations()
+        }
+        
         let tContext = transitionContext
         let fvc = fromViewController
         let tvc = toViewController

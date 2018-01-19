@@ -92,7 +92,7 @@ internal extension MotionContext {
      */
     func process(views: [UIView], identifierMap: inout [String: UIView]) {
         for v in views {
-            v.layer.removeAllAnimations()
+            v.layer.removeAllMotionAnimations()
             
             let targetState: MotionTargetState?
             
@@ -438,7 +438,7 @@ internal extension MotionContext {
             if view != snapshot {
                 snapshot.removeFromSuperview()
             } else {
-                view.layer.removeAllAnimations()
+                view.layer.removeAllMotionAnimations()
             }
         }
     }
@@ -452,7 +452,7 @@ internal extension MotionContext {
             if rootView != snapshot {
                 snapshot.removeFromSuperview()
             } else {
-                rootView.layer.removeAllAnimations()
+                rootView.layer.removeAllMotionAnimations()
             }
         }
         

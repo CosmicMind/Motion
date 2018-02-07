@@ -89,7 +89,7 @@ motionNavigationTransitionType = .autoReverse(presenting: .zoom)
 
 Motion provides the building blocks necessary to create stunning animations without much effort. Motion's animation API will make maintenance a breeze and changes even easier. To create an animation, use the **animate** method of a view or layer and pass in a list of MotionAnimation structs. MotionAnimation structs are configurable values that describe how to animate a property or group of properties.
 
-| Background Color | Corder Radius | Fade | Rotate | Size | Spring |
+| Background Color | Corner Radius | Fade | Rotate | Size | Spring |
 |:---:|:---:|:---:|:---:|:---:|:---:|
 | ![Background Color](http://www.cosmicmind.com/motion/animations/background_color.gif) | ![Corner Radius](http://www.cosmicmind.com/motion/animations/corner_radius.gif) | ![Fade](http://www.cosmicmind.com/motion/animations/fade.gif) | ![Rotate](http://www.cosmicmind.com/motion/animations/rotate.gif) | ![Size](http://www.cosmicmind.com/motion/animations/size.gif) | ![Spring](http://www.cosmicmind.com/motion/animations/spring.gif) |
 

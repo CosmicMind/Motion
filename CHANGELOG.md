@@ -1,3 +1,7 @@
+## 1.3.5
+
+* [issue-26](https://github.com/CosmicMind/Motion/issues/26): Fixed typo. 
+
 ## 1.3.4
 
 * [issue-1022](https://github.com/CosmicMind/Material/issues/1022): Fixed alpha issue, where alpha was being set to 1 and not respecting the initial set alpha value.

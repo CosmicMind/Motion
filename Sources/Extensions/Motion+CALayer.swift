@@ -199,7 +199,7 @@ fileprivate extension CALayer {
             ts = ts,
             completion = completion] in
             
-            guard let s = self else {
+            guard let `self` = self else {
                 return
             }
 
@@ -208,31 +208,31 @@ fileprivate extension CALayer {
             
             if let v = ts.backgroundColor {
                 let a = MotionCAAnimation.background(color: UIColor(cgColor: v))
-                a.fromValue = s.backgroundColor
+                a.fromValue = self.backgroundColor
                 anims.append(a)
             }
             
             if let v = ts.borderColor {
                 let a = MotionCAAnimation.border(color: UIColor(cgColor: v))
-                a.fromValue = s.borderColor
+                a.fromValue = self.borderColor
                 anims.append(a)
             }
             
             if let v = ts.borderWidth {
                 let a = MotionCAAnimation.border(width: v)
-                a.fromValue = NSNumber(floatLiteral: Double(s.borderWidth))
+                a.fromValue = NSNumber(floatLiteral: Double(self.borderWidth))
                 anims.append(a)
             }
             
             if let v = ts.cornerRadius {
                 let a = MotionCAAnimation.corner(radius: v)
-                a.fromValue = NSNumber(floatLiteral: Double(s.cornerRadius))
+                a.fromValue = NSNumber(floatLiteral: Double(self.cornerRadius))
                 anims.append(a)
             }
             
             if let v = ts.transform {
                 let a = MotionCAAnimation.transform(v)
-                a.fromValue = NSValue(caTransform3D: s.transform)
+                a.fromValue = NSValue(caTransform3D: self.transform)
                 anims.append(a)
             }
             
@@ -252,55 +252,55 @@ fileprivate extension CALayer {
             
             if let v = ts.position {
                 let a = MotionCAAnimation.position(v)
-                a.fromValue = NSValue(cgPoint: s.position)
+                a.fromValue = NSValue(cgPoint: self.position)
                 anims.append(a)
             }
             
             if let v = ts.opacity {
                 let a = MotionCAAnimation.fade(v)
-                a.fromValue = s.value(forKeyPath: MotionAnimationKeyPath.opacity.rawValue) ?? NSNumber(floatLiteral: 1)
+                a.fromValue = self.value(forKeyPath: MotionAnimationKeyPath.opacity.rawValue) ?? NSNumber(floatLiteral: 1)
                 anims.append(a)
             }
             
             if let v = ts.zPosition {
                 let a = MotionCAAnimation.zPosition(v)
-                a.fromValue = s.value(forKeyPath: MotionAnimationKeyPath.zPosition.rawValue) ?? NSNumber(floatLiteral: 0)
+                a.fromValue = self.value(forKeyPath: MotionAnimationKeyPath.zPosition.rawValue) ?? NSNumber(floatLiteral: 0)
                 anims.append(a)
             }
             
             if let v = ts.size {
                 let a = MotionCAAnimation.size(v)
-                a.fromValue = NSValue(cgSize: s.bounds.size)
+                a.fromValue = NSValue(cgSize: self.bounds.size)
                 anims.append(a)
             }
 
             if let v = ts.shadowPath {
                 let a = MotionCAAnimation.shadow(path: v)
-                a.fromValue = s.shadowPath
+                a.fromValue = self.shadowPath
                 anims.append(a)
             }
             
             if let v = ts.shadowColor {
                 let a = MotionCAAnimation.shadow(color: UIColor(cgColor: v))
-                a.fromValue = s.shadowColor
+                a.fromValue = self.shadowColor
                 anims.append(a)
             }
             
             if let v = ts.shadowOffset {
                 let a = MotionCAAnimation.shadow(offset: v)
-                a.fromValue = NSValue(cgSize: s.shadowOffset)
+                a.fromValue = NSValue(cgSize: self.shadowOffset)
                 anims.append(a)
             }
 
             if let v = ts.shadowOpacity {
                 let a = MotionCAAnimation.shadow(opacity: v)
-                a.fromValue = NSNumber(floatLiteral: Double(s.shadowOpacity))
+                a.fromValue = NSNumber(floatLiteral: Double(self.shadowOpacity))
                 anims.append(a)
             }
             
             if let v = ts.shadowRadius {
                 let a = MotionCAAnimation.shadow(radius: v)
-                a.fromValue = NSNumber(floatLiteral: Double(s.shadowRadius))
+                a.fromValue = NSNumber(floatLiteral: Double(self.shadowRadius))
                 anims.append(a)
             }
             
@@ -326,7 +326,7 @@ fileprivate extension CALayer {
             g.isRemovedOnCompletion = false
             g.timingFunction = ts.timingFunction
             
-            s.animate(g)
+            self.animate(g)
             
             if let v = ts.completion {
                 Motion.delay(duration, execute: v)

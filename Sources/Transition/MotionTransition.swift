@@ -559,12 +559,12 @@ internal extension MotionTransition {
         }
         
         processForMotionDelegate(viewController: tvc) { [weak self] in
-            guard let s = self else {
+            guard let `self` = self else {
                 return
             }
             
-            $0.motion?(motion: s, willStartTransitionFrom: fvc)
-            $0.motionWillStartTransition?(motion: s)
+            $0.motion?(motion: self, willStartTransitionFrom: fvc)
+            $0.motionWillStartTransition?(motion: self)
         }
     }
     

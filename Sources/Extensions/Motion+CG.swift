@@ -29,120 +29,120 @@
 import MetalKit
 
 public extension CGSize {
-    /// THe center point based on width and height.
-    var center: CGPoint {
-        return CGPoint(x: width / 2, y: height / 2)
-    }
-    
-    /// Top left point based on the size.
-    var topLeft: CGPoint {
-        return .zero
-    }
-    
-    /// Top right point based on the size.
-    var topRight: CGPoint {
-        return CGPoint(x: width, y: 0)
-    }
-    
-    /// Bottom left point based on the size.
-    var bottomLeftPoint: CGPoint {
-        return CGPoint(x: 0, y: height)
-    }
-    
-    /// Bottom right point based on the size.
-    var bottomRight: CGPoint {
-        return CGPoint(x: width, y: height)
-    }
-    
-    /**
-     Retrieves the size based on a given CGAffineTransform.
-     - Parameter _ t: A CGAffineTransform.
-     - Returns: A CGSize.
-     */
-    func transform(_ t: CGAffineTransform) -> CGSize {
-        return applying(t)
-    }
-    
-    /**
-     Retrieves the size based on a given CATransform3D.
-     - Parameter _ t: A CGAffineTransform.
-     - Returns: A CGSize.
-     */
-    func transform(_ t: CATransform3D) -> CGSize {
-        return applying(CATransform3DGetAffineTransform(t))
-    }
+  /// THe center point based on width and height.
+  var center: CGPoint {
+    return CGPoint(x: width / 2, y: height / 2)
+  }
+  
+  /// Top left point based on the size.
+  var topLeft: CGPoint {
+    return .zero
+  }
+  
+  /// Top right point based on the size.
+  var topRight: CGPoint {
+    return CGPoint(x: width, y: 0)
+  }
+  
+  /// Bottom left point based on the size.
+  var bottomLeftPoint: CGPoint {
+    return CGPoint(x: 0, y: height)
+  }
+  
+  /// Bottom right point based on the size.
+  var bottomRight: CGPoint {
+    return CGPoint(x: width, y: height)
+  }
+  
+  /**
+   Retrieves the size based on a given CGAffineTransform.
+   - Parameter _ t: A CGAffineTransform.
+   - Returns: A CGSize.
+   */
+  func transform(_ t: CGAffineTransform) -> CGSize {
+    return applying(t)
+  }
+  
+  /**
+   Retrieves the size based on a given CATransform3D.
+   - Parameter _ t: A CGAffineTransform.
+   - Returns: A CGSize.
+   */
+  func transform(_ t: CATransform3D) -> CGSize {
+    return applying(CATransform3DGetAffineTransform(t))
+  }
 }
 
 public extension CGRect {
-    /// A center point based on the origin and size values.
-    var center: CGPoint {
-        return CGPoint(x: origin.x + width / 2, y: origin.y + height / 2)
-    }
-    
-    /// The bounding box size based from from the frame's rect.
-    var bounds: CGRect {
-        return CGRect(origin: .zero, size: size)
-    }
-    
-    /**
-     An initializer with a given point and size.
-     - Parameter center: A CGPoint.
-     - Parameter size: A CGSize.
-     */
-    init(center: CGPoint, size: CGSize) {
-        self.init(x: center.x - size.width / 2, y: center.y - size.height / 2, width: size.width, height: size.height)
-    }
+  /// A center point based on the origin and size values.
+  var center: CGPoint {
+    return CGPoint(x: origin.x + width / 2, y: origin.y + height / 2)
+  }
+  
+  /// The bounding box size based from from the frame's rect.
+  var bounds: CGRect {
+    return CGRect(origin: .zero, size: size)
+  }
+  
+  /**
+   An initializer with a given point and size.
+   - Parameter center: A CGPoint.
+   - Parameter size: A CGSize.
+   */
+  init(center: CGPoint, size: CGSize) {
+    self.init(x: center.x - size.width / 2, y: center.y - size.height / 2, width: size.width, height: size.height)
+  }
 }
 
 public extension CGFloat {
-    /**
-     Calculates the limiting position to an area.
-     - Parameter _ a: A CGFloat.
-     - Parameter _ b: A CGFloat.
-     - Returns: A CGFloat.
-     */
-    func clamp(_ a: CGFloat, _ b: CGFloat) -> CGFloat {
-        return self < a ? a : self > b ? b : self
-    }
+  /**
+   Calculates the limiting position to an area.
+   - Parameter _ a: A CGFloat.
+   - Parameter _ b: A CGFloat.
+   - Returns: A CGFloat.
+   */
+  func clamp(_ a: CGFloat, _ b: CGFloat) -> CGFloat {
+    return self < a ? a : self > b ? b : self
+  }
 }
 
 public extension CGPoint {
-    /**
-     Calculates a translation point based on the origin value.
-     - Parameter _ dx: A CGFloat.
-     - Parameter _ dy: A CGFloat.
-     - Returns: A CGPoint.
-     */
-    func translate(_ dx: CGFloat, dy: CGFloat) -> CGPoint {
-        return CGPoint(x: x + dx, y: y + dy)
-    }
-    
-    /**
-     Calculates a transform point based on a given CGAffineTransform.
-     - Parameter _ t: CGAffineTransform.
-     - Returns: A CGPoint.
-     */
-    func transform(_ t: CGAffineTransform) -> CGPoint {
-        return applying(t)
-    }
-    
-    /**
-     Calculates a transform point based on a given CATransform3D.
-     - Parameter _ t: CATransform3D.
-     - Returns: A CGPoint.
-     */
-    func transform(_ t: CATransform3D) -> CGPoint {
-        return applying(CATransform3DGetAffineTransform(t))
-    }
-    
-    /**
-     Calculates the distance between the CGPoint and given CGPoint.
-     - Parameter _ b: A CGPoint.
-     - Returns: A CGFloat.
-     */
-    func distance(_ b: CGPoint) -> CGFloat {
-        return sqrt(pow(x - b.x, 2) + pow(y - b.y, 2))
-    }
+  /**
+   Calculates a translation point based on the origin value.
+   - Parameter _ dx: A CGFloat.
+   - Parameter _ dy: A CGFloat.
+   - Returns: A CGPoint.
+   */
+  func translate(_ dx: CGFloat, dy: CGFloat) -> CGPoint {
+    return CGPoint(x: x + dx, y: y + dy)
+  }
+  
+  /**
+   Calculates a transform point based on a given CGAffineTransform.
+   - Parameter _ t: CGAffineTransform.
+   - Returns: A CGPoint.
+   */
+  func transform(_ t: CGAffineTransform) -> CGPoint {
+    return applying(t)
+  }
+  
+  /**
+   Calculates a transform point based on a given CATransform3D.
+   - Parameter _ t: CATransform3D.
+   - Returns: A CGPoint.
+   */
+  func transform(_ t: CATransform3D) -> CGPoint {
+    return applying(CATransform3DGetAffineTransform(t))
+  }
+  
+  /**
+   Calculates the distance between the CGPoint and given CGPoint.
+   - Parameter _ b: A CGPoint.
+   - Returns: A CGFloat.
+   */
+  func distance(_ b: CGPoint) -> CGFloat {
+    return sqrt(pow(x - b.x, 2) + pow(y - b.y, 2))
+  }
 }
 
 /**
@@ -152,7 +152,7 @@ public extension CGPoint {
  - Returns: A CGPoint.
  */
 public func + (left: CGPoint, right: CGPoint) -> CGPoint {
-    return CGPoint(x: left.x + right.x, y: left.y + right.y)
+  return CGPoint(x: left.x + right.x, y: left.y + right.y)
 }
 
 /**
@@ -162,7 +162,7 @@ public func + (left: CGPoint, right: CGPoint) -> CGPoint {
  - Returns: A CGPoint.
  */
 public func - (left: CGPoint, right: CGPoint) -> CGPoint {
-    return CGPoint(x: left.x - right.x, y: left.y - right.y)
+  return CGPoint(x: left.x - right.x, y: left.y - right.y)
 }
 
 /**
@@ -172,7 +172,7 @@ public func - (left: CGPoint, right: CGPoint) -> CGPoint {
  - Returns: A CGPoint.
  */
 public func / (left: CGPoint, right: CGFloat) -> CGPoint {
-    return CGPoint(x: left.x / right, y: left.y / right)
+  return CGPoint(x: left.x / right, y: left.y / right)
 }
 
 /**
@@ -182,7 +182,7 @@ public func / (left: CGPoint, right: CGFloat) -> CGPoint {
  - Returns: A CGPoint.
  */
 public func / (left: CGPoint, right: CGPoint) -> CGPoint {
-    return CGPoint(x: left.x / right.x, y: left.y / right.y)
+  return CGPoint(x: left.x / right.x, y: left.y / right.y)
 }
 
 /**
@@ -192,7 +192,7 @@ public func / (left: CGPoint, right: CGPoint) -> CGPoint {
  - Returns: A CGPoint.
  */
 public func / (left: CGPoint, right: CGSize) -> CGPoint {
-    return CGPoint(x: left.x / right.width, y: left.y / right.height)
+  return CGPoint(x: left.x / right.width, y: left.y / right.height)
 }
 
 /**
@@ -202,7 +202,7 @@ public func / (left: CGPoint, right: CGSize) -> CGPoint {
  - Returns: A CGSize.
  */
 public func / (left: CGSize, right: CGSize) -> CGSize {
-    return CGSize(width: left.width / right.width, height: left.height / right.height)
+  return CGSize(width: left.width / right.width, height: left.height / right.height)
 }
 
 /**
@@ -212,7 +212,7 @@ public func / (left: CGSize, right: CGSize) -> CGSize {
  - Returns: A CGPoint.
  */
 public func * (left: CGPoint, right: CGFloat) -> CGPoint {
-    return CGPoint(x: left.x * right, y: left.y * right)
+  return CGPoint(x: left.x * right, y: left.y * right)
 }
 
 /**
@@ -222,7 +222,7 @@ public func * (left: CGPoint, right: CGFloat) -> CGPoint {
  - Returns: A CGPoint.
  */
 public func * (left: CGPoint, right: CGSize) -> CGPoint {
-    return CGPoint(x: left.x * right.width, y: left.y * right.width)
+  return CGPoint(x: left.x * right.width, y: left.y * right.width)
 }
 
 /**
@@ -232,7 +232,7 @@ public func * (left: CGPoint, right: CGSize) -> CGPoint {
  - Returns: A CGPoint.
  */
 public func * (left: CGFloat, right: CGPoint) -> CGPoint {
-    return right * left
+  return right * left
 }
 
 /**
@@ -242,7 +242,7 @@ public func * (left: CGFloat, right: CGPoint) -> CGPoint {
  - Returns: A CGPoint.
  */
 public func * (left: CGPoint, right: CGPoint) -> CGPoint {
-    return CGPoint(x: left.x * right.x, y: left.y * right.y)
+  return CGPoint(x: left.x * right.x, y: left.y * right.y)
 }
 
 /**
@@ -252,7 +252,7 @@ public func * (left: CGPoint, right: CGPoint) -> CGPoint {
  - Returns: A CGSize.
  */
 public func * (left: CGSize, right: CGFloat) -> CGSize {
-    return CGSize(width: left.width * right, height: left.height * right)
+  return CGSize(width: left.width * right, height: left.height * right)
 }
 
 /**
@@ -262,7 +262,7 @@ public func * (left: CGSize, right: CGFloat) -> CGSize {
  - Returns: A CGSize.
  */
 public func * (left: CGSize, right: CGSize) -> CGSize {
-    return CGSize(width: left.width * right.width, height: left.height * right.height)
+  return CGSize(width: left.width * right.width, height: left.height * right.height)
 }
 
 /**
@@ -272,9 +272,9 @@ public func * (left: CGSize, right: CGSize) -> CGSize {
  - Returns: A Bool.
  */
 public func == (lhs: CATransform3D, rhs: CATransform3D) -> Bool {
-    var lhs = lhs
-    var rhs = rhs
-    return 0 == memcmp(&lhs, &rhs, MemoryLayout<CATransform3D>.size)
+  var lhs = lhs
+  var rhs = rhs
+  return 0 == memcmp(&lhs, &rhs, MemoryLayout<CATransform3D>.size)
 }
 
 /**
@@ -284,7 +284,7 @@ public func == (lhs: CATransform3D, rhs: CATransform3D) -> Bool {
  - Returns: A Bool.
  */
 public func != (lhs: CATransform3D, rhs: CATransform3D) -> Bool {
-    return !(lhs == rhs)
+  return !(lhs == rhs)
 }
 
 /**
@@ -293,7 +293,7 @@ public func != (lhs: CATransform3D, rhs: CATransform3D) -> Bool {
  - Returns: A CGPoint.
  */
 public prefix func - (point: CGPoint) -> CGPoint {
-    return .zero - point
+  return .zero - point
 }
 
 /**
@@ -302,5 +302,5 @@ public prefix func - (point: CGPoint) -> CGPoint {
  - Returns: A CGPoint.
  */
 public func abs(_ p: CGPoint) -> CGPoint {
-    return CGPoint(x: abs(p.x), y: abs(p.y))
+  return CGPoint(x: abs(p.x), y: abs(p.y))
 }

@@ -29,16 +29,16 @@
 import UIKit
 
 internal extension Array {
-    /**
-     Retrieves the element at the given index if it exists.
-     - Parameter _ index: An Int.
-     - Returns: An optional Element value.
-     */
-    func get(_ index: Int) -> Element? {
-        if index < count {
-            return self[index]
-        }
-        return nil
+  /**
+   Retrieves the element at the given index if it exists.
+   - Parameter _ index: An Int.
+   - Returns: An optional Element value.
+   */
+  func get(_ index: Int) -> Element? {
+    if index < count {
+      return self[index]
     }
+    return nil
+  }
 }
 

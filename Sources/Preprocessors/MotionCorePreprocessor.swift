@@ -29,13 +29,13 @@
 import UIKit
 
 class MotionCorePreprocessor: MotionPreprocessor {
-    weak public var motion: MotionTransition!
-    
-    /// A reference to the MotionContext.
-    public var context: MotionContext! {
-        return motion!.context
-    }
-    
-    func process(fromViews: [UIView], toViews: [UIView]) {}
+  weak public var motion: MotionTransition!
+  
+  /// A reference to the MotionContext.
+  public var context: MotionContext! {
+    return motion!.context
+  }
+  
+  func process(fromViews: [UIView], toViews: [UIView]) {}
 }
 

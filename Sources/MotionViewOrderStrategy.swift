@@ -28,8 +28,8 @@
 
 @objc(MotionViewOrderStrategy)
 public enum MotionViewOrderStrategy: Int {
-    case auto
-    case sourceViewOnTop
-    case destinationViewOnTop
+  case auto
+  case sourceViewOnTop
+  case destinationViewOnTop
 }
 

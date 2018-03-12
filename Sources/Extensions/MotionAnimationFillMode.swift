@@ -27,10 +27,10 @@ import UIKit
 
 @objc(MotionAnimationFillMode)
 public enum MotionAnimationFillMode: Int {
-    case forwards
-    case backwards
-    case both
-    case removed
+  case forwards
+  case backwards
+  case both
+  case removed
 }
 
 /**
@@ -38,14 +38,14 @@ public enum MotionAnimationFillMode: Int {
  - Parameter mode: An MotionAnimationFillMode enum value.
  */
 public func MotionAnimationFillModeToValue(mode: MotionAnimationFillMode) -> String {
-    switch mode {
-    case .forwards:
-        return kCAFillModeForwards
-    case .backwards:
-        return kCAFillModeBackwards
-    case .both:
-        return kCAFillModeBoth
-    case .removed:
-        return kCAFillModeRemoved
-    }
+  switch mode {
+  case .forwards:
+    return kCAFillModeForwards
+  case .backwards:
+    return kCAFillModeBackwards
+  case .both:
+    return kCAFillModeBoth
+  case .removed:
+    return kCAFillModeRemoved
+  }
 }

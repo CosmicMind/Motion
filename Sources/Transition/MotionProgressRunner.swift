@@ -29,55 +29,55 @@
 import UIKit
 
 protocol MotionProgressRunnerDelegate: class {
-    func update(progress: TimeInterval)
-    func complete(isFinishing: Bool)
+  func update(progress: TimeInterval)
+  func complete(isFinishing: Bool)
 }
 
 class MotionProgressRunner {
-    weak var delegate: MotionProgressRunnerDelegate?
+  weak var delegate: MotionProgressRunnerDelegate?
+  
+  var isRunning: Bool {
+    return nil != displayLink
+  }
+  
+  internal var progress: TimeInterval = 0
+  internal var duration: TimeInterval = 0
+  internal var displayLink: CADisplayLink?
+  internal var isReversed: Bool = false
+  
+  @objc
+  func displayUpdate(_ link: CADisplayLink) {
+    progress += isReversed ? -link.duration : link.duration
     
-    var isRunning: Bool {
-        return nil != displayLink
+    if isReversed, progress <= 1.0 / 120 {
+      delegate?.complete(isFinishing: false)
+      stop()
+      return
     }
     
-    internal var progress: TimeInterval = 0
-    internal var duration: TimeInterval = 0
-    internal var displayLink: CADisplayLink?
-    internal var isReversed: Bool = false
-    
-    @objc
-    func displayUpdate(_ link: CADisplayLink) {
-        progress += isReversed ? -link.duration : link.duration
-        
-        if isReversed, progress <= 1.0 / 120 {
-            delegate?.complete(isFinishing: false)
-            stop()
-            return
-        }
-        
-        if !isReversed, progress > duration - 1.0 / 120 {
-            delegate?.complete(isFinishing: true)
-            stop()
-            return
-        }
-        
-        delegate?.update(progress: progress / duration)
+    if !isReversed, progress > duration - 1.0 / 120 {
+      delegate?.complete(isFinishing: true)
+      stop()
+      return
     }
     
-    func start(progress: TimeInterval, duration: TimeInterval, isReversed: Bool) {
-        stop()
-        
-        self.progress = progress
-        self.isReversed = isReversed
-        self.duration = duration
-        
-        displayLink = CADisplayLink(target: self, selector: #selector(displayUpdate(_:)))
-        displayLink!.add(to: RunLoop.main, forMode: RunLoopMode(rawValue: RunLoopMode.commonModes.rawValue))
-    }
+    delegate?.update(progress: progress / duration)
+  }
+  
+  func start(progress: TimeInterval, duration: TimeInterval, isReversed: Bool) {
+    stop()
     
-    func stop() {
-        displayLink?.isPaused = true
-        displayLink?.remove(from: RunLoop.main, forMode: RunLoopMode(rawValue: RunLoopMode.commonModes.rawValue))
-        displayLink = nil
-    }
+    self.progress = progress
+    self.isReversed = isReversed
+    self.duration = duration
+    
+    displayLink = CADisplayLink(target: self, selector: #selector(displayUpdate(_:)))
+    displayLink!.add(to: RunLoop.main, forMode: RunLoopMode(rawValue: RunLoopMode.commonModes.rawValue))
+  }
+  
+  func stop() {
+    displayLink?.isPaused = true
+    displayLink?.remove(from: RunLoop.main, forMode: RunLoopMode(rawValue: RunLoopMode.commonModes.rawValue))
+    displayLink = nil
+  }
 }

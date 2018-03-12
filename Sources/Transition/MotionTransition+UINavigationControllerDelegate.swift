@@ -29,21 +29,21 @@
 import UIKit
 
 extension MotionTransition: UINavigationControllerDelegate {
-    public func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationControllerOperation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        guard !isTransitioning else {
-            return nil
-        }
-        
-        state = .notified
-        isPresenting = .push == operation
-        fromViewController = fromViewController ?? fromVC
-        toViewController = toViewController ?? toVC
-        isNavigationController = true
-        
-        return self
+  public func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationControllerOperation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+    guard !isTransitioning else {
+      return nil
     }
     
-    public func navigationController(_ navigationController: UINavigationController, interactionControllerFor animationController: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
-        return interactiveTransitioning
-    }
+    state = .notified
+    isPresenting = .push == operation
+    fromViewController = fromViewController ?? fromVC
+    toViewController = toViewController ?? toVC
+    isNavigationController = true
+    
+    return self
+  }
+  
+  public func navigationController(_ navigationController: UINavigationController, interactionControllerFor animationController: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
+    return interactiveTransitioning
+  }
 }

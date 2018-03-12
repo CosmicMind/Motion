@@ -29,34 +29,34 @@
 import UIKit
 
 extension MotionTransition: UITabBarControllerDelegate {
-    public func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
-        if isTransitioning {
-            cancel(isAnimated: false)
-        }
-        
-        return true
+  public func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
+    if isTransitioning {
+      cancel(isAnimated: false)
     }
     
-    public func tabBarController(_ tabBarController: UITabBarController, interactionControllerFor animationController: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
-        return interactiveTransitioning
+    return true
+  }
+  
+  public func tabBarController(_ tabBarController: UITabBarController, interactionControllerFor animationController: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
+    return interactiveTransitioning
+  }
+  
+  public func tabBarController(_ tabBarController: UITabBarController, animationControllerForTransitionFrom fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+    guard !isTransitioning else {
+      return nil
     }
     
-    public func tabBarController(_ tabBarController: UITabBarController, animationControllerForTransitionFrom fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        guard !isTransitioning else {
-            return nil
-        }
-        
-        state = .notified
-        
-        let fromVCIndex = tabBarController.childViewControllers.index(of: fromVC)!
-        let toVCIndex = tabBarController.childViewControllers.index(of: toVC)!
-        
-        isPresenting = toVCIndex > fromVCIndex
-        fromViewController = fromViewController ?? fromVC
-        toViewController = toViewController ?? toVC
-        isTabBarController = true
-        
-        return self
-    }
+    state = .notified
+    
+    let fromVCIndex = tabBarController.childViewControllers.index(of: fromVC)!
+    let toVCIndex = tabBarController.childViewControllers.index(of: toVC)!
+    
+    isPresenting = toVCIndex > fromVCIndex
+    fromViewController = fromViewController ?? fromVC
+    toViewController = toViewController ?? toVC
+    isTabBarController = true
+    
+    return self
+  }
 }
 

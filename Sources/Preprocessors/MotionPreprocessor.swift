@@ -30,7 +30,7 @@ import UIKit
 
 public protocol MotionPreprocessor: class {
   /// A reference to Motion.
-  weak var motion: MotionTransition! { get set }
+  var motion: MotionTransition! { get set }
   
   /**
    Processes the transitionary views.

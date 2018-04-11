@@ -83,7 +83,9 @@ public extension CGRect {
   var bounds: CGRect {
     return CGRect(origin: .zero, size: size)
   }
-  
+}
+
+internal extension CGRect {
   /**
    An initializer with a given point and size.
    - Parameter center: A CGPoint.

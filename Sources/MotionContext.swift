@@ -272,6 +272,7 @@ public extension MotionContext {
         } else {
           snapshot = view.snapshotView() ?? UIView()
         }
+      
       #endif
     }
     
@@ -279,6 +280,7 @@ public extension MotionContext {
       if let imageView = view as? UIImageView, imageView.adjustsImageWhenAncestorFocused {
         snapshot.frame = imageView.focusedFrameGuide.layoutFrame
       }
+    
     #endif
     
     view.layer.cornerRadius = oldCornerRadius

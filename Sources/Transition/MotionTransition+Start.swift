@@ -238,18 +238,18 @@ fileprivate extension MotionTransition {
   func processAnimation() {
     #if os(tvOS)
       animate()
-    
+
     #else
-    if isNavigationController {
-      // When animating within navigationController, we have to dispatch later into the main queue.
-      // otherwise snapshots will be pure white. Possibly a bug with UIKit
-      Motion.async { [weak self] in
-        self?.animate()
+      if isNavigationController {
+        // When animating within navigationController, we have to dispatch later into the main queue.
+        // otherwise snapshots will be pure white. Possibly a bug with UIKit
+        Motion.async { [weak self] in
+          self?.animate()
+        }
+        
+      } else {
+        animate()
       }
-      
-    } else {
-      animate()
-    }
     
     #endif
   }

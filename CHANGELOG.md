@@ -1,3 +1,7 @@
+## 1.4.0
+
+* Updated for Xcode 9.3. 
+
 ## 1.3.5
 
 * [issue-26](https://github.com/CosmicMind/Motion/issues/26): Fixed typo. 

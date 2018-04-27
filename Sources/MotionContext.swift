@@ -234,7 +234,7 @@ public extension MotionContext {
     case .optimized:
       #if os(tvOS)
         snapshot = view.snapshotView(afterScreenUpdates: true)!
-        
+      
       #else
         if #available(iOS 9.0, *), let stackView = view as? UIStackView {
           snapshot = stackView.slowSnapshotView()
@@ -272,7 +272,6 @@ public extension MotionContext {
         } else {
           snapshot = view.snapshotView() ?? UIView()
         }
-        
       #endif
     }
     
@@ -280,7 +279,6 @@ public extension MotionContext {
       if let imageView = view as? UIImageView, imageView.adjustsImageWhenAncestorFocused {
         snapshot.frame = imageView.focusedFrameGuide.layoutFrame
       }
-      
     #endif
     
     view.layer.cornerRadius = oldCornerRadius

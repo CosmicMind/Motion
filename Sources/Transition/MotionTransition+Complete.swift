@@ -48,8 +48,7 @@ extension MotionTransition {
       transitionContext = nil
       fromViewController = nil
       toViewController = nil
-      isNavigationController = false
-      isTabBarController = false
+      transitioningViewController = nil
       forceNonInteractive = false
       animatingToViews.removeAll()
       animatingFromViews.removeAll()

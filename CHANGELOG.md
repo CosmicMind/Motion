@@ -1,3 +1,7 @@
+## 1.4.1
+
+* Minor cleanup.
+
 ## 1.4.0
 
 * Updated for Xcode 9.3. 

@@ -1,3 +1,7 @@
+## 1.4.2
+
+* [pr-40](https://github.com/CosmicMind/Motion/pull/40): Fixed delegation issue, where UINavigationController and UITabBarController were not correctly calling their delegate methods.
+
 ## 1.4.1
 
 * Minor cleanup.

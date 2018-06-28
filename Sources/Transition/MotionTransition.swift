@@ -377,11 +377,18 @@ open class MotionTransition: NSObject {
   internal var forceFinishing: Bool?
   internal var startingProgress: TimeInterval?
   
+  /// A weak reference to the currently transitioning view controller.
+  internal weak var transitioningViewController: UIViewController?
+  
   /// Indicates whether a UINavigationController is transitioning.
-  internal var isNavigationController = false
+  internal var isNavigationController: Bool {
+    return transitioningViewController is UINavigationController
+  }
   
   /// Indicates whether a UITabBarController is transitioning.
-  internal var isTabBarController = false
+  internal var isTabBarController: Bool {
+    return transitioningViewController is UITabBarController
+  }
   
   /// Indicates whether a UINavigationController or UITabBarController is transitioning.
   internal var isContainerController: Bool {
@@ -422,6 +429,41 @@ open class MotionTransition: NSObject {
     let duration = after / (isFinishing ? max((1 - progress), 0.01) : max(progress, 0.01))
     
     progressRunner.start(progress: progress * duration, duration: duration, isReversed: !isFinishing)
+  }
+
+  private func delegate(respondingTo selector: Selector?) -> NSObjectProtocol? {
+    guard let selector = selector else { return nil }
+
+    /// Workaround for recursion happening during navigationController transtion.
+    /// Avoiding private selectors (e.g _shouldCrossFadeBottomBars)
+    guard !selector.description.starts(with: "_") else { return nil }
+    
+    /// Get relevant delegate according to controller type
+    let delegate: NSObjectProtocol? = {
+      if isTabBarController {
+        return transitioningViewController?.previousTabBarDelegate
+      }
+      
+      if isNavigationController {
+        return transitioningViewController?.previousNavigationDelegate
+      }
+      
+      return nil
+    }()
+    
+    return true == delegate?.responds(to: selector) ? delegate : nil
+  }
+  
+  open override func forwardingTarget(for aSelector: Selector!) -> Any? {
+    guard let superTarget = super.forwardingTarget(for: aSelector) else {
+      return delegate(respondingTo: aSelector)
+    }
+    
+    return superTarget
+  }
+  
+  open override func responds(to aSelector: Selector!) -> Bool {
+    return super.responds(to: aSelector) || nil != delegate(respondingTo: aSelector)
   }
 }
 

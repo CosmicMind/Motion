@@ -38,7 +38,7 @@ extension MotionTransition: UINavigationControllerDelegate {
     isPresenting = .push == operation
     fromViewController = fromViewController ?? fromVC
     toViewController = toViewController ?? toVC
-    isNavigationController = true
+    transitioningViewController = navigationController
     
     return self
   }

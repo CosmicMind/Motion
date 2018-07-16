@@ -41,6 +41,7 @@ extension MotionTransition: UIViewControllerTransitioningDelegate {
     
     state = .notified
     isPresenting = true
+    isModalTransition = true
     fromViewController = fromViewController ?? presenting
     toViewController = toViewController ?? presented
     
@@ -54,6 +55,7 @@ extension MotionTransition: UIViewControllerTransitioningDelegate {
     
     state = .notified
     isPresenting = false
+    isModalTransition = true
     fromViewController = fromViewController ?? dismissed
     return self
   }

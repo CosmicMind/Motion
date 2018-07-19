@@ -271,6 +271,13 @@ open class MotionTransition: NSObject {
   
   /// Whether or not we are presenting the destination view controller.
   public internal(set) var isPresenting = true
+    
+  /**
+   A boolean indicating if the transition is of modal type.
+   True if `viewController.present(_:animated:completion:)` or
+   `viewController.dismiss(animated:completion:)` is called, false otherwise.
+   */
+  public internal(set) var isModalTransition = false
   
   /// A boolean indicating whether the transition interactive or not.
   public var isInteractive: Bool {
@@ -588,8 +595,10 @@ internal extension MotionTransition {
       return
     }
     
-    fvc.beginAppearanceTransition(false, animated: true)
-    tvc.beginAppearanceTransition(true, animated: true)
+    if !isModalTransition {
+        fvc.beginAppearanceTransition(false, animated: true)
+        tvc.beginAppearanceTransition(true, animated: true)
+    }
     
     processForMotionDelegate(viewController: fvc) { [weak self] in
       guard let `self` = self else {
@@ -625,8 +634,10 @@ internal extension MotionTransition {
       return
     }
     
-    tvc.endAppearanceTransition()
-    fvc.endAppearanceTransition()
+    if !isModalTransition {
+        tvc.endAppearanceTransition()
+        fvc.endAppearanceTransition()
+    }
     
     processForMotionDelegate(viewController: fvc) { [weak self] in
       guard let `self` = self else {

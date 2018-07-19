@@ -1,3 +1,8 @@
+## 1.4.3
+
+* [pr-42](https://github.com/CosmicMind/Motion/pull/42): Fixed unbalanced calls to begin/end appearance transitions.
+  * [issue-29](https://github.com/CosmicMind/Motion/issues/29): Unbalanced calls to begin/end appearance.
+
 ## 1.4.2
 
 * [pr-40](https://github.com/CosmicMind/Motion/pull/40): Fixed delegation issue, where UINavigationController and UITabBarController were not correctly calling their delegate methods.

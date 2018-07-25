@@ -1,3 +1,7 @@
+## 1.5.0
+
+* Updated for Swift 4.2.
+
 ## 1.4.3
 
 * [pr-42](https://github.com/CosmicMind/Motion/pull/42): Fixed unbalanced calls to begin/end appearance transitions.

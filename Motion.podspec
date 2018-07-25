@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name = 'Motion'
-  s.version = '1.4.3'
+  s.version = '1.5.0'
   s.swift_version = '4.0'
   s.license = 'MIT'
   s.summary = 'A library used to create beautiful animations and transitions for Apple devices.'

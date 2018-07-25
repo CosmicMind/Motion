@@ -257,7 +257,7 @@ fileprivate extension MotionCoreAnimationViewContext {
       anim = a
     }
     
-    anim.fillMode = kCAFillModeBoth
+    anim.fillMode = CAMediaTimingFillMode.both
     anim.isRemovedOnCompletion = false
     anim.beginTime = beginTime
     

@@ -207,7 +207,7 @@ extension Motion {
    */
   public class func animate(group animations: [CAAnimation], timingFunction: CAMediaTimingFunction = .easeInOut, duration: CFTimeInterval = 0.5) -> CAAnimationGroup {
     let group = CAAnimationGroup()
-    group.fillMode = MotionAnimationFillModeToValue(mode: .both)
+    group.fillMode = .both
     group.isRemovedOnCompletion = false
     group.animations = animations
     group.duration = duration
@@ -721,4 +721,9 @@ internal extension MotionTransition {
       execute(delegate)
     }
   }
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertToCAMediaTimingFillMode(_ input: String) -> CAMediaTimingFillMode {
+	return CAMediaTimingFillMode(rawValue: input)
 }

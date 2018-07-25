@@ -30,10 +30,10 @@ import UIKit
 
 public extension CAMediaTimingFunction {
   //  Default
-  static let linear = CAMediaTimingFunction(name: kCAMediaTimingFunctionLinear)
-  static let easeIn = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseIn)
-  static let easeOut = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
-  static let easeInOut = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
+  static let linear = CAMediaTimingFunction(name: CAMediaTimingFunctionName.linear)
+  static let easeIn = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeIn)
+  static let easeOut = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeOut)
+  static let easeInOut = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
   
   //  Material
   static let standard = CAMediaTimingFunction(controlPoints: 0.4, 0.0, 0.2, 1.0)

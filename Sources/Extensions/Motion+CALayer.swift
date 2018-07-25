@@ -322,7 +322,7 @@ fileprivate extension CALayer {
       }
       
       let g = Motion.animate(group: anims, duration: duration)
-      g.fillMode = MotionAnimationFillModeToValue(mode: .both)
+      g.fillMode = .both
       g.isRemovedOnCompletion = false
       g.timingFunction = ts.timingFunction
       
@@ -337,4 +337,9 @@ fileprivate extension CALayer {
       }
     }
   }
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertToCAMediaTimingFillMode(_ input: String) -> CAMediaTimingFillMode {
+	return CAMediaTimingFillMode(rawValue: input)
 }

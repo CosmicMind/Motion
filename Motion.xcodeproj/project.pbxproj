@@ -42,7 +42,6 @@
 		96E409701F24F7370015A2B5 /* Motion+UIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E409491F24F7370015A2B5 /* Motion+UIKit.swift */; };
 		96E409711F24F7370015A2B5 /* Motion+UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E4094A1F24F7370015A2B5 /* Motion+UIView.swift */; };
 		96E409721F24F7370015A2B5 /* Motion+UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E4094B1F24F7370015A2B5 /* Motion+UIViewController.swift */; };
-		96E409731F24F7370015A2B5 /* MotionAnimationFillMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E4094C1F24F7370015A2B5 /* MotionAnimationFillMode.swift */; };
 		96E409741F24F7370015A2B5 /* Motion.h in Headers */ = {isa = PBXBuildFile; fileRef = 96E4094F1F24F7370015A2B5 /* Motion.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		96E409761F24F7370015A2B5 /* MotionAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E409511F24F7370015A2B5 /* MotionAnimation.swift */; };
 		96E409771F24F7370015A2B5 /* MotionAnimationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E409521F24F7370015A2B5 /* MotionAnimationState.swift */; };
@@ -72,7 +71,6 @@
 		96E409941F24F7570015A2B5 /* Motion+UIKit.swift in Headers */ = {isa = PBXBuildFile; fileRef = 96E409491F24F7370015A2B5 /* Motion+UIKit.swift */; settings = {ATTRIBUTES = (Public, ); }; };
 		96E409951F24F7570015A2B5 /* Motion+UIView.swift in Headers */ = {isa = PBXBuildFile; fileRef = 96E4094A1F24F7370015A2B5 /* Motion+UIView.swift */; settings = {ATTRIBUTES = (Public, ); }; };
 		96E409961F24F7570015A2B5 /* Motion+UIViewController.swift in Headers */ = {isa = PBXBuildFile; fileRef = 96E4094B1F24F7370015A2B5 /* Motion+UIViewController.swift */; settings = {ATTRIBUTES = (Public, ); }; };
-		96E409971F24F7570015A2B5 /* MotionAnimationFillMode.swift in Headers */ = {isa = PBXBuildFile; fileRef = 96E4094C1F24F7370015A2B5 /* MotionAnimationFillMode.swift */; settings = {ATTRIBUTES = (Public, ); }; };
 		96E4099B1F24F7570015A2B5 /* MotionAnimation.swift in Headers */ = {isa = PBXBuildFile; fileRef = 96E409511F24F7370015A2B5 /* MotionAnimation.swift */; settings = {ATTRIBUTES = (Public, ); }; };
 		96E4099C1F24F7570015A2B5 /* MotionAnimationState.swift in Headers */ = {isa = PBXBuildFile; fileRef = 96E409521F24F7370015A2B5 /* MotionAnimationState.swift */; settings = {ATTRIBUTES = (Public, ); }; };
 		96E4099D1F24F7570015A2B5 /* MotionCAAnimation.swift in Headers */ = {isa = PBXBuildFile; fileRef = 96E409531F24F7370015A2B5 /* MotionCAAnimation.swift */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -119,7 +117,6 @@
 		96E409491F24F7370015A2B5 /* Motion+UIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Motion+UIKit.swift"; sourceTree = "<group>"; };
 		96E4094A1F24F7370015A2B5 /* Motion+UIView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Motion+UIView.swift"; sourceTree = "<group>"; };
 		96E4094B1F24F7370015A2B5 /* Motion+UIViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Motion+UIViewController.swift"; sourceTree = "<group>"; };
-		96E4094C1F24F7370015A2B5 /* MotionAnimationFillMode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionAnimationFillMode.swift; sourceTree = "<group>"; };
 		96E4094F1F24F7370015A2B5 /* Motion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Motion.h; sourceTree = "<group>"; };
 		96E409511F24F7370015A2B5 /* MotionAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionAnimation.swift; sourceTree = "<group>"; };
 		96E409521F24F7370015A2B5 /* MotionAnimationState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionAnimationState.swift; sourceTree = "<group>"; };
@@ -223,7 +220,6 @@
 				96E409491F24F7370015A2B5 /* Motion+UIKit.swift */,
 				96E4094A1F24F7370015A2B5 /* Motion+UIView.swift */,
 				96E4094B1F24F7370015A2B5 /* Motion+UIViewController.swift */,
-				96E4094C1F24F7370015A2B5 /* MotionAnimationFillMode.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -262,7 +258,6 @@
 				96E409941F24F7570015A2B5 /* Motion+UIKit.swift in Headers */,
 				96E409951F24F7570015A2B5 /* Motion+UIView.swift in Headers */,
 				96E409961F24F7570015A2B5 /* Motion+UIViewController.swift in Headers */,
-				96E409971F24F7570015A2B5 /* MotionAnimationFillMode.swift in Headers */,
 				96E4099B1F24F7570015A2B5 /* MotionAnimation.swift in Headers */,
 				96E4099C1F24F7570015A2B5 /* MotionAnimationState.swift in Headers */,
 				96E4099D1F24F7570015A2B5 /* MotionCAAnimation.swift in Headers */,
@@ -322,7 +317,7 @@
 				TargetAttributes = {
 					96C98DD01E424AB000B22906 = {
 						CreatedOnToolsVersion = 8.2.1;
-						LastSwiftMigration = 0830;
+						LastSwiftMigration = 1000;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -349,7 +344,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				96E409731F24F7370015A2B5 /* MotionAnimationFillMode.swift in Sources */,
 				96E409791F24F7370015A2B5 /* MotionContext.swift in Sources */,
 				965FE96B1FDDA4EA0098BDD0 /* MotionCorePreprocessor.swift in Sources */,
 				965FE9631FDCCE030098BDD0 /* MotionTransition+Complete.swift in Sources */,
@@ -534,7 +528,7 @@
 				SKIP_INSTALL = YES;
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "$(SWIFT_MODULE_NAME)-Swift.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
@@ -555,7 +549,7 @@
 				PRODUCT_NAME = Motion;
 				SKIP_INSTALL = YES;
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "$(SWIFT_MODULE_NAME)-Swift.h";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
 		};

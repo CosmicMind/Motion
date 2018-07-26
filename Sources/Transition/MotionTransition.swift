@@ -722,8 +722,3 @@ internal extension MotionTransition {
     }
   }
 }
-
-// Helper function inserted by Swift 4.2 migrator.
-fileprivate func convertToCAMediaTimingFillMode(_ input: String) -> CAMediaTimingFillMode {
-	return CAMediaTimingFillMode(rawValue: input)
-}

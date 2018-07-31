@@ -143,5 +143,33 @@ extension MotionTransition {
     }
     
     tContext?.completeTransition(isFinishing)
+    
+    let isModalDismissal = isModalTransition && !isPresenting
+    if isModalDismissal {
+      UIApplication.shared.fixRootViewY()
+    }
+  }
+}
+
+
+private extension UIApplication {
+  /**
+   When in-call, hotspot, or recording status bar is enabled, just after (custom) modal
+   dismissal transition animation ends `UITransitionView` is removed from the hierarchy
+   and that removal was moving `rootViewController.view` 20 points upwards. This function
+   should be called after transitioningContext.completeTransition(_:) upon modal dismissal
+   transition. It applies the work that `UITransitionView` should ideally have done after
+   custom modal dismissal. `UIKit` modal dismissals do not suffer from this.
+   
+   Fixes issue-44. See issue-44 for more info.
+   */
+  func fixRootViewY() {
+    guard statusBarFrame.height == 40, let window = keyWindow, let vc = window.rootViewController else {
+      return
+    }
+    
+    if vc.view.frame.maxY + 20 == window.frame.height {
+      vc.view.frame.origin.y += 20
+    }
   }
 }

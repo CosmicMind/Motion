@@ -290,9 +290,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		96C98DD01E424AB000B22906 /* Motion iOS */ = {
+		96C98DD01E424AB000B22906 /* Motion */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 96C98DD91E424AB000B22906 /* Build configuration list for PBXNativeTarget "Motion iOS" */;
+			buildConfigurationList = 96C98DD91E424AB000B22906 /* Build configuration list for PBXNativeTarget "Motion" */;
 			buildPhases = (
 				96C98DCC1E424AB000B22906 /* Sources */,
 				96C98DCE1E424AB000B22906 /* Headers */,
@@ -301,7 +301,7 @@
 			);
 			dependencies = (
 			);
-			name = "Motion iOS";
+			name = Motion;
 			productName = Motion;
 			productReference = 96C98DD11E424AB000B22906 /* Motion.framework */;
 			productType = "com.apple.product-type.framework";
@@ -334,7 +334,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				96C98DD01E424AB000B22906 /* Motion iOS */,
+				96C98DD01E424AB000B22906 /* Motion */,
 			);
 		};
 /* End PBXProject section */
@@ -565,7 +565,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		96C98DD91E424AB000B22906 /* Build configuration list for PBXNativeTarget "Motion iOS" */ = {
+		96C98DD91E424AB000B22906 /* Build configuration list for PBXNativeTarget "Motion" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				96C98DDA1E424AB000B22906 /* Debug */,

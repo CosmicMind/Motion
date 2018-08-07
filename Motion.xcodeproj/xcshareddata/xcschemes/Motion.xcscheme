@@ -16,7 +16,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "96C98DD01E424AB000B22906"
                BuildableName = "Motion.framework"
-               BlueprintName = "Motion iOS"
+               BlueprintName = "Motion"
                ReferencedContainer = "container:Motion.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -47,7 +47,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "96C98DD01E424AB000B22906"
             BuildableName = "Motion.framework"
-            BlueprintName = "Motion iOS"
+            BlueprintName = "Motion"
             ReferencedContainer = "container:Motion.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -65,7 +65,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "96C98DD01E424AB000B22906"
             BuildableName = "Motion.framework"
-            BlueprintName = "Motion iOS"
+            BlueprintName = "Motion"
             ReferencedContainer = "container:Motion.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

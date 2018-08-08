@@ -43,7 +43,7 @@ class MotionProgressRunner {
   internal var progress: TimeInterval = 0
   internal var duration: TimeInterval = 0
   internal var displayLink: CADisplayLink?
-  internal var isReversed: Bool = false
+  internal var isReversed = false
   
   @objc
   func displayUpdate(_ link: CADisplayLink) {

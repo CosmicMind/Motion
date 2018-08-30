@@ -43,6 +43,7 @@ public enum MotionTransitionAnimationType {
   case cover(direction: Direction)
   case uncover(direction: Direction)
   case slide(direction: Direction)
+  case fadeSlide(direction: Direction)
   case zoomSlide(direction: Direction)
   case pageIn(direction: Direction)
   case pageOut(direction: Direction)
@@ -123,6 +124,18 @@ public enum MotionTransitionAnimationType {
       
     case .slide(direction: .right):
       return .slide(direction: .left)
+      
+    case .fadeSlide(direction: .up):
+      return .fadeSlide(direction: .down)
+      
+    case .fadeSlide(direction: .down):
+      return .fadeSlide(direction: .up)
+      
+    case .fadeSlide(direction: .left):
+      return .fadeSlide(direction: .right)
+      
+    case .fadeSlide(direction: .right):
+      return .fadeSlide(direction: .left)
       
     case .zoomSlide(direction: .up):
       return .zoomSlide(direction: .down)
@@ -274,6 +287,11 @@ class TransitionPreprocessor: MotionCorePreprocessor {
       context[fv]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: false))])
       
       context[tv]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: true))])
+    
+    case .fadeSlide(let direction):
+      context[fv]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: false)), .fadeOut])
+      
+      context[tv]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: true)), .fadeIn])
       
     case .zoomSlide(let direction):
       context[fv]!.append(contentsOf: [.translate(shift(direction: direction, isAppearing: false)), .scale(0.8)])

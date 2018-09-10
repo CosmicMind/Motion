@@ -17,5 +17,4 @@ Pod::Spec.new do |s|
     s.ios.source_files = 'Sources/**/*.swift'
     s.requires_arc = true
   end
-
 end

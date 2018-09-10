@@ -322,7 +322,7 @@ extension UIViewController {
         next.view.window?.addSubview(next.view)
         
         guard let pvc = presentingVC else {
-          UIApplication.shared.keyWindow?.rootViewController = next
+          Application.shared.keyWindow?.rootViewController = next
           return
         }
         

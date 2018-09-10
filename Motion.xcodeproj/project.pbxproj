@@ -87,6 +87,7 @@
 		96E409AB1F24F7570015A2B5 /* MotionPreprocessor.swift in Headers */ = {isa = PBXBuildFile; fileRef = 96E409621F24F7370015A2B5 /* MotionPreprocessor.swift */; settings = {ATTRIBUTES = (Public, ); }; };
 		96E409AC1F24F7570015A2B5 /* SourcePreprocessor.swift in Headers */ = {isa = PBXBuildFile; fileRef = 96E409631F24F7370015A2B5 /* SourcePreprocessor.swift */; settings = {ATTRIBUTES = (Public, ); }; };
 		96E409AD1F24F7570015A2B5 /* TransitionPreprocessor.swift in Headers */ = {isa = PBXBuildFile; fileRef = 96E409641F24F7370015A2B5 /* TransitionPreprocessor.swift */; settings = {ATTRIBUTES = (Public, ); }; };
+		D4A2ECE521467454003162B4 /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4A2ECE421467454003162B4 /* Application.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -136,6 +137,7 @@
 		96E409641F24F7370015A2B5 /* TransitionPreprocessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransitionPreprocessor.swift; sourceTree = "<group>"; };
 		96E409BB1F24FC210015A2B5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		96E409BC1F24FC300015A2B5 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		D4A2ECE421467454003162B4 /* Application.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Application.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -178,6 +180,7 @@
 				96E409BB1F24FC210015A2B5 /* Info.plist */,
 				96E409BC1F24FC300015A2B5 /* LICENSE */,
 				96E4094F1F24F7370015A2B5 /* Motion.h */,
+				D4A2ECE421467454003162B4 /* Application.swift */,
 				965FE9681FDDA1F20098BDD0 /* MotionViewOrderStrategy.swift */,
 				96E409511F24F7370015A2B5 /* MotionAnimation.swift */,
 				96E409521F24F7370015A2B5 /* MotionAnimationState.swift */,
@@ -367,6 +370,7 @@
 				96E409761F24F7370015A2B5 /* MotionAnimation.swift in Sources */,
 				965FE9A31FE4407D0098BDD0 /* MotionTransition+Interactive.swift in Sources */,
 				96E4096B1F24F7370015A2B5 /* Motion+Array.swift in Sources */,
+				D4A2ECE521467454003162B4 /* Application.swift in Sources */,
 				96E409721F24F7370015A2B5 /* Motion+UIViewController.swift in Sources */,
 				96E4097E1F24F7370015A2B5 /* MotionSnapshotType.swift in Sources */,
 				965FE9691FDDA1F20098BDD0 /* MotionViewOrderStrategy.swift in Sources */,

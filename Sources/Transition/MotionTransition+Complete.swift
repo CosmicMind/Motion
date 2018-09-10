@@ -109,7 +109,7 @@ extension MotionTransition {
       if isPresenting != isFinishing, !isContainerController {
         // Only happens when present a .overFullScreen view controller.
         // bug: http://openradar.appspot.com/radar?id=5320103646199808
-        UIApplication.shared.keyWindow?.addSubview(isPresenting ? fv : tv)
+        Application.shared.keyWindow?.addSubview(isPresenting ? fv : tv)
       }
     }
     

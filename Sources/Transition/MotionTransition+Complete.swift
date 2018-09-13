@@ -146,7 +146,7 @@ extension MotionTransition {
     
     let isModalDismissal = isModalTransition && !isPresenting
     if isModalDismissal {
-      UIApplication.shared.fixRootViewY()
+      Application.shared.fixRootViewY()
     }
   }
 }

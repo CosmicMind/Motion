@@ -164,7 +164,9 @@
 				96E4093B1F24F7370015A2B5 /* Sources */,
 				96C98DD21E424AB000B22906 /* Products */,
 			);
+			indentWidth = 2;
 			sourceTree = "<group>";
+			tabWidth = 2;
 		};
 		96C98DD21E424AB000B22906 /* Products */ = {
 			isa = PBXGroup;

@@ -25,9 +25,6 @@
 
 import UIKit
 
-@available(iOS 10, *)
-extension CALayer: CAAnimationDelegate {}
-
 internal extension CALayer {
   /// Swizzle the `add(_:forKey:) selector.
   internal static var motionAddedAnimations: [(CALayer, String, CAAnimation)]? = {
@@ -110,14 +107,11 @@ public extension CALayer {
    */
   func animate(_ animations: [CAAnimation]) {
     for animation in animations {
-      if nil == animation.delegate {
-        animation.delegate = self
-      }
-      
       if let a = animation as? CABasicAnimation {
         a.fromValue = (presentation() ?? self).value(forKeyPath: a.keyPath!)
       }
       
+      updateModel(animation)
       if let a = animation as? CAPropertyAnimation {
         add(a, forKey: a.keyPath!)
       } else if let a = animation as? CAAnimationGroup {
@@ -126,46 +120,6 @@ public extension CALayer {
         add(a, forKey: kCATransition)
       }
     }
-  }
-  
-  /**
-   Executed when an animation has started. 
-   - Parameter _ anim: A CAAnimation.
-   */
-  func animationDidStart(_ anim: CAAnimation) {}
-  
-  /**
-   A delegation function that is executed when the backing layer stops
-   running an animation.
-   - Parameter animation: The CAAnimation instance that stopped running.
-   - Parameter flag: A boolean that indicates if the animation stopped
-   because it was completed or interrupted. True if completed, false
-   if interrupted.
-   */
-  func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
-    guard let a = anim as? CAPropertyAnimation else {
-      if let a = (anim as? CAAnimationGroup)?.animations {
-        for x in a {
-          animationDidStop(x, finished: true)
-        }
-      }
-      return
-    }
-    
-    guard let b = a as? CABasicAnimation else {
-      return
-    }
-    
-    guard let v = b.toValue else {
-      return
-    }
-    
-    guard let k = b.keyPath else {
-      return
-    }
-    
-    setValue(v, forKeyPath: k)
-    removeAnimation(forKey: k)
   }
   
   /**
@@ -321,11 +275,7 @@ fileprivate extension CALayer {
         }
       }
       
-      let g = Motion.animate(group: anims, duration: duration)
-      g.fillMode = .both
-      g.isRemovedOnCompletion = false
-      g.timingFunction = ts.timingFunction
-      
+      let g = Motion.animate(group: anims, timingFunction: ts.timingFunction, duration: duration)
       self.animate(g)
       
       if let v = ts.completion {
@@ -334,6 +284,22 @@ fileprivate extension CALayer {
       
       if let v = completion {
         Motion.delay(duration, execute: v)
+      }
+    }
+  }
+}
+
+private extension CALayer {
+  /**
+   Updates the model with values provided in animation.
+   - Parameter animation: A CAAnimation.
+  */
+  func updateModel(_ animation: CAAnimation) {
+    if let a = animation as? CABasicAnimation {
+      setValue(a.toValue, forKeyPath: a.keyPath!)
+    } else if let a = animation as? CAAnimationGroup {
+      a.animations?.forEach {
+        updateModel($0)
       }
     }
   }

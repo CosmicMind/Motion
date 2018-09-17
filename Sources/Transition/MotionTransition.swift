@@ -673,7 +673,9 @@ internal extension MotionTransition {
       return
     }
     
+    tvc.beginAppearanceTransition(false, animated: true)
     tvc.endAppearanceTransition()
+    fvc.beginAppearanceTransition(true, animated: true)
     fvc.endAppearanceTransition()
     
     processForMotionDelegate(viewController: fvc) { [weak self] in

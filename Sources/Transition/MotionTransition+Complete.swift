@@ -141,7 +141,6 @@ extension MotionTransition {
       processEndTransitionDelegation(transitionContext: tContext, fromViewController: fvc, toViewController: tvc)
     } else {
       processCancelTransitionDelegation(transitionContext: tContext, fromViewController: fvc, toViewController: tvc)
-      tContext?.cancelInteractiveTransition()
     }
     
     tContext?.completeTransition(isFinishing)

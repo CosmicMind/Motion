@@ -694,7 +694,7 @@ internal extension MotionTransition {
       $0.motionDidCancelTransition?(motion: self)
     }
     
-    transitionContext?.finishInteractiveTransition()
+    transitionContext?.cancelInteractiveTransition()
   }
 }
 

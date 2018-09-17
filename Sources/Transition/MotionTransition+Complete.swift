@@ -65,6 +65,8 @@ extension MotionTransition {
       progress = 0
       totalDuration = 0
       state = .possible
+      defaultAnimation = .auto
+      containerBackgroundColor = .black
       isModalTransition = false
     }
     

@@ -127,10 +127,6 @@ internal class MotionCoreAnimator<T: MotionAnimatorViewContext>: MotionAnimator 
     var duration: TimeInterval = 0
     
     for (_, v) in viewToContexts {
-      if nil == v.targetState.duration {
-        v.duration = max(v.duration, v.snapshot.optimizedDuration(targetState: v.targetState) + progress)
-      }
-      
       duration = max(duration, v.resume(at: progress, isReversed: isReversed))
     }
     

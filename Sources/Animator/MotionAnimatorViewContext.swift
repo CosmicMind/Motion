@@ -44,11 +44,6 @@ internal class MotionAnimatorViewContext {
   /// Animation duration time.
   var duration: TimeInterval = 0
   
-  /// The computed current time of the snapshot layer.
-  var currentTime: TimeInterval {
-    return snapshot.layer.convertTime(CACurrentMediaTime(), from: nil)
-  }
-  
   /// A container view for the transition.
   var container: UIView? {
     return animator?.motion.context.container

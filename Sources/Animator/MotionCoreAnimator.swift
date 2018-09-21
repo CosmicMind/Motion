@@ -29,6 +29,29 @@
 import UIKit
 
 internal class MotionCoreAnimator<T: MotionAnimatorViewContext>: MotionAnimator {
+  /**
+   Backing field for storing CACurrentMediaTime to ensure all
+   animations begin at the exact same time.
+   
+   Should be invalidated using invalidateCurrentTime method
+   after firing all animations.
+   */
+  private var storedCurrentTime: TimeInterval?
+  
+  /// Current time for the animator.
+  var currentTime: TimeInterval {
+    if nil == storedCurrentTime {
+      storedCurrentTime = CACurrentMediaTime()
+    }
+    
+    return storedCurrentTime!
+  }
+  
+  /// Invalidates stored current time.
+  func invalidateCurrentTime() {
+    storedCurrentTime = nil
+  }
+  
   weak public var motion: MotionTransition!
   
   /// A reference to the MotionContext.
@@ -46,6 +69,7 @@ internal class MotionCoreAnimator<T: MotionAnimatorViewContext>: MotionAnimator 
     }
     
     viewToContexts.removeAll()
+    invalidateCurrentTime()
   }
   
   /**
@@ -103,6 +127,8 @@ internal class MotionCoreAnimator<T: MotionAnimatorViewContext>: MotionAnimator 
       d = max(d, v.startAnimations())
     }
     
+    invalidateCurrentTime()
+    
     return d
   }
   
@@ -114,6 +140,8 @@ internal class MotionCoreAnimator<T: MotionAnimatorViewContext>: MotionAnimator 
     for v in viewToContexts.values {
       v.seek(to: progress)
     }
+    
+    invalidateCurrentTime()
   }
   
   /**
@@ -130,6 +158,7 @@ internal class MotionCoreAnimator<T: MotionAnimatorViewContext>: MotionAnimator 
       duration = max(duration, v.resume(at: progress, isReversed: isReversed))
     }
     
+    invalidateCurrentTime()
     return duration
   }
   
@@ -144,6 +173,8 @@ internal class MotionCoreAnimator<T: MotionAnimatorViewContext>: MotionAnimator 
     }
     
     v.apply(state: state)
+    
+    invalidateCurrentTime()
   }
 }
 

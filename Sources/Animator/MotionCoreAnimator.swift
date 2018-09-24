@@ -79,7 +79,7 @@ internal class MotionCoreAnimator<T: MotionAnimatorViewContext>: MotionAnimator 
    view is appearing.
    */
   func canAnimate(view: UIView, isAppearing: Bool) -> Bool {
-    guard let state = context[view] else {
+    guard let state = targetState(for: view) else {
       return false
     }
     
@@ -176,6 +176,24 @@ internal class MotionCoreAnimator<T: MotionAnimatorViewContext>: MotionAnimator 
     
     invalidateCurrentTime()
   }
+  
+  /**
+   Returns MotionTargetState for the given view.
+   - Parameter for view: A UIView.
+   - Returns: A MotionTargetState.
+   */
+  func targetState(for view: UIView) -> MotionTargetState? {
+    return context[view]
+  }
+
+  /**
+   Returns snapshot view for the given view.
+   - Parameter for view: A UIView.
+   - Returns: A snapshot UIView.
+   */
+  func snapshotView(for view: UIView) -> UIView {
+    return context.snapshotView(for: view)
+  }
 }
 
 fileprivate extension MotionCoreAnimator {
@@ -186,7 +204,7 @@ fileprivate extension MotionCoreAnimator {
    view is appearing.
    */
   func createViewContext(view: UIView, isAppearing: Bool) {
-    viewToContexts[view] = T(animator: self, snapshot: context.snapshotView(for: view), targetState: context[view]!, isAppearing: isAppearing)
+    viewToContexts[view] = T(animator: self, snapshot: snapshotView(for: view), targetState: targetState(for: view)!, isAppearing: isAppearing)
   }
 }
 

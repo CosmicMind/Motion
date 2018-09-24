@@ -28,7 +28,7 @@
 
 import UIKit
 
-extension MotionTransition {
+public extension MotionTransition {
   /**
    Updates the elapsed time for the interactive transition.
    - Parameter progress t: the current progress, must be between -1...1.

@@ -35,6 +35,11 @@ internal class MotionCoreAnimationViewContext: MotionAnimatorViewContext {
   /// A reference to the animation timing function.
   fileprivate var timingFunction = CAMediaTimingFunction.standard
   
+  /// The computed current time of the snapshot layer.
+  var currentTime: TimeInterval {
+    return snapshot.layer.convertTime((animator as! MotionCoreAnimator<MotionCoreAnimationViewContext>).currentTime, from: nil)
+  }
+  
   /// Current animations.
   var animations = [(CALayer, String, CAAnimation)]()
   

@@ -207,8 +207,6 @@ extension Motion {
    */
   public class func animate(group animations: [CAAnimation], timingFunction: CAMediaTimingFunction = .easeInOut, duration: CFTimeInterval = 0.5) -> CAAnimationGroup {
     let group = CAAnimationGroup()
-    group.fillMode = .both
-    group.isRemovedOnCompletion = false
     group.animations = animations
     group.duration = duration
     group.timingFunction = timingFunction
@@ -675,7 +673,9 @@ internal extension MotionTransition {
       return
     }
     
+    tvc.beginAppearanceTransition(false, animated: true)
     tvc.endAppearanceTransition()
+    fvc.beginAppearanceTransition(true, animated: true)
     fvc.endAppearanceTransition()
     
     processForMotionDelegate(viewController: fvc) { [weak self] in
@@ -696,7 +696,7 @@ internal extension MotionTransition {
       $0.motionDidCancelTransition?(motion: self)
     }
     
-    transitionContext?.finishInteractiveTransition()
+    transitionContext?.cancelInteractiveTransition()
   }
 }
 

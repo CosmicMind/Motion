@@ -576,6 +576,14 @@ public extension MotionTransition {
   func setContainerBackgroundColorForNextTransition(_ color: UIColor) {
     containerBackgroundColor = color
   }
+
+  /**
+   Set the completion callback closure for the next transition.
+   - Parameter _ completion: An optional closure receiving a Boolean indicating if transition is finishing or cancelling.
+   */
+  func setCompletionCallbackForNextTransition(_ completion: ((Bool) -> Void)?) {
+    completionCallback = completion
+  }
 }
 
 internal extension MotionTransition {

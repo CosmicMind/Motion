@@ -131,8 +131,8 @@ private extension MotionViewTransition {
   
   /// Finalizes the transition.
   func complete() {
-    clean()
     removeAnimations()
+    clean()
   }
   
   /// Resets the transition.

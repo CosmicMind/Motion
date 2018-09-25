@@ -47,16 +47,7 @@ extension MotionTransition {
     fromViewController = from
     toViewController = to
     
-    completionCallback = { [weak self] in
-      guard let `self` = self else {
-        return
-      }
-      
-      completion?($0)
-      
-      self.state = .possible
-    }
-    
+    setCompletionCallbackForNextTransition(completion)
     start()
   }
 }

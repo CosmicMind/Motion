@@ -124,6 +124,7 @@ extension MotionTransition {
     }
     
     transitionContainer?.isUserInteractionEnabled = true
+    transitioningViewController?.view.isUserInteractionEnabled = true
     
     completionCallback?(isFinishing)
     

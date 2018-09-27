@@ -135,6 +135,7 @@ fileprivate extension MotionTransition {
   
   /// Prepares the transition container.
   func prepareTransitionContainer() {
+    transitioningViewController?.view.isUserInteractionEnabled = isUserInteractionEnabled
     transitionContainer?.isUserInteractionEnabled = isUserInteractionEnabled
   }
   

@@ -28,7 +28,7 @@
 
 import UIKit
 
-internal class MotionAnimatorViewContext {
+internal class MotionAnimatorViewContext: NSObject {
   /// An optional reference to a MotionAnimator.
   var animator: MotionAnimator?
   

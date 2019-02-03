@@ -37,15 +37,15 @@ public enum MotionAnimationFillMode: Int {
  Converts the MotionAnimationFillMode enum value to a corresponding String.
  - Parameter mode: An MotionAnimationFillMode enum value.
  */
-public func MotionAnimationFillModeToValue(mode: MotionAnimationFillMode) -> String {
+public func MotionAnimationFillModeToValue(mode: MotionAnimationFillMode) -> CAMediaTimingFillMode {
   switch mode {
   case .forwards:
-    return kCAFillModeForwards
+    return CAMediaTimingFillMode.forwards
   case .backwards:
-    return kCAFillModeBackwards
+    return CAMediaTimingFillMode.backwards
   case .both:
-    return kCAFillModeBoth
+    return CAMediaTimingFillMode.both
   case .removed:
-    return kCAFillModeRemoved
+    return CAMediaTimingFillMode.removed
   }
 }

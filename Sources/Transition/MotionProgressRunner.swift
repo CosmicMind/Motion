@@ -72,12 +72,12 @@ class MotionProgressRunner {
     self.duration = duration
     
     displayLink = CADisplayLink(target: self, selector: #selector(displayUpdate(_:)))
-    displayLink!.add(to: RunLoop.main, forMode: RunLoopMode(rawValue: RunLoopMode.commonModes.rawValue))
+    displayLink!.add(to: RunLoop.main, forMode: RunLoop.Mode(rawValue: RunLoop.Mode.common.rawValue))
   }
   
   func stop() {
     displayLink?.isPaused = true
-    displayLink?.remove(from: RunLoop.main, forMode: RunLoopMode(rawValue: RunLoopMode.commonModes.rawValue))
+    displayLink?.remove(from: RunLoop.main, forMode: RunLoop.Mode(rawValue: RunLoop.Mode.common.rawValue))
     displayLink = nil
   }
 }

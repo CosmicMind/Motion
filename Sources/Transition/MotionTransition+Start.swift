@@ -85,7 +85,7 @@ fileprivate extension MotionTransition {
   
   /// Prepares the from and to view controllers.
   func prepareViewControllers() {
-    processStartTransitionDelegation(fromViewController: fromViewController, toViewController: toViewController)
+    processStartTransitionDelegation(transitionContext: transitionContext, fromViewController: fromViewController, toViewController: toViewController)
   }
   
   /// Prepares the snapshot view, which hides any flashing that may occur.

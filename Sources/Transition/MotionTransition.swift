@@ -589,10 +589,11 @@ public extension MotionTransition {
 internal extension MotionTransition {
   /**
    Processes the start transition delegation methods.
+   - Parameter transitionContext: An optional UIViewControllerContextTransitioning.
    - Parameter fromViewController: An optional UIViewController.
    - Parameter toViewController: An optional UIViewController.
    */
-  func processStartTransitionDelegation(fromViewController: UIViewController?, toViewController: UIViewController?) {
+  func processStartTransitionDelegation(transitionContext: UIViewControllerContextTransitioning?, fromViewController: UIViewController?, toViewController: UIViewController?) {
     guard let fvc = fromViewController else {
       return
     }
@@ -601,7 +602,7 @@ internal extension MotionTransition {
       return
     }
     
-    if !isModalTransition {
+    if transitionContext == nil {
         fvc.beginAppearanceTransition(false, animated: true)
         tvc.beginAppearanceTransition(true, animated: true)
     }
@@ -640,7 +641,7 @@ internal extension MotionTransition {
       return
     }
     
-    if !isModalTransition {
+    if transitionContext == nil {
         tvc.endAppearanceTransition()
         fvc.endAppearanceTransition()
     }
@@ -681,10 +682,12 @@ internal extension MotionTransition {
       return
     }
     
-    tvc.beginAppearanceTransition(false, animated: true)
-    tvc.endAppearanceTransition()
-    fvc.beginAppearanceTransition(true, animated: true)
-    fvc.endAppearanceTransition()
+    if transitionContext == nil {
+      tvc.beginAppearanceTransition(false, animated: true)
+      tvc.endAppearanceTransition()
+      fvc.beginAppearanceTransition(true, animated: true)
+      fvc.endAppearanceTransition()
+    }
     
     processForMotionDelegate(viewController: fvc) { [weak self] in
       guard let `self` = self else {

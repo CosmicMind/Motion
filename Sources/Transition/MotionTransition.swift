@@ -529,7 +529,7 @@ internal extension MotionTransition {
    - Returns: A boolean indicating if the plugin is enabled or not.
    */
   static func isEnabled(plugin: MotionPlugin.Type) -> Bool {
-    return nil != enabledPlugins.index(where: { return $0 == plugin })
+    return nil != enabledPlugins.firstIndex(where: { return $0 == plugin })
   }
   
   /**
@@ -546,7 +546,7 @@ internal extension MotionTransition {
    - Parameter plugin: A MotionPlugin.Type.
    */
   static func disable(plugin: MotionPlugin.Type) {
-    guard let index = enabledPlugins.index(where: { return $0 == plugin }) else {
+    guard let index = enabledPlugins.firstIndex(where: { return $0 == plugin }) else {
       return
     }
     

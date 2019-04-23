@@ -150,7 +150,7 @@ public extension MotionCAAnimation {
    - Parameter xyz: A CGFloat.
    - Returns: A CABasicAnimation.
    */
-  public static func scale(_ xyz: CGFloat) -> CABasicAnimation {
+  static func scale(_ xyz: CGFloat) -> CABasicAnimation {
     let a = CABasicAnimation(keyPath: .scale)
     a.toValue = NSNumber(value: Double(xyz))
     return a
@@ -161,7 +161,7 @@ public extension MotionCAAnimation {
    - Parameter x: A CGFloat.
    - Returns: A CABasicAnimation.
    */
-  public static func scale(x: CGFloat) -> CABasicAnimation {
+  static func scale(x: CGFloat) -> CABasicAnimation {
     let a = CABasicAnimation(keyPath: .scaleX)
     a.toValue = NSNumber(value: Double(x))
     return a
@@ -172,7 +172,7 @@ public extension MotionCAAnimation {
    - Parameter y: A CGFloat.
    - Returns: A CABasicAnimation.
    */
-  public static func scale(y: CGFloat) -> CABasicAnimation {
+  static func scale(y: CGFloat) -> CABasicAnimation {
     let a = CABasicAnimation(keyPath: .scaleY)
     a.toValue = NSNumber(value: Double(y))
     return a
@@ -183,7 +183,7 @@ public extension MotionCAAnimation {
    - Parameter z: A CGFloat.
    - Returns: A CABasicAnimation.
    */
-  public static func scale(z: CGFloat) -> CABasicAnimation {
+  static func scale(z: CGFloat) -> CABasicAnimation {
     let a = CABasicAnimation(keyPath: .scaleZ)
     a.toValue = NSNumber(value: Double(z))
     return a

@@ -226,7 +226,7 @@ public extension MotionContext {
           superviewToNoSnapshotSubviewMap[view.superview!] = []
         }
         
-        superviewToNoSnapshotSubviewMap[view.superview!]!.append((view.superview!.subviews.index(of: view)!, view))
+        superviewToNoSnapshotSubviewMap[view.superview!]!.append((view.superview!.subviews.firstIndex(of: view)!, view))
       }
       
       snapshot = view
@@ -325,7 +325,7 @@ public extension MotionContext {
     
     if let pairedView = pairedView(for: view), let pairedSnapshot = viewToSnapshot[pairedView] {
       let siblingViews = pairedView.superview!.subviews
-      let nextSiblings = siblingViews[siblingViews.index(of: pairedView)! + 1..<siblingViews.count]
+      let nextSiblings = siblingViews[siblingViews.firstIndex(of: pairedView)! + 1..<siblingViews.count]
       
       containerView.addSubview(pairedSnapshot)
       containerView.addSubview(snapshot)

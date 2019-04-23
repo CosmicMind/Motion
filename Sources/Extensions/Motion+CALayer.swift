@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (C) 2017, Daniel Dahan and CosmicMind, Inc. <http://cosmicmind.com>.
+ * Copyright (C) 2019, CosmicMind, Inc. <http://cosmicmind.com>.
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -27,7 +27,7 @@ import UIKit
 
 internal extension CALayer {
   /// Swizzle the `add(_:forKey:) selector.
-  internal static var motionAddedAnimations: [(CALayer, String, CAAnimation)]? = {
+  static var motionAddedAnimations: [(CALayer, String, CAAnimation)]? = {
     let swizzling: (AnyClass, Selector, Selector) -> Void = { forClass, originalSelector, swizzledSelector in
       if let originalMethod = class_getInstanceMethod(forClass, originalSelector), let swizzledMethod = class_getInstanceMethod(forClass, swizzledSelector) {
         method_exchangeImplementations(originalMethod, swizzledMethod)
@@ -293,7 +293,7 @@ private extension CALayer {
   /**
    Updates the model with values provided in animation.
    - Parameter animation: A CAAnimation.
-  */
+   */
   func updateModel(_ animation: CAAnimation) {
     if let a = animation as? CABasicAnimation {
       setValue(a.toValue, forKeyPath: a.keyPath!)

@@ -1,11 +1,8 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (C) 2017, Daniel Dahan and CosmicMind, Inc. <http://cosmicmind.com>.
+ * Copyright (C) 2019, CosmicMind, Inc. <http://cosmicmind.com>.
  * All rights reserved.
- *
- * Original Inspiration & Author
- * Copyright (c) 2016 Luke Zhao <me@lkzhao.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -269,7 +266,7 @@ open class MotionTransition: NSObject {
   
   /// Whether or not we are presenting the destination view controller.
   public internal(set) var isPresenting = true
-    
+  
   /**
    A boolean indicating if the transition is of modal type.
    True if `viewController.present(_:animated:completion:)` or
@@ -435,10 +432,10 @@ open class MotionTransition: NSObject {
     
     progressRunner.start(progress: progress * duration, duration: duration, isReversed: !isFinishing)
   }
-
+  
   private func delegate(respondingTo selector: Selector?) -> NSObjectProtocol? {
     guard let selector = selector else { return nil }
-
+    
     /// Workaround for recursion happening during navigationController transtion.
     /// Avoiding private selectors (e.g _shouldCrossFadeBottomBars)
     guard !selector.description.starts(with: "_") else { return nil }
@@ -576,7 +573,7 @@ public extension MotionTransition {
   func setContainerBackgroundColorForNextTransition(_ color: UIColor) {
     containerBackgroundColor = color
   }
-
+  
   /**
    Set the completion callback closure for the next transition.
    - Parameter _ completion: An optional closure receiving a Boolean indicating if transition is finishing or cancelling.
@@ -603,8 +600,8 @@ internal extension MotionTransition {
     }
     
     if transitionContext == nil {
-        fvc.beginAppearanceTransition(false, animated: true)
-        tvc.beginAppearanceTransition(true, animated: true)
+      fvc.beginAppearanceTransition(false, animated: true)
+      tvc.beginAppearanceTransition(true, animated: true)
     }
     
     processForMotionDelegate(viewController: fvc) { [weak self] in
@@ -642,8 +639,8 @@ internal extension MotionTransition {
     }
     
     if transitionContext == nil {
-        tvc.endAppearanceTransition()
-        fvc.endAppearanceTransition()
+      tvc.endAppearanceTransition()
+      fvc.endAppearanceTransition()
     }
     
     processForMotionDelegate(viewController: fvc) { [weak self] in

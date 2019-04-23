@@ -1,11 +1,8 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (C) 2017, Daniel Dahan and CosmicMind, Inc. <http://cosmicmind.com>.
+ * Copyright (C) 2019, CosmicMind, Inc. <http://cosmicmind.com>.
  * All rights reserved.
- *
- * Original Inspiration & Author
- * Copyright (c) 2016 Luke Zhao <me@lkzhao.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -233,53 +230,53 @@ public extension MotionContext {
       
     case .optimized:
       #if os(tvOS)
-        snapshot = view.snapshotView(afterScreenUpdates: true)!
+      snapshot = view.snapshotView(afterScreenUpdates: true)!
       
       #else
-        if #available(iOS 9.0, *), let stackView = view as? UIStackView {
-          snapshot = stackView.slowSnapshotView()
-          
-        } else if let imageView = view as? UIImageView, view.subviews.isEmpty {
-          let contentView = UIImageView(image: imageView.image)
-          contentView.frame = imageView.bounds
-          contentView.contentMode = imageView.contentMode
-          contentView.tintColor = imageView.tintColor
-          contentView.backgroundColor = imageView.backgroundColor
-          
-          let snapShotView = UIView()
-          snapShotView.addSubview(contentView)
-          snapshot = snapShotView
-          
-        } else if let barView = view as? UINavigationBar, barView.isTranslucent {
-          let newBarView = UINavigationBar(frame: barView.frame)
-          newBarView.barStyle = barView.barStyle
-          newBarView.tintColor = barView.tintColor
-          newBarView.barTintColor = barView.barTintColor
-          newBarView.clipsToBounds = false
-          
-          // take a snapshot without the background
-          barView.layer.sublayers![0].opacity = 0
-          let realSnapshot = barView.snapshotView(afterScreenUpdates: true)!
-          barView.layer.sublayers![0].opacity = 1
-          
-          newBarView.addSubview(realSnapshot)
-          snapshot = newBarView
-          
-        } else if let effectView = view as? UIVisualEffectView {
-          snapshot = UIVisualEffectView(effect: effectView.effect)
-          snapshot.frame = effectView.bounds
-          
-        } else {
-          snapshot = view.snapshotView() ?? UIView()
-        }
+      if #available(iOS 9.0, *), let stackView = view as? UIStackView {
+        snapshot = stackView.slowSnapshotView()
+        
+      } else if let imageView = view as? UIImageView, view.subviews.isEmpty {
+        let contentView = UIImageView(image: imageView.image)
+        contentView.frame = imageView.bounds
+        contentView.contentMode = imageView.contentMode
+        contentView.tintColor = imageView.tintColor
+        contentView.backgroundColor = imageView.backgroundColor
+        
+        let snapShotView = UIView()
+        snapShotView.addSubview(contentView)
+        snapshot = snapShotView
+        
+      } else if let barView = view as? UINavigationBar, barView.isTranslucent {
+        let newBarView = UINavigationBar(frame: barView.frame)
+        newBarView.barStyle = barView.barStyle
+        newBarView.tintColor = barView.tintColor
+        newBarView.barTintColor = barView.barTintColor
+        newBarView.clipsToBounds = false
+        
+        // take a snapshot without the background
+        barView.layer.sublayers![0].opacity = 0
+        let realSnapshot = barView.snapshotView(afterScreenUpdates: true)!
+        barView.layer.sublayers![0].opacity = 1
+        
+        newBarView.addSubview(realSnapshot)
+        snapshot = newBarView
+        
+      } else if let effectView = view as? UIVisualEffectView {
+        snapshot = UIVisualEffectView(effect: effectView.effect)
+        snapshot.frame = effectView.bounds
+        
+      } else {
+        snapshot = view.snapshotView() ?? UIView()
+      }
       
       #endif
     }
     
     #if os(tvOS)
-      if let imageView = view as? UIImageView, imageView.adjustsImageWhenAncestorFocused {
-        snapshot.frame = imageView.focusedFrameGuide.layoutFrame
-      }
+    if let imageView = view as? UIImageView, imageView.adjustsImageWhenAncestorFocused {
+      snapshot.frame = imageView.focusedFrameGuide.layoutFrame
+    }
     
     #endif
     

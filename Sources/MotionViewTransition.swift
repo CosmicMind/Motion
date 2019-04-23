@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (C) 2018, Daniel Dahan and CosmicMind, Inc. <http://cosmicmind.com>.
+ * Copyright (C) 2019, CosmicMind, Inc. <http://cosmicmind.com>.
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -44,7 +44,7 @@ open class MotionViewTransition {
   
   /// A UIView whose subviews and itself will be animating during a transition.
   private weak var container: UIView?
-
+  
   /// Maximum duration of the animations.
   open private(set) var totalDuration: TimeInterval = 0
   
@@ -58,7 +58,7 @@ open class MotionViewTransition {
   private var currentDuration: TimeInterval {
     return totalDuration * Double(progress)
   }
-
+  
   /**
    An initializer that accepts a container transition view.
    - Parameter container: A UIView.
@@ -66,7 +66,7 @@ open class MotionViewTransition {
   fileprivate init(_ container: UIView) {
     self.container = container
   }
-
+  
   /// Prepares the transition animations.
   open func start() {
     guard let v = container else {
@@ -149,7 +149,7 @@ private extension MotionViewTransition {
     guard shouldUpdateModels else {
       return
     }
-  
+    
     walkingThroughAnimations { layer, _, anim in
       /// bounds.size somehow is directly set on the layer.
       let toValue = anim.keyPath == "bounds.size" ? layer.bounds.size : anim.toValue
@@ -167,7 +167,7 @@ private extension MotionViewTransition {
       layer.removeAnimation(forKey: key)
     }
   }
-
+  
   /**
    Walks through each layer's animation and executes give closure with
    CALayer, animation key String, and CABasicAnimation.

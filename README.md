@@ -139,7 +139,7 @@ Motion is a growing project and will encounter changes throughout its developmen
 
 The MIT License (MIT)
 
-Copyright (C) 2017, Daniel Dahan and CosmicMind, Inc. <http://cosmicmind.com>.
+Copyright (C) 2019, CosmicMind, Inc. <http://cosmicmind.com>.
 All rights reserved.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy

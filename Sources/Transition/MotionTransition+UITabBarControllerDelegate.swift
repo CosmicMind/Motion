@@ -50,8 +50,8 @@ extension MotionTransition: UITabBarControllerDelegate {
     
     state = .notified
     
-    let fromVCIndex = tabBarController.children.index(of: fromVC)!
-    let toVCIndex = tabBarController.children.index(of: toVC)!
+    let fromVCIndex = tabBarController.children.firstIndex(of: fromVC)!
+    let toVCIndex = tabBarController.children.firstIndex(of: toVC)!
     
     isPresenting = toVCIndex > fromVCIndex
     fromViewController = fromViewController ?? fromVC

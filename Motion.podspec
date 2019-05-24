@@ -1,9 +1,9 @@
 Pod::Spec.new do |s|
   s.name = 'Motion'
-  s.version = '3.1.0'
+  s.version = '3.1.1'
   s.swift_version = '5.0'
   s.license = 'MIT'
-  s.summary = 'A library used to create beautiful animations and transitions for Apple devices.'
+  s.summary = 'A library used to create beautiful animations and transitions for iOS.'
   s.homepage = 'http://cosmicmind.com'
   s.social_media_url = 'https://www.facebook.com/cosmicmindcom'
   s.authors = { 'CosmicMind, Inc.' => 'support@cosmicmind.com' }

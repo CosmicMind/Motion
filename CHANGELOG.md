@@ -1,3 +1,25 @@
+## 3.1.1
+
+* Added installation instructions to README.
+
+## 3.1.0
+
+- Updated to swift 4.2.
+- [pr-45](https://github.com/CosmicMind/Motion/pull/45): Fixed issue-44, view is hidden below status bar during call.
+  - [issue-44](https://github.com/CosmicMind/Motion/issues/44): View is hidden below status bar when a call is active.
+- [pr-50](https://github.com/CosmicMind/Motion/pull/50): Allow framework to be linked from extensions.
+- [pr-53](https://github.com/CosmicMind/Motion/pull/53): Bug fixes and `MotionViewTransition`.
+  - Made `MotionTransition.{start|update|finish|cancel}` methods public.
+  - Changed to updating model before firing animations for `CALayer` animations.
+  - Added reverting `XXForNextTransition` options back to default.
+  - Fixed issue when interactive transition was cancelled it was calling finish instead of cancel.
+  - Fixed appearance transition callbacks for transition cancellation.
+  - Fixed resume time was calculated incorrectly.
+  - Fixed ~0.001 seconds precision issue by storing current time.
+  - Added `MotionViewTransition` to make transitions of views possible.
+- [pr-54](https://github.com/CosmicMind/Motion/pull/54): Added setCompletionCallbackForNextTransition.
+- [pr-55](https://github.com/CosmicMind/Motion/pull/55): Fixed UITabBarController had userinteraction enabled during transition.
+
 ## 1.5.0
 
 * Updated for Swift 4.2.

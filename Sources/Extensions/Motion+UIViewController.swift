@@ -168,13 +168,23 @@ extension UINavigationController {
     }
   }
   
-  @objc public func motionNavigationTransition(type:MotionTransitionAnimationTyp, direction:MotionTransitionAnimationDirection) -> Void
-  {
+  @objc public func setMotionNavigationTransition(type:MotionTransitionAnimationSingleType) -> Void {
     switch type {
     case .none:
       motionNavigationTransitionType = .none
     case .auto:
       motionNavigationTransitionType = .auto
+    case .fade:
+      motionNavigationTransitionType = .fade
+    case .zoom:
+      motionNavigationTransitionType = .zoom
+    case .zoomOut:
+      motionNavigationTransitionType = .zoomOut
+    }
+  }
+
+  @objc public func setMotionNavigationTransition(type:MotionTransitionAnimationDirectionType, direction:MotionTransitionAnimationTypeDirection) -> Void {
+    switch type {
     case .push:
       motionNavigationTransitionType = .push(direction: direction)
     case .pull:
@@ -191,12 +201,6 @@ extension UINavigationController {
       motionNavigationTransitionType = .pageIn(direction: direction)
     case .pageOut:
       motionNavigationTransitionType = .pageOut(direction: direction)
-    case .fade:
-      motionNavigationTransitionType = .fade
-    case .zoom:
-      motionNavigationTransitionType = .zoom
-    case .zoomOut:
-      motionNavigationTransitionType = .zoomOut
     }
   }
 }

@@ -7,7 +7,6 @@
 //
 
 #import "ViewControllers.h"
-@import Motion;
 
 
 
@@ -30,7 +29,11 @@
 - (void)navigate
 {
   [[self navigationController] setIsMotionEnabled:YES];
-  [[self navigationController] motionNavigationTransitionWithType:MotionTransitionAnimationTypPull direction:MotionTransitionAnimationDirectionLeft];
+  [[self navigationController] setMotionNavigationTransitionWithType:MotionTransitionAnimationDirectionTypeSlide direction:MotionTransitionAnimationTypeDirectionUp];
+  /*
+  [[self navigationController] setMotionNavigationTransitionWithType:MotionTransitionAnimationSingleTypeZoom];
+  [[self navigationController] setMotionNavigationTransitionWithType:MotionTransitionAnimationDirectionTypePush direction:MotionTransitionAnimationTypeDirectionDown];
+  //*/
   
   [[self navigationController] pushViewController:[[VC_2 alloc] init] animated:YES];
 }

@@ -25,18 +25,14 @@
 
 import UIKit
 
-@objc public enum MotionTransitionAnimationDirection : Int
-{
+@objc public enum MotionTransitionAnimationTypeDirection : Int {
   case left
   case right
   case up
   case down
 }
 
-@objc public enum MotionTransitionAnimationTyp : Int
-{
-  case none
-  case auto
+@objc public enum MotionTransitionAnimationDirectionType : Int {
   case push
   case pull
   case cover
@@ -45,23 +41,28 @@ import UIKit
   case zoomSlide
   case pageIn
   case pageOut
+}
+
+@objc public enum MotionTransitionAnimationSingleType : Int {
+  case none
+  case auto
   case fade
   case zoom
   case zoomOut
 }
 
 public enum MotionTransitionAnimationType {
-
+  
   case none
   case auto
-  case push(direction: MotionTransitionAnimationDirection)
-  case pull(direction: MotionTransitionAnimationDirection)
-  case cover(direction: MotionTransitionAnimationDirection)
-  case uncover(direction: MotionTransitionAnimationDirection)
-  case slide(direction: MotionTransitionAnimationDirection)
-  case zoomSlide(direction: MotionTransitionAnimationDirection)
-  case pageIn(direction: MotionTransitionAnimationDirection)
-  case pageOut(direction: MotionTransitionAnimationDirection)
+  case push(direction: MotionTransitionAnimationTypeDirection)
+  case pull(direction: MotionTransitionAnimationTypeDirection)
+  case cover(direction: MotionTransitionAnimationTypeDirection)
+  case uncover(direction: MotionTransitionAnimationTypeDirection)
+  case slide(direction: MotionTransitionAnimationTypeDirection)
+  case zoomSlide(direction: MotionTransitionAnimationTypeDirection)
+  case pageIn(direction: MotionTransitionAnimationTypeDirection)
+  case pageOut(direction: MotionTransitionAnimationTypeDirection)
   case fade
   case zoom
   case zoomOut
@@ -382,7 +383,7 @@ class TransitionPreprocessor: MotionCorePreprocessor {
    and `y` point for `x`.
    - Returns: A CGPoint.
    */
-  func shift(direction: MotionTransitionAnimationDirection, isAppearing: Bool, size: CGSize? = nil, transpose: Bool = false) -> CGPoint {
+  func shift(direction: MotionTransitionAnimationTypeDirection, isAppearing: Bool, size: CGSize? = nil, transpose: Bool = false) -> CGPoint {
     let size = size ?? context.container.bounds.size
     let point: CGPoint
     

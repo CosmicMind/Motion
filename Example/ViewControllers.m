@@ -30,7 +30,8 @@
 - (void)navigate
 {
   [[self navigationController] setIsMotionEnabled:YES];
-  [[self navigationController] setMotionNavigationTransitionTypeObjC:MotionTransitionAnimationTypeObjCZoom];
+  [[self navigationController] motionNavigationTransitionWithType:MotionTransitionAnimationTypPull direction:MotionTransitionAnimationDirectionLeft];
+  
   [[self navigationController] pushViewController:[[VC_2 alloc] init] animated:YES];
 }
 

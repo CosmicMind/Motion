@@ -25,75 +25,43 @@
 
 import UIKit
 
+@objc public enum MotionTransitionAnimationDirection : Int
+{
+  case left
+  case right
+  case up
+  case down
+}
 
-@objc public enum MotionTransitionAnimationTypeObjC : Int
+@objc public enum MotionTransitionAnimationTyp : Int
 {
   case none
   case auto
-  
-  case pushLeft
-  case pushRight
-  case pushUp
-  case pushDown
-  
-  case pullLeft
-  case pullRight
-  case pullUp
-  case pullDown
-  
-  case coverLeft
-  case coverRight
-  case coverUp
-  case coverDown
-  
-  case uncoverLeft
-  case uncoverRight
-  case uncoverUp
-  case uncoverDown
-  
-  case slideLeft
-  case slideRight
-  case slideUp
-  case slideDown
-  
-  case zoomSlideLeft
-  case zoomSlideRight
-  case zoomSlideUp
-  case zoomSlideDown
-  
-  case pageInLeft
-  case pageInRight
-  case pageInUp
-  case pageInDown
-  
-  case pageOutLeft
-  case pageOutRight
-  case pageOutUp
-  case pageOutDown
-  
+  case push
+  case pull
+  case cover
+  case uncover
+  case slide
+  case zoomSlide
+  case pageIn
+  case pageOut
   case fade
   case zoom
   case zoomOut
 }
 
 public enum MotionTransitionAnimationType {
-  public enum Direction {
-    case left
-    case right
-    case up
-    case down
-  }
-  
+
   case none
   case auto
-  case push(direction: Direction)
-  case pull(direction: Direction)
-  case cover(direction: Direction)
-  case uncover(direction: Direction)
-  case slide(direction: Direction)
-  case zoomSlide(direction: Direction)
-  case pageIn(direction: Direction)
-  case pageOut(direction: Direction)
+  case push(direction: MotionTransitionAnimationDirection)
+  case pull(direction: MotionTransitionAnimationDirection)
+  case cover(direction: MotionTransitionAnimationDirection)
+  case uncover(direction: MotionTransitionAnimationDirection)
+  case slide(direction: MotionTransitionAnimationDirection)
+  case zoomSlide(direction: MotionTransitionAnimationDirection)
+  case pageIn(direction: MotionTransitionAnimationDirection)
+  case pageOut(direction: MotionTransitionAnimationDirection)
   case fade
   case zoom
   case zoomOut
@@ -414,7 +382,7 @@ class TransitionPreprocessor: MotionCorePreprocessor {
    and `y` point for `x`.
    - Returns: A CGPoint.
    */
-  func shift(direction: MotionTransitionAnimationType.Direction, isAppearing: Bool, size: CGSize? = nil, transpose: Bool = false) -> CGPoint {
+  func shift(direction: MotionTransitionAnimationDirection, isAppearing: Bool, size: CGSize? = nil, transpose: Bool = false) -> CGPoint {
     let size = size ?? context.container.bounds.size
     let point: CGPoint
     

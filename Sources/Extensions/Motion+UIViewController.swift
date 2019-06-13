@@ -34,6 +34,9 @@ fileprivate struct AssociatedInstance {
   /// A reference to the navigation animation.
   var navigationTransitionType: MotionTransitionAnimationType
   
+  /// A reference to the navigation animation. ObjC.
+  var navigationTransitionTypeObjC: MotionTransitionAnimationTypeObjC
+  
   /// A reference to the tabBar animation.
   var tabBarTransitionType: MotionTransitionAnimationType
   
@@ -60,6 +63,7 @@ extension UIViewController {
       return AssociatedObject.get(base: self, key: &AssociatedInstanceKey) {
         return AssociatedInstance(modalTransitionType: .auto,
                                   navigationTransitionType: .auto,
+                                  navigationTransitionTypeObjC: .auto,
                                   tabBarTransitionType: .auto,
                                   storedSnapshot: nil,
                                   previousNavigationDelegate: nil,
@@ -164,6 +168,99 @@ extension UINavigationController {
     }
     set(value) {
       associatedInstance.navigationTransitionType = value
+    }
+  }
+  
+  @IBInspectable
+  public var motionNavigationTransitionTypeObjC: MotionTransitionAnimationTypeObjC {
+    get {
+      return associatedInstance.navigationTransitionTypeObjC
+    }
+    set(value) {
+      
+      var defaultAnimation : MotionTransitionAnimationType;
+      
+      switch value {
+
+      case .none:
+        defaultAnimation = .none
+      case .auto:
+        defaultAnimation = .auto
+      case .pushLeft:
+        defaultAnimation = .push(direction: .left)
+      case .pushRight:
+        defaultAnimation = .push(direction: .right)
+      case .pushUp:
+        defaultAnimation = .push(direction: .up)
+      case .pushDown:
+        defaultAnimation = .push(direction: .down)
+      case .pullLeft:
+        defaultAnimation = .pull(direction: .left)
+      case .pullRight:
+        defaultAnimation = .pull(direction: .right)
+      case .pullUp:
+        defaultAnimation = .pull(direction: .up)
+      case .pullDown:
+        defaultAnimation = .pull(direction: .down)
+      case .coverLeft:
+        defaultAnimation = .cover(direction: .left)
+      case .coverRight:
+        defaultAnimation = .cover(direction: .right)
+      case .coverUp:
+        defaultAnimation = .cover(direction: .up)
+      case .coverDown:
+        defaultAnimation = .cover(direction: .down)
+      case .uncoverLeft:
+        defaultAnimation = .uncover(direction: .left)
+      case .uncoverRight:
+        defaultAnimation = .uncover(direction: .right)
+      case .uncoverUp:
+        defaultAnimation = .uncover(direction: .up)
+      case .uncoverDown:
+        defaultAnimation = .uncover(direction: .down)
+      case .slideLeft:
+        defaultAnimation = .slide(direction: .left)
+      case .slideRight:
+        defaultAnimation = .slide(direction: .right)
+      case .slideUp:
+        defaultAnimation = .slide(direction: .up)
+      case .slideDown:
+        defaultAnimation = .slide(direction: .down)
+      case .zoomSlideLeft:
+        defaultAnimation = .zoomSlide(direction: .left)
+      case .zoomSlideRight:
+        defaultAnimation = .zoomSlide(direction: .right)
+      case .zoomSlideUp:
+        defaultAnimation = .zoomSlide(direction: .up)
+      case .zoomSlideDown:
+        defaultAnimation = .zoomSlide(direction: .down)
+      case .pageInLeft:
+        defaultAnimation = .pageIn(direction: .left)
+      case .pageInRight:
+        defaultAnimation = .pageIn(direction: .right)
+      case .pageInUp:
+        defaultAnimation = .pageIn(direction: .up)
+      case .pageInDown:
+        defaultAnimation = .pageIn(direction: .down)
+      case .pageOutLeft:
+        defaultAnimation = .pageOut(direction: .left)
+      case .pageOutRight:
+        defaultAnimation = .pageOut(direction: .right)
+      case .pageOutUp:
+        defaultAnimation = .pageOut(direction: .up)
+      case .pageOutDown:
+        defaultAnimation = .pageOut(direction: .down)
+      case .fade:
+        defaultAnimation = .fade
+      case .zoom:
+        defaultAnimation = .zoom
+      case .zoomOut:
+        defaultAnimation = .zoomOut
+      default:
+        defaultAnimation = .auto
+      }
+      associatedInstance.navigationTransitionType = defaultAnimation
+      associatedInstance.navigationTransitionTypeObjC = value
     }
   }
 }

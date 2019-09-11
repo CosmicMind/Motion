@@ -1,3 +1,7 @@
+## 3.1.2
+
+* Updated layout version in Xcode project.
+
 ## 3.1.1
 
 * Added installation instructions to README.

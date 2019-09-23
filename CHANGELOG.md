@@ -1,5 +1,6 @@
 ## 3.1.3
 
+- [pr-76](https://github.com/CosmicMind/Motion/pull/76): Added missing module for Swift Package Manager.
 * Updated Xcode 11 settings.
 
 ## 3.1.2

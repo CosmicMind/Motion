@@ -1,3 +1,7 @@
+## 3.1.3
+
+* Updated Xcode 11 settings.
+
 ## 3.1.2
 
 * Updated layout version in Xcode project.
